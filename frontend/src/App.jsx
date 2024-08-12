@@ -1,24 +1,25 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
-import { ToastContainer } from 'react-toastify'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+
+import Landing from './pages/Landing.jsx'
+import Header from './pages/Header.jsx'
 
 function App() {
-
-
   return (
-    <>
-      <div>
-        <ToastContainer />
-        <Route path='/main' element={
-          <>
-          <Header/>
-          <Main/>
-          </>
-        }/>
-      </div>
-    </>
+    <div>
+      <Router>
+        <Routes>
+          <Route path='/' 
+          element={
+            <>
+            <Header/>
+            <Landing/>
+            </>
+          }
+          />
+        </Routes>
+      </Router>
+    </div>
   )
 }
 
