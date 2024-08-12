@@ -5,6 +5,7 @@
     background-color: white;
     color: #B62626;
     height: 75%;
+    box-shadow: 0px 5px 11px -6px rgba(0,0,0,0.75);
 
     .childs {
         display: flex;
@@ -26,7 +27,7 @@
             height: 80px;
             font-size: 18px;
             box-shadow: 0px 5px 11px -6px rgba(0,0,0,0.75);
-            border-radius: 0px 0px 20px 20px;
+            border-radius: 0px 0px 10px 10px;
         }
     }
 
@@ -37,8 +38,54 @@
         align-items: center;
         img {
             
-            height: 70%;
+            height: 60%;
             width: 100%;
         }
     }
 }
+
+.land{
+    h3{
+        color: #020202;
+        margin: 5px 30px;
+    }
+    .articlecont{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        align-items: center;
+        margin-top: 10px;
+
+        height: 80%;
+        position: absolute;
+        overflow-y: scroll;
+
+
+        .articles{
+            width: 70%;
+            border: 1px solid black;
+            padding:5px;
+            border-radius: 20px;
+            
+            .content{
+                margin: 1%;
+            }
+            h2, p{
+                color: black;
+                margin-inline: 30px;
+            }
+            h2{
+                text-decoration: underline;
+            }
+            p.retrieved{
+                color: gray;
+            }
+        }
+    }
+    .pagination{
+        position: absolute;
+
+        color: black;
+    }
+}
+
