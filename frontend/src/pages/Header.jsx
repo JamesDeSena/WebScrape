@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./main.css";
 import { ToastContainer } from "react-toastify";
 import logos from '../assets/logo/GDSLogo.png';
@@ -6,8 +6,12 @@ import { useNavigate } from "react-router-dom";
 
 const Header = () => {
     const navigate = useNavigate();
-    const navigateABSCBN = () => navigate("/");
-    const navigateNewPage = () => navigate("/placeholder");
+    const [activeButton, setActiveButton] = useState(null);
+
+    const handleNavigation = (path, buttonName) => {
+        navigate(path);
+        setActiveButton(buttonName);
+    };
 
     return (
         <div>
@@ -19,15 +23,60 @@ const Header = () => {
                     </div>
                 </div>
                 <div className="childs">
-                    <button onClick={navigateABSCBN}>ABS-CBN</button>
-                    <button onClick={navigateNewPage}>GMA</button>
-                    <button onClick={navigateNewPage}>TV5</button>
-                    <button onClick={navigateNewPage}>RAPPLER</button>
-                    <button onClick={navigateNewPage}>INQUIRER</button>
-                    <button onClick={navigateNewPage}>MANILA BULLETIN</button>
-                    <button onClick={navigateNewPage}>PHIL STAR</button>
-                    <button onClick={navigateNewPage}>MANILA TIMES</button>
-                    <button onClick={navigateNewPage}>BUSINESS WORLD</button>
+                    <button 
+                        className={activeButton === 'ABS-CBN' ? 'active' : ''}
+                        onClick={() => handleNavigation("/abs-cbn", 'ABS-CBN')}
+                    >
+                        ABS-CBN
+                    </button>
+                    <button 
+                        className={activeButton === 'GMA' ? 'active' : ''}
+                        onClick={() => handleNavigation("/gma", 'GMA')}
+                    >
+                        GMA
+                    </button>
+                    <button 
+                        className={activeButton === 'TV5' ? 'active' : ''}
+                        onClick={() => handleNavigation("/tv-5", 'TV5')}
+                    >
+                        TV5
+                    </button>
+                    <button 
+                        className={activeButton === 'RAPPLER' ? 'active' : ''}
+                        onClick={() => handleNavigation("/rappler", 'RAPPLER')}
+                    >
+                        RAPPLER
+                    </button>
+                    <button 
+                        className={activeButton === 'INQUIRER' ? 'active' : ''}
+                        onClick={() => handleNavigation("/inquirer", 'INQUIRER')}
+                    >
+                        INQUIRER
+                    </button>
+                    <button 
+                        className={activeButton === 'MANILA BULLETIN' ? 'active' : ''}
+                        onClick={() => handleNavigation("/manila-bulletin", 'MANILA BULLETIN')}
+                    >
+                        MANILA BULLETIN
+                    </button>
+                    <button 
+                        className={activeButton === 'PHIL STAR' ? 'active' : ''}
+                        onClick={() => handleNavigation("/phil-star", 'PHIL STAR')}
+                    >
+                        PHIL STAR
+                    </button>
+                    <button 
+                        className={activeButton === 'MANILA TIMES' ? 'active' : ''}
+                        onClick={() => handleNavigation("/manila-times", 'MANILA TIMES')}
+                    >
+                        MANILA TIMES
+                    </button>
+                    <button 
+                        className={activeButton === 'BUSINESS WORLD' ? 'active' : ''}
+                        onClick={() => handleNavigation("/business-world", 'BUSINESS WORLD')}
+                    >
+                        BUSINESS WORLD
+                    </button>
                 </div>
             </div>
         </div>
