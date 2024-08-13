@@ -35,7 +35,7 @@ function App() {
               </>
             }
           />
-          {/* <Route path='/business-world'
+          <Route path='/business-world'
             element={
               <>
                 <Header />
@@ -43,7 +43,7 @@ function App() {
               </>
             }
           />
-          <Route path='/gma'
+             <Route path='/gma'
             element={
               <>
                 <Header />
@@ -98,7 +98,7 @@ function App() {
                 <TV5/>
               </>
             }
-          /> */}
+          />
 
         </Routes>
       </Router>
