@@ -18,7 +18,7 @@ const Article = () => {
                 <div className="contentsecond">
                     <div className="contentsecos">
                         <div className="breadcrumb">
-                            Category / Article
+                            CATEGORY: ABS-CBN
                         </div>
                         <button className="copy" onClick={copyToClipboard}>
                             <FaCopy /> COPY
