@@ -159,36 +159,52 @@
     justify-content: center;
     align-items: center;
     margin: 20px;
+    margin-left: 50px;
     gap: 50px;
 
-    .contentsfirst,
-    .contentsecond {
+    .contentsfirst {
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 25px;
+        border-radius: 20px;
         border: 1px solid black;
-        padding: 20px;
-        color: #333333;
-    }
-
-    .contentsfirst {
+        padding: 40px;
         box-shadow: inset 0px 4px 6px rgba(0, 0, 0, 0.1);
     }
-
     .contentsecond{
-        width: 80%;
-        height: 700px;
-        overflow-y:auto;
+        display: flex;
+       flex-direction: column;
+        gap: 10px;
+        .contentsec{
+            padding: 20px;
+            color: #333333;
+            border: 1px solid black;
+            width: 90%;
+            height: 700px;
+            overflow-y:auto;
+        }
+        .contentseco{
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 100px;
+            margin-top: 5px;
+        }
     }
 
     button {
-        border-radius: 10px;
+        border-radius: 5px;
         border: none;
         box-shadow: 0px 4px 4px 0px #7C8B9D;
-        padding: 10px 20px;
+        padding: 15px 25px;
         font-weight: 1000;
         transition: transform 0.2s ease-in-out;
+        background-color: white;
+        color: #333333;
 
+    }
+    button.prev:hover, button.next:hover{
+        color: #B62626;
     }
 
     button:hover {
@@ -203,6 +219,10 @@
     button.copy {
         color: white;
         background-color: #B62626;
+        button.copy:hover{
+            color: #B62626;
+            background-color: white;
+        }
     }
 
 }
