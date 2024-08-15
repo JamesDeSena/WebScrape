@@ -13,12 +13,13 @@ const Header = () => {
         setActiveButton(buttonName);
     };
 
+
     return (
         <div>
             <ToastContainer />
             <div className="headers">
                 <div className="childs">
-                    <div className="logochild">
+                    <div className="logochild" onClick={()=> handleNavigation("/")}>
                         <img src={logos} alt="logo" />
                     </div>
                 </div>

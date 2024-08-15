@@ -13,7 +13,7 @@ const ABSCBN = () => {
                     {/* max of 10 articles per 1 page */}
                     <div className="articles">
                         <div className="content">
-                            <h2>PNP eyes Quiboloy arrest inside Davao compound without violence</h2>
+                            <h2 href="/article">PNP eyes Quiboloy arrest inside Davao compound without violence</h2>
                             <p>A Philippine National Police spokesperson admitted Friday arresting controversial televangelist Apollo Quiboloy inside his Kingdom of Jesus
                                 Christ compound in Davao City is not a simple matter.
 
