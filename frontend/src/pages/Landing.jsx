@@ -7,7 +7,7 @@ const ABSCBN = () => {
     return (
         <div className="land">
             <ToastContainer />
-            <h3>LAST RETRIEVED: 2 MINS. AGO</h3>
+            <p className="ret">LAST RETRIEVED: 2 MINS. AGO</p>
             <div className="big">
                 <div className="articlecont">
                     {/* max of 10 articles per 1 page */}

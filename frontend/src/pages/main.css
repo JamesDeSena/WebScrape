@@ -50,12 +50,17 @@
 }
 
 .land {
-    h3 {
+    p.ret {
         color: gray;
-        margin: 5px 30px;
+        margin: 10px 30px 0px;
+        font-style: italic;
     }
 
     .big {
+        /*box-shadow: inset 0px 4px 8px rgba(0, 0, 0, 0.1),
+        inset 0px -4px 8px rgba(0, 0, 0, 0.1); */
+
+        border-radius: 10px;
         position: relative;
         height: 730px;
         overflow-y: auto;
@@ -166,13 +171,14 @@
         flex-direction: column;
         gap: 10px;
 
-        .breadcrumb{
+        .breadcrumb {
             display: flex;
             font-style: italic;
             color: #7C8B9D;
             justify-content: center;
             align-items: center;
         }
+
         .contentsecos {
             display: flex;
             justify-content: space-between;
@@ -180,11 +186,11 @@
         }
 
         .contentsec {
-            padding: 20px;
+            padding: 20px 0px 20px 50px;
             color: #333333;
             border: 2px solid black;
             margin: 10px 0px 0px;
-            width: 97.5%;
+            width: 97%;
             height: 630px;
             overflow-y: auto;
         }
@@ -196,6 +202,31 @@
             gap: 100px;
             margin-top: 20px;
         }
+    }
+
+    h2.title {
+        margin: 0;
+        font-size: 40px;
+        font-weight: 800;
+        padding-right: 150px;
+        text-align: justify;
+    }
+
+    hr {
+        width: 50%;
+        margin-top: 20px;
+        border: 1px solid black;
+        margin-left: 0;
+    }
+
+    p {
+        margin-top: 50px;
+        text-align: justify;
+    }
+
+    p.content {
+        margin-right: 100px;
+
     }
 
     button {
