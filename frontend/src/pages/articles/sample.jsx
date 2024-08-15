@@ -1,4 +1,5 @@
 import React from "react";
+import { FaCopy } from "react-icons/fa6";
 
 const Article = () => {
     // Function to copy content to clipboard
@@ -14,15 +15,15 @@ const Article = () => {
     return (
         <div>
             <div className="contentsbig">
-                <div className="contentsfirst">
-                    <button className="return" style={{ textDecoration: 'underline' }}>
-                        RETURN
-                    </button>
-                    <button className="copy" onClick={copyToClipboard}>
-                        COPY
-                    </button>
-                </div>
                 <div className="contentsecond">
+                    <div className="contentsecos">
+                        <div className="breadcrumb">
+                            Category / Article
+                        </div>
+                        <button className="copy" onClick={copyToClipboard}>
+                            <FaCopy /> COPY
+                        </button>
+                    </div>
                     <div className="contentsec" id="contentToCopy">
                         <h2 >
                             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,

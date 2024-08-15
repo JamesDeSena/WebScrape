@@ -158,32 +158,37 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    margin: 20px;
-    margin-left: 50px;
+    margin-inline: 100px;
     gap: 50px;
 
-    .contentsfirst {
+    .contentsecond {
         display: flex;
         flex-direction: column;
-        gap: 25px;
-        border-radius: 20px;
-        border: 1px solid black;
-        padding: 40px;
-        box-shadow: inset 0px 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    .contentsecond{
-        display: flex;
-       flex-direction: column;
         gap: 10px;
-        .contentsec{
+
+        .breadcrumb{
+            display: flex;
+            
+            color: #7C8B9D;
+            justify-content: center;
+            align-items: center;
+        }
+        .contentsecos {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .contentsec {
             padding: 20px;
             color: #333333;
             border: 1px solid black;
-            width: 90%;
-            height: 700px;
-            overflow-y:auto;
+            width: 97.5%;
+            height: 660px;
+            overflow-y: auto;
         }
-        .contentseco{
+
+        .contentseco {
             display: flex;
             flex-direction: row;
             justify-content: center;
@@ -203,7 +208,9 @@
         color: #333333;
 
     }
-    button.prev:hover, button.next:hover{
+
+    button.prev:hover,
+    button.next:hover {
         color: #B62626;
     }
 
@@ -219,7 +226,8 @@
     button.copy {
         color: white;
         background-color: #B62626;
-        button.copy:hover{
+
+        button.copy:hover {
             color: #B62626;
             background-color: white;
         }
