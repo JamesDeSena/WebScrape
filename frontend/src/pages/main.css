@@ -187,11 +187,12 @@
         .contentsec {
             padding: 20px 0px 20px 50px;
             color: #333333;
-            border: 2px solid black;
+            border: 2px solid #7C8B9D;
             margin: 10px 0px 0px;
             width: 97%;
             height: 630px;
             overflow-y: auto;
+            border-radius: 10px;
         }
 
         .contentseco {
@@ -234,7 +235,6 @@
         box-shadow: 0px 4px 4px 0px #7C8B9D;
         padding: 15px 25px;
         font-weight: 1000;
-        transition: transform 0.2s ease-in-out;
         background-color: white;
         color: #333333;
 
@@ -245,10 +245,6 @@
         color: #B62626;
     }
 
-    button:hover {
-        transform: scale(1.05);
-    }
-
     button.return {
         color: #333333;
         background-color: white;
@@ -257,11 +253,10 @@
     button.copy {
         color: white;
         background-color: #B62626;
-
-        button.copy:hover {
-            color: #B62626;
-            background-color: white;
-        }
+    }
+    button.copy:hover {
+        color: #B62626;
+        background-color: white;
     }
 
 }

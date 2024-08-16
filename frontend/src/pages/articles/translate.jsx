@@ -1,32 +1,37 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useEffect } from 'react';
 
-const Translate = ({ textToTranslate }) => {
-    const [translatedText, setTranslatedText] = useState('');
+const TranslateComponent = () => {
+    const query = async (data) => {
+        const response = await fetch(
+            "https://api-inference.huggingface.co/models/Helsinki-NLP/opus-mt-en-zh",
+            {
+                headers: {
+                    Authorization: "Bearer hf_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+                    "Content-Type": "application/json",
+                },
+                method: "POST",
+                body: JSON.stringify(data),
+            }
+        );
+        const result = await response.json();
+        return result;
+    };
 
     useEffect(() => {
-        const fetchTranslation = async () => {
-            try {
-                const response = await axios.post('http://localhost:5000/translate', {
-                    text: textToTranslate
-                });
-                setTranslatedText(response.data.translation);
-            } catch (error) {
-                console.error('Error fetching translation:', error);
-            }
-        };
-
-        if (textToTranslate) {
-            fetchTranslation();
-        }
-    }, [textToTranslate]);
+        // Example input to be translated
+        const inputText = {"inputs": "Меня зовут Вольфганг и я живу в Берлине"};
+        
+        query(inputText).then((response) => {
+            console.log(JSON.stringify(response));
+        });
+    }, []);
 
     return (
         <div>
-            <h2>Translated Article:</h2>
-            <div dangerouslySetInnerHTML={{ __html: translatedText }} />
+            {/* Render your component's UI here */}
+            <p>Translation in progress...</p>
         </div>
     );
 };
 
-export default Translate;
+export default TranslateComponent;
