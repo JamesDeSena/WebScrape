@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 import Landing from './pages/Landing.jsx'
 import Header from './pages/Header.jsx'
+import Pages from './pages/pagination.jsx'
 
 import ABSCBN from './pages/tabs/abs-cbn.jsx'
 import BWorld from './pages/tabs/business-world.jsx'
@@ -25,6 +26,7 @@ function App() {
               <>
                 <Header />
                 <Landing />
+                {/* <Pages/> */}
               </>
             }
           />
@@ -33,6 +35,7 @@ function App() {
               <>
                 <Header />
                 <ABSCBN />
+                <Pages/>
               </>
             }
           />
