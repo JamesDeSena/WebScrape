@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./main.css";
 import { ToastContainer } from "react-toastify";
 import logos from '../assets/logo/GDSLogo.png';
@@ -6,24 +6,34 @@ import { useNavigate } from "react-router-dom";
 
 const Header = () => {
     const navigate = useNavigate();
-    const [activeButton, setActiveButton] = useState(null);
+    const [activeButton, setActiveButton] = useState(localStorage.getItem('activeButton') || '');
+
+    useEffect(() => {
+        // Store the active button state in localStorage whenever it changes
+        localStorage.setItem('activeButton', activeButton);
+    }, [activeButton]);
 
     const handleNavigation = (path, buttonName) => {
         navigate(path);
         setActiveButton(buttonName);
     };
 
-
     return (
         <div>
             <ToastContainer />
             <div className="headers">
                 <div className="childs">
-                    <div className="logochild" onClick={()=> handleNavigation("/")}>
+                    <div className="logochild" onClick={() => handleNavigation("/", '')}>
                         <img src={logos} alt="logo" />
                     </div>
                 </div>
                 <div className="childs">
+                    <button 
+                        className={activeButton === '' ? 'active' : ''}
+                        onClick={() => handleNavigation("/", '')}
+                    >
+                        HOME
+                    </button>
                     <button 
                         className={activeButton === 'ABS-CBN' ? 'active' : ''}
                         onClick={() => handleNavigation("/abs-cbn", 'ABS-CBN')}
