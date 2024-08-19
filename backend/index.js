@@ -9,6 +9,8 @@ const BWRoutes = require("./routes/BWRoutes");
 const MBRoutes = require("./routes/MBRoutes");
 const RPRoutes = require("./routes/RPRoutes");
 const TV5Routes = require("./routes/TV5Routes");
+const ABSCBNRoutes = require("./routes/ABSCBNRoutes");
+const GMARoutes = require("./routes/GMARoutes");
 
 const app = express();
 dotenv.config();
@@ -41,6 +43,8 @@ app.use("/api/bw", BWRoutes);
 app.use("/api/mb", MBRoutes);
 app.use("/api/rp", RPRoutes);
 app.use("/api/tv", TV5Routes)
+app.use("/api/abs", ABSCBNRoutes);
+app.use("/api/gma", GMARoutes);
 
 server.listen(process.env.PORT, () =>
   console.log(`Server started on port ${process.env.PORT}`)
