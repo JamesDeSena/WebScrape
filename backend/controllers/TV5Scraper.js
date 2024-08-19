@@ -5,7 +5,7 @@ const path = require("path");
 
 // Define file paths and cache size
 const cacheFilePath = path.join(__dirname, "../cache", "tv5.json");
-const maxCacheSize = 15;
+const maxCacheSize = 30;
 
 // Ensure the cache directory exists
 function ensureDirectoryExists(filePath) {
