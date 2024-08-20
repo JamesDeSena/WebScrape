@@ -1,3 +1,5 @@
+// WORKING but the latest posts order are confusing
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../main.css";
@@ -12,6 +14,7 @@ const ABSCBN = () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/abs/get');
                 setArticles(response.data);
+                // setArticles(response.data.reverse());
             } catch (error) {
                 console.error("Error fetching articles:", error);
             } finally {
@@ -28,16 +31,14 @@ const ABSCBN = () => {
             <p className="ret">LAST RETRIEVED: 2 MINS. AGO</p>
             <div className="big">
                 <div className="articlecont">
-                    {/* max of 10 articles per 1 page */}
                     {loading ? (
                         <p>Loading...</p>
                     ) : (
-                        articles.slice(0, 10).map((article, index) => (
+                        articles.map((article, index) => (
                             <div className="articles" key={index}>
                                 <div className="content">
                                     <a href={article.articleUrl} className="title">
                                         <h2>{article.title}</h2>
-                                        <span className="news">ABS-CBN</span>
                                     </a>
                                     <p>{article.articleUrl}</p>
                                     <div className="contents">

@@ -1,8 +1,27 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
 import "../main.css";
 import { ToastContainer } from "react-toastify";
 
 const BWorld = () => {
+    const [articles, setArticles] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchArticles = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/bw/get');
+                setArticles(response.data);
+                setArticles(response.data.reverse());
+            } catch (error) {
+                console.error("Error fetching articles:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchArticles();
+    }, []);
 
     return (
         <div className="land">
@@ -11,32 +30,27 @@ const BWorld = () => {
             <div className="big">
                 <div className="articlecont">
                     {/* max of 10 articles per 1 page */}
-                    <div className="articles">
-                        <div className="content">
-                            <a href="/article" className="title">
-                                <h2>PNP eyes Quiboloy arrest inside Davao compound without violence</h2>
-
-                            </a>
-                            <p>A Philippine National Police spokesperson admitted Friday arresting controversial televangelist Apollo Quiboloy inside his Kingdom of Jesus
-                                Christ compound in Davao City is not a simple matter.
-
-                                Police Brig. Gen. Nicolas Torre III, Police Regional Office (PRO)-Davao region chief, earlier said Quiboloy is still
-                                hiding inside the 30-hectare KOJC compound in Barangay
-                                Buhangin where he is shielded by KOJC members.
-
-                                Quiboloy is accused of sexual abuse and human trafficking and has a P10 million bounty for his arrest.
-                            </p>
-                        </div>
-                        <div className="content">
-                            <p className="retrieved">
-                                Retrieved 2 hours ago
-                            </p>
-                        </div>
-                    </div>
+                    {loading ? (
+                        <p>Loading...</p>
+                    ) : (
+                        articles.map((article, index) => (
+                            <div className="articles" key={index}>
+                                <div className="content">
+                                    <a href={article.articleUrl} className="title">
+                                        <h2>{article.title}</h2>
+                                    </a>
+                                    <p>{article.articleUrl}</p>
+                                    <div className="contents">
+                                        <p>Date: {article.date}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
         </div>
     );
 };
 
-export default BWorld; 
+export default BWorld;
