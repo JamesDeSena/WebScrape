@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 
 const cacheFilePath = path.join(__dirname, "../cache", "abscbn.json");
-const maxCacheSize = 15;
+const maxCacheSize = 30;
 
 function ensureDirectoryExists(filePath) {
   const dir = path.dirname(filePath);
