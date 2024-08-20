@@ -7,6 +7,6 @@ const {
 } = require('../controllers/ManilaBulletinScraper');
 
 router.post('/', ScrapeWhole);
-router.get('/get', GetCacheData)
+router.get('/get', GetCacheData);
 
 module.exports = router;

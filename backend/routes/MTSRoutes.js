@@ -7,5 +7,6 @@ const {
 } = require('../controllers/ManilaTimesScraper');
 
 router.post('/', ScrapeWhole);
+router.get('/get', GetCacheData);
 
 module.exports = router;
