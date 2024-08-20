@@ -58,6 +58,8 @@
     .big {
         /*box-shadow: inset 0px 4px 8px rgba(0, 0, 0, 0.1),
         inset 0px -4px 8px rgba(0, 0, 0, 0.1); */
+        display: flex;
+        justify-content: center;
 
         border-radius: 10px;
         position: relative;
@@ -77,12 +79,24 @@
 
 
             .articles {
-                width: 90%;
+                width: 100%;
                 border: 1px solid #333333;
-                padding-inline: 5px;
+                padding: 20px 5px;
                 border-radius: 20px;
 
                 .content {
+                    .contents{
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                        p{
+                            margin: 0px 30px;
+                        }
+                        h2{
+                            margin: 0px;
+                            padding: 0px;
+                        }
+                    }
                     .title {
                         display: flex;
                         flex-direction: row;
@@ -106,6 +120,7 @@
                         -webkit-line-clamp: 2;
                         overflow: hidden;
                         text-overflow: ellipsis;
+                        
                     }
                 }
 
@@ -116,6 +131,7 @@
                 }
 
                 h2 {
+                    
                     text-decoration: underline;
                 }
 

@@ -63,7 +63,7 @@ function convertTimeAgoToDate(timeAgo) {
     return formatDate(date);
   }
 
-  return formatDate(now); // Default to current date if timeAgo parsing fails
+  return formatDate(now); 
 }
 
 function formatDate(date) {

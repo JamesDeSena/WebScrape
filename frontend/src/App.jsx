@@ -35,7 +35,7 @@ function App() {
               <>
                 <Header />
                 <ABSCBN />
-                <Pages/>
+                {/* <Pages/> */}
               </>
             }
           />
