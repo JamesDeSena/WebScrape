@@ -10,9 +10,7 @@ const ABSCBN = () => {
     useEffect(() => {
         const fetchArticles = async () => {
             try {
-                const response = await axios.post('http://localhost:8080/api/abs', {
-                    url: "https://news.abs-cbn.com/news"
-                });
+                const response = await axios.get('http://localhost:8080/api/abs/get');
                 setArticles(response.data);
             } catch (error) {
                 console.error("Error fetching articles:", error);
