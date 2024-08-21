@@ -46,24 +46,24 @@ const Header = () => {
                     >
                         GMA
                     </button>
-                    <button 
+                    {/* <button 
                         className={activeButton === 'TV5' ? 'active' : ''}
                         onClick={() => handleNavigation("/tv-5", 'TV5')}
                     >
                         TV5
-                    </button>
+                    </button> */}
                     <button 
                         className={activeButton === 'RAPPLER' ? 'active' : ''}
                         onClick={() => handleNavigation("/rappler", 'RAPPLER')}
                     >
                         RAPPLER
                     </button>
-                    <button 
+                    {/* <button 
                         className={activeButton === 'INQUIRER' ? 'active' : ''}
                         onClick={() => handleNavigation("/inquirer", 'INQUIRER')}
                     >
                         INQUIRER
-                    </button>
+                    </button> */}
                     <button 
                         className={activeButton === 'MANILA BULLETIN' ? 'active' : ''}
                         onClick={() => handleNavigation("/manila-bulletin", 'MANILA BULLETIN')}

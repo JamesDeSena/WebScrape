@@ -1,5 +1,3 @@
-// WORKING but the latest posts order are confusing
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "../main.css";
@@ -13,8 +11,8 @@ const ABSCBN = () => {
         const fetchArticles = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/abs/get');
-                setArticles(response.data);
-                // setArticles(response.data.reverse());
+                const sortedArticles = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+                setArticles(sortedArticles);
             } catch (error) {
                 console.error("Error fetching articles:", error);
             } finally {
