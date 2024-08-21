@@ -13,7 +13,8 @@ const MTimes = () => {
         const fetchArticles = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/mt/get');
-                setArticles(response.data);
+                const sortedArticles = response.data.reverse();
+                setArticles(sortedArticles);
             } catch (error) {
                 console.error("Error fetching articles:", error);
             } finally {

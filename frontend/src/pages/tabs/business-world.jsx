@@ -11,8 +11,8 @@ const BWorld = () => {
         const fetchArticles = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/bw/get');
-                setArticles(response.data);
-                setArticles(response.data.reverse());
+                const sortedArticles = response.data.reverse();
+                setArticles(sortedArticles);
             } catch (error) {
                 console.error("Error fetching articles:", error);
             } finally {
