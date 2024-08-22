@@ -3,8 +3,7 @@ const cheerio = require("cheerio");
 const fs = require("fs");
 const path = require("path");
 
-const cacheFilePath = path.join(__dirname, "../cache", "mb.json");
-const maxCacheSize = 30;
+const maxCacheSize = 50;
 
 function ensureDirectoryExists(filePath) {
   const dir = path.dirname(filePath);
@@ -13,20 +12,30 @@ function ensureDirectoryExists(filePath) {
   }
 }
 
-function loadCache() {
+function loadCache(cacheFilePath) {
   if (fs.existsSync(cacheFilePath)) {
-    return JSON.parse(fs.readFileSync(cacheFilePath, "utf8"));
+    try {
+      return JSON.parse(fs.readFileSync(cacheFilePath, "utf8"));
+    } catch (error) {
+      console.error("Failed to parse cache file:", error);
+      return [];
+    }
   }
   return [];
 }
 
-function saveCache(cache) {
+function saveCache(cache, cacheFilePath) {
   ensureDirectoryExists(cacheFilePath);
-  fs.writeFileSync(cacheFilePath, JSON.stringify(cache, null, 2), "utf8");
+  try {
+    fs.writeFileSync(cacheFilePath, JSON.stringify(cache, null, 2), "utf8");
+  } catch (error) {
+    console.error("Failed to save cache file:", error);
+  }
 }
 
-function addToCache(newData) {
-  let cache = loadCache();
+function addToCache(newData, cacheFilePath) {
+  let cache = loadCache(cacheFilePath);
+
   const isDuplicate = cache.some(
     (article) =>
       article.title === newData.title &&
@@ -34,15 +43,27 @@ function addToCache(newData) {
   );
 
   if (!isDuplicate) {
-    cache.push(newData);
+    cache.unshift(newData); 
     if (cache.length > maxCacheSize) {
-      cache.shift();
+      cache.pop(); 
     }
-    saveCache(cache);
+    saveCache(cache, cacheFilePath);
   }
 }
 
-// Helper function to parse relative time and get the formatted date
+function extractFileNameFromUrl(url) {
+  try {
+    const urlObj = new URL(url);
+    const pathname = urlObj.pathname;
+    const fileName = pathname
+      .replace(/[^a-zA-Z0-9]/g, "-")
+      .replace(/^-|-$/g, "");
+    return `${fileName}.json`;
+  } catch (error) {
+    return "default.json";
+  }
+}
+
 function parseRelativeTime(relativeTime) {
   const now = new Date();
   const [value, unit] = relativeTime.split(" ");
@@ -51,13 +72,13 @@ function parseRelativeTime(relativeTime) {
 
   switch (unit) {
     case "minutes":
-      timeDiff = parseInt(value) * 60 * 1000; // Convert minutes to milliseconds
+      timeDiff = parseInt(value) * 60 * 1000;
       break;
     case "hours":
-      timeDiff = parseInt(value) * 60 * 60 * 1000; // Convert hours to milliseconds
+      timeDiff = parseInt(value) * 60 * 60 * 1000;
       break;
     case "days":
-      timeDiff = parseInt(value) * 24 * 60 * 60 * 1000; // Convert days to milliseconds
+      timeDiff = parseInt(value) * 24 * 60 * 60 * 1000;
       break;
     default:
       timeDiff = 0;
@@ -65,7 +86,6 @@ function parseRelativeTime(relativeTime) {
 
   const articleDate = new Date(now.getTime() - timeDiff);
 
-  // Format the date as Month Day, Year
   const options = { year: "numeric", month: "long", day: "numeric" };
   return new Intl.DateTimeFormat("en-US", options).format(articleDate);
 }
@@ -76,6 +96,8 @@ const ScrapeWhole = async (req, res) => {
   if (!url) {
     return res.status(400).json({ error: "URL is required" });
   }
+
+  const cacheFilePath = path.join(__dirname, "../cache/data", "mb.json");
 
   try {
     const browser = await puppeteer.launch();
@@ -99,7 +121,7 @@ const ScrapeWhole = async (req, res) => {
         const relativeUrl = $(element)
           .find("div[data-v-498e1d89] .custom-text-link")
           .attr("href");
-        const articleUrl = `mb.com.ph${relativeUrl}`;
+        const articleUrl = `https://mb.com.ph${relativeUrl}`;
         const time = $(element)
           .find(
             "div[data-v-498e1d89] .d-flex.align-center.timestamp.mb-font-article-date.pt-0.pb-0"
@@ -115,7 +137,7 @@ const ScrapeWhole = async (req, res) => {
           };
 
           articles.push(article);
-          addToCache(article);
+          addToCache(article, cacheFilePath);
         }
       }
     );
@@ -127,17 +149,128 @@ const ScrapeWhole = async (req, res) => {
   }
 };
 
-const GetCacheData = (req, res) => {
+const ScrapePage = async (req, res) => {
+  const { url } = req.body;
+
+  if (!url) {
+    return res.status(400).json({ error: "URL is required" });
+  }
+
+  const cacheFilePath = path.join(
+    __dirname,
+    "../cache/pages/manila-bulletin",
+    extractFileNameFromUrl(url)
+  );
+
   try {
-    const cache = loadCache();
+
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto(url, { waitUntil: "networkidle2" });
+
+    const html = await page.content();
+    await browser.close();
+
+    const $ = cheerio.load(html);
+
+    const element = $(
+      "div[data-v-03318cb8]"
+    ).first();
+
+    const title = element
+      .find("h1.pt-3.mb-font-article-title")
+      .first()
+      .text()
+      .trim();
+    const author = element
+      .find(
+        ".main-byline"
+      )
+      .each((i, el) => {
+        $(el).find(".author-social-buttons").remove();
+      })
+      .first()
+      .text()
+      .trim();
+    const dateText = element
+      .find("time[itemprop='datePublished']")
+      .first()
+      .text()
+      .trim();
+    const content = element
+      .find(".story_main p")
+      .each((i, el) => {
+        $(el).find(".ad.offset-computed").remove();
+        $(el).find(".mrect_related_content_holder").remove();
+        $(el).find("#outstream-ad").remove();
+        $(el).find("a").each((j, anchor) => {
+          $(anchor).replaceWith($(anchor).text());
+        });
+      })
+      .map((i, el) => $(el).text())
+      .get()
+      .join("/n")
+      
+    const date = dateText.replace(/Published\s+/, "").replace(/\d{1,2}:\d{2}(am|pm)/i, "").trim();
+
+    const cleanedAuthor = author.startsWith("By") ? author.slice(3).trim() : author;
+
+    const article = {
+      title,
+      // author: cleanedAuthor,
+      // date,
+      // content
+    };
+
+    addToCache(article, cacheFilePath);
+    res.json(article);
+
+  } catch (error) {
+    console.error("Error during scraping:", error);
+    res.status(500).json({ error: "Failed to scrape the page" });
+  }
+};
+
+const GetCacheData = (req, res) => {
+  const cacheFilePath = path.join(__dirname, "../cache/data", "mb.json");
+
+  try {
+    const cache = loadCache(cacheFilePath);
     res.json(cache);
   } catch (error) {
-    console.error("Error loading cached data:", error);
     res.status(500).json({ error: "Failed to load cached data" });
+  }
+};
+
+const GetCacheFile = (req, res) => {
+  const { url } = req.body;
+
+  if (!url) {
+    return res.status(400).json({ error: "URL is required" });
+  }
+
+  const filePath = path.join(
+    __dirname,
+    "../cache/pages/manila-bulletin",
+    extractFileNameFromUrl(url)
+  );
+
+  if (fs.existsSync(filePath)) {
+    try {
+      const fileContent = fs.readFileSync(filePath, "utf8");
+      res.send(fileContent);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to read the cached file" });
+    }
+  } else {
+    res.status(404).json({ error: "Cached file not found" });
   }
 };
 
 module.exports = {
   ScrapeWhole,
+  ScrapePage,
   GetCacheData,
+  GetCacheFile
 };
