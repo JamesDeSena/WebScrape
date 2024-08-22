@@ -14,7 +14,7 @@ const GMA = () => {
     useEffect(() => {
         const fetchArticles = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/gma/get');
+                const response = await axios.get('http://localhost:8080/api/gma/get-data');
                 const sortedArticles = response.data.reverse();
                 setArticles(sortedArticles);
             } catch (error) {

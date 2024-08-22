@@ -5,7 +5,7 @@ import axios from "axios";
 import "../main.css";
 import { ToastContainer } from "react-toastify";
 
-const Rappler = () => {
+const RAPPLER = () => {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
     const [lastRetrieved, setLastRetrieved] = useState(new Date());
@@ -14,7 +14,7 @@ const Rappler = () => {
     useEffect(() => {
         const fetchArticles = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/rp/get');
+                const response = await axios.get('http://localhost:8080/api/rp/get-data');
                 const sortedArticles = response.data.reverse();
                 setArticles(sortedArticles);
             } catch (error) {
@@ -68,4 +68,4 @@ const Rappler = () => {
     );
 };
 
-export default Rappler;
+export default RAPPLER;

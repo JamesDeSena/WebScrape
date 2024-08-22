@@ -237,7 +237,7 @@ const ScrapePage = async (req, res) => {
 };
 
 const GetCacheData = (req, res) => {
-  const cacheFilePath = path.join(__dirname, "../cache/data", "gma.json");
+  const cacheFilePath = path.join(__dirname, "../cache/data", "rp.json");
 
   try {
     const cache = loadCache(cacheFilePath);
