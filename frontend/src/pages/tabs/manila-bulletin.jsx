@@ -11,8 +11,8 @@ const MBulletin = () => {
         const fetchArticles = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/mb/get');
-                setArticles(response.data);
-                setArticles(response.data.reverse());
+                const sortedArticles = response.data.reverse();
+                setArticles(sortedArticles);
             } catch (error) {
                 console.error("Error fetching articles:", error);
             } finally {
@@ -29,7 +29,6 @@ const MBulletin = () => {
             <p className="ret">LAST RETRIEVED: 2 MINS. AGO</p>
             <div className="big">
                 <div className="articlecont">
-                    {/* max of 10 articles per 1 page */}
                     {loading ? (
                         <p>Loading...</p>
                     ) : (
@@ -41,7 +40,7 @@ const MBulletin = () => {
                                     </a>
                                     <p>{article.articleUrl}</p>
                                     <div className="contents">
-                                        <p>Date: {article.date}</p>
+                                        <p>Date: {article.time}</p>
                                     </div>
                                 </div>
                             </div>

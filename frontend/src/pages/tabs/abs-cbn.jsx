@@ -11,8 +11,9 @@ const ABSCBN = () => {
         const fetchArticles = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/abs/get');
-                const sortedArticles = response.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+                const sortedArticles = response.data.reverse();
                 setArticles(sortedArticles);
+
             } catch (error) {
                 console.error("Error fetching articles:", error);
             } finally {
@@ -26,7 +27,7 @@ const ABSCBN = () => {
     return (
         <div className="land">
             <ToastContainer />
-            <p className="ret">LAST RETRIEVED: 2 MINS. AGO</p>
+            <p className="ret">LAST RETRIEVED:</p>
             <div className="big">
                 <div className="articlecont">
                     {loading ? (
