@@ -3,8 +3,8 @@ const cheerio = require("cheerio");
 const fs = require("fs");
 const path = require("path");
 
-const cacheFilePath = path.join(__dirname, "../cache", "bw.json");
-const maxCacheSize = 30;
+const cacheFilePath = path.join(__dirname, "../cache/data", "bw.json");
+const maxCacheSize = 50;
 
 function ensureDirectoryExists(filePath) {
   const dir = path.dirname(filePath);

@@ -3,10 +3,14 @@ const router = express.Router();
 
 const { 
   ScrapeWhole,
-  GetCacheData
+  ScrapePage,
+  GetCacheData,
+  GetCacheFile
 } = require('../controllers/ABSCBNScraper');
 
 router.post('/', ScrapeWhole);
-router.get('/get', GetCacheData);
+router.post('/page', ScrapePage);
+router.get('/get-data', GetCacheData);
+router.get('/get-page', GetCacheFile);
 
 module.exports = router;
