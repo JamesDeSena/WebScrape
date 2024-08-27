@@ -45,7 +45,6 @@ const GMA = () => {
             <p className="ret">LAST RETRIEVED: {minutesAgo} minutes ago</p>
             <div className="big">
                 <div className="articlecont">
-                    {/* max of 10 articles per 1 page */}
                     {loading ? (
                         <p>Loading...</p>
                     ) : (
