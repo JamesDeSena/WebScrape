@@ -10,18 +10,18 @@ const LandingPage = () => {
     useEffect(() => {
         const fetchArticles = async () => {
             try {
-                const sources = [
-                    'abs',
-                    'gma',
-                    'bw',
-                    'mb',
-                    'mt',
-                    'ps',
-                    'rp'
-                ];
-                
-                const requests = sources.map(source =>
-                    axios.get(`http://localhost:8080/api/${source}/get`)
+                const sources = {
+                    abs: 'get-data',
+                    gma: 'get-data',
+                    bw: 'get',
+                    mb: 'get-data',
+                    mt: 'get',
+                    ps: 'get',
+                    rp: 'get-data'
+                };
+
+                const requests = Object.entries(sources).map(([source, endpoint]) =>
+                    axios.get(`http://localhost:8080/api/${source}/${endpoint}`)
                 );
 
                 const responses = await Promise.all(requests);
@@ -49,7 +49,6 @@ const LandingPage = () => {
             <p className="ret">LAST RETRIEVED: {loading ? 'Loading...' : 'Updated'}</p>
             <div className="big">
                 <div className="articlecont">
-                    {/* max of 10 articles per page */}
                     {loading ? (
                         <p>Loading...</p>
                     ) : (
