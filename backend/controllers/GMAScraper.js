@@ -156,9 +156,7 @@ const ScrapePage = async (req, res) => {
 
     const $ = cheerio.load(html);
 
-    const element = $(
-      ".upper_article"
-    ).first();
+    const element = $(".upper_article").first();
 
     const title = element
       .find("h1.story_links")
@@ -166,9 +164,7 @@ const ScrapePage = async (req, res) => {
       .text()
       .trim();
     const author = element
-      .find(
-        ".main-byline"
-      )
+      .find(".main-byline")
       .each((i, el) => {
         $(el).find(".author-social-buttons").remove();
       })
@@ -192,10 +188,9 @@ const ScrapePage = async (req, res) => {
       })
       .map((i, el) => $(el).text())
       .get()
-      .join("/n")
+      .join("\n")
       
     const date = dateText.replace(/Published\s+/, "").replace(/\d{1,2}:\d{2}(am|pm)/i, "").trim();
-
     const cleanedAuthor = author.startsWith("By") ? author.slice(3).trim() : author;
 
     const article = {

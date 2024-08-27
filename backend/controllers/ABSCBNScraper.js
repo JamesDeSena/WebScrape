@@ -222,9 +222,7 @@ const ScrapePage = async (req, res) => {
     const html = await page.content();
     const $ = cheerio.load(html);
 
-    const element = $(
-      ".MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-12.MuiGrid-grid-md-9.css-1xd5sck #row0-col0"
-    ).first();
+    const element = $(".MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-12.MuiGrid-grid-md-9.css-1xd5sck #row0-col0").first();
 
     const title = element
       .find("h2.MuiTypography-root.MuiTypography-h2.css-15rcv26")
@@ -232,9 +230,7 @@ const ScrapePage = async (req, res) => {
       .text()
       .trim();
     const author = element
-      .find(
-        ".MuiTypography-root.MuiTypography-h5.MuiTypography-gutterBottom.css-vldcmf"
-      )
+      .find(".MuiTypography-root.MuiTypography-h5.MuiTypography-gutterBottom.css-vldcmf")
       .first()
       .text()
       .trim();
@@ -320,7 +316,7 @@ const ScrapePage = async (req, res) => {
       })
       .map((i, el) => $(el).text()) // Get HTML content
       .get()
-      .join("/n")
+      .join("\n")
 
     const bodyTopPart = bodyTopPartHtml || bodyTopPartFallbackHtml;
     const bodyMiddlePart = bodyMiddlePartHtml || bodyMiddlePartFallbackHtml;

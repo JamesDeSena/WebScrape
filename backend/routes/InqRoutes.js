@@ -6,7 +6,7 @@ const {
   ScrapePage,
   GetCacheData,
   GetCacheFile
-} = require('../controllers/PhilstarScraper.js');
+} = require('../controllers/InquirerScraper');
 
 router.post('/', ScrapeWhole);
 router.post('/page', ScrapePage);

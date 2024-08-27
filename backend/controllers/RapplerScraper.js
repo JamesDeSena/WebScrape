@@ -191,11 +191,11 @@ const ScrapePage = async (req, res) => {
       .attr("datetime");
     
     const dateObject = new Date(dateText);
-
     const date = dateObject.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',  // Full month name
-      day: 'numeric'
+      day: 'numeric',
+      timeZone: 'Asia/Manila'
     });
 
     const content = element

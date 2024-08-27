@@ -71,7 +71,7 @@ const ScrapeWhole = async (req, res) => {
     return res.status(400).json({ error: "URL is required" });
   }
 
-  const cacheFilePath = path.join(__dirname, "../cache/data", "ps.json");
+  const cacheFilePath = path.join(__dirname, "../cache/data", "inq.json");
 
   try {
     const browser = await puppeteer.launch();
@@ -86,21 +86,16 @@ const ScrapeWhole = async (req, res) => {
 
     const articles = [];
 
-    $(".news_column.latest .TilesText.spec").each((i, element) => {
-      const title = $(element).find(".news_title h2 a").text().trim();
-      const articleUrl = $(element).find(".news_title h2 a").attr("href");
-      // const author = $(element).find(".dateOfFeature a").text().trim();
-      const rawDate = $(element).find(".dateOfFeature").text().trim().split("|")[1]?.trim();
-      const formattedDate = convertRelativeDate(rawDate);
-      // const summary = $(element).find(".news_summary a").text().trim();
+    $("#inq-channel-left #ch-ls-box").each((i, element) => {
+      const title = $(element).find("#ch-ls-head h2 a").first().text().trim();
+      const articleUrl = $(element).find("a").first().attr("href");
+      const date = $(element).find("#ch-postdate span").first().text().trim();
 
       if (title && articleUrl && !articleUrl.includes("undefined")) {
         const article = {
           title,
           articleUrl,
-          // author,
-          date: formattedDate,
-          // summary,
+          date,
         };
 
         articles.push(article);
@@ -115,37 +110,6 @@ const ScrapeWhole = async (req, res) => {
   }
 };
 
-const convertRelativeDate = (rawDate) => {
-  if (!rawDate) return rawDate;
-
-  const now = new Date();
-
-  const hoursMatch = rawDate.match(/(\d+)\s+hours?\s+ago/);
-  const daysMatch = rawDate.match(/(\d+)\s+days?\s+ago/);
-
-  if (hoursMatch) {
-    const hoursAgo = parseInt(hoursMatch[1], 10);
-    const pastDate = new Date(now.getTime() - hoursAgo * 60 * 60 * 1000);
-    return formatDate(pastDate);
-  }
-
-  if (daysMatch) {
-    const daysAgo = parseInt(daysMatch[1], 10);
-    const pastDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
-    return formatDate(pastDate);
-  }
-
-  return rawDate;
-};
-
-const formatDate = (date) => {
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
-
 const ScrapePage = async (req, res) => {
   const { url } = req.body;
 
@@ -155,7 +119,7 @@ const ScrapePage = async (req, res) => {
 
   const cacheFilePath = path.join(
     __dirname,
-    "../cache/pages/philstar",
+    "../cache/pages/inquirer",
     extractFileNameFromUrl(url)
   );
 
@@ -170,50 +134,84 @@ const ScrapePage = async (req, res) => {
 
     const $ = cheerio.load(html);
 
-    const element = $("#sports_article_content .padding").first();
+    const element = $("article#article_level_wrap").first();
 
     const title = element
-      .find(".article__title h1")
+      .find("#art-head-group h1.entry-title")
       .first()
       .text()
       .trim();
+
     const author = element
-      .find(".article__credits-author-pub")
-      .each((i, el) => {
-        $(el).find("#pub-dis").remove();
-        $(el).find("a").each((j, anchor) => {
-          $(anchor).replaceWith($(anchor).text());
-        });
-      })
+      .find("#byline_share #art_author a")
+      .first()
+      .text()
+      .trim()
+      .replace(/@\s*$/, "");
+
+    const dateText = element
+      .find("#art_plat")
+      .first()
+      .text()
+      .trim();
+
+    const clean = author.replace(/\s*@.*$/, "");
+
+    const dateParts = dateText.split(' / ').pop();
+    const dateMatch = dateParts.match(/([A-Za-z]+ \d{2}, \d{4})/);
+    const formattedDate = dateMatch ? dateMatch[0] : "";
+
+    // const content = element
+    //   .find("#article_content.article_align p")
+    //   .each((i, el) => {
+    //     $(el).find(".wp-caption.aligncenter").remove();
+    //     $(el).find(".wp-caption-text").remove();
+    //     $(el).find("#billboard_article").remove();
+    //     $(el).find("#teads_divtag2").remove();
+    //     $(el).find(".modal-body.nofbia").remove();
+    //     $(el).find("#nl_article_content.sib-form").remove();
+    //     $(el).find("#rn-2023").remove();
+    //     $(el).find("#lsmr-latest").remove();
+    //     $(el).find("#lsmr-mostread").remove();
+    //     $(el).find(".view-comments").remove();
+    //     // $(el).filter((i, el) => {
+    //     //   const html = $(el).html().trim();
+    //     //   return html.startsWith('<strong>READ:') && html.endsWith('</strong></p>');
+    //     // }).remove();
+    //   })
+    //   .map((i, el) => $(el).text())
+    //   .get()
+    //   .join("/n");
+
+    element
+    .find("#article_content.article_align p")
+    .filter((i, el) => {
+      const html = $(el).html().trim();
+      return html.startsWith('<strong>READ:') && html.endsWith('</strong></p>');
+    })
+    .remove();
+
+    const content = element
+      .find("#article_content.article_align p")
+      .filter((i, el) => !$(el).hasClass("wp-caption aligncenter"))
+      .filter((i, el) => !$(el).hasClass("wp-caption-text"))
+      .filter((i, el) => $(el).attr("id") !== "billboard_article")
+      .filter((i, el) => $(el).attr("id") !== "teads_divtag2")
+      .filter((i, el) => !$(el).hasClass("modal-body nofbia"))
+      .filter((i, el) => $(el).attr("id") !== "nl_article_content")
+      .filter((i, el) => $(el).attr("id") !== "rn-2023")
+      .filter((i, el) => $(el).attr("id") !== "lsmr-latest")
+      .filter((i, el) => $(el).attr("id") !== "lsmr-mostread")
+      .filter((i, el) => !$(el).hasClass("view-comments"))
       .map((i, el) => $(el).text())
       .get()
       .join("");
-    const dateText = element
-      .find(".article__date-published")
-      .first()
-      .text()
-      .trim();
-
-    const formattedDate = dateText.split("|")[0].trim();
-
-    const content = element
-      .find("#sports_article_writeup.article__writeup p")
-      .each((i, el) => {
-        $(el).find("#inserted_instream").remove();
-        $(el).find("#inserted_mrec").remove();
-        $(el).find("#article_leaderboard").remove();
-        $(el).find(".clear").remove();
-        $(el).find(".facebook-philstar-embed").remove();
-      })
-      .map((i, el) => $(el).text())
-      .get()
-      .join("\n");
 
     const article = {
       title,
-      author,
+      author: clean,
       date: formattedDate,
-      content
+      content,
     };
 
     addToCache(article, cacheFilePath);
@@ -225,7 +223,7 @@ const ScrapePage = async (req, res) => {
 };
 
 const GetCacheData = (req, res) => {
-  const cacheFilePath = path.join(__dirname, "../cache/data", "ps.json");
+  const cacheFilePath = path.join(__dirname, "../cache/data", "inq.json");
 
   try {
     const cache = loadCache(cacheFilePath);
@@ -244,7 +242,7 @@ const GetCacheFile = (req, res) => {
 
   const filePath = path.join(
     __dirname,
-    "../cache/pages/philstar",
+    "../cache/pages/inquirer",
     extractFileNameFromUrl(url)
   );
 

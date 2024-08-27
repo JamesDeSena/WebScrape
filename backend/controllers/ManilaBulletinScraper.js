@@ -43,9 +43,9 @@ function addToCache(newData, cacheFilePath) {
   );
 
   if (!isDuplicate) {
-    cache.unshift(newData); 
+    cache.unshift(newData);
     if (cache.length > maxCacheSize) {
-      cache.pop(); 
+      cache.pop();
     }
     saveCache(cache, cacheFilePath);
   }
@@ -133,7 +133,7 @@ const ScrapeWhole = async (req, res) => {
           const article = {
             title,
             articleUrl,
-            time: parseRelativeTime(time),
+            date: parseRelativeTime(time),
           };
 
           articles.push(article);
@@ -163,7 +163,6 @@ const ScrapePage = async (req, res) => {
   );
 
   try {
-
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
@@ -174,9 +173,7 @@ const ScrapePage = async (req, res) => {
 
     const $ = cheerio.load(html);
 
-    const element = $(
-      "div[data-v-03318cb8]"
-    ).first();
+    const element = $("div[data-v-03318cb8]").first();
 
     const title = element
       .find("h1.pt-3.mb-font-article-title")
@@ -184,48 +181,41 @@ const ScrapePage = async (req, res) => {
       .text()
       .trim();
     const author = element
-      .find(
-        ".main-byline"
-      )
-      .each((i, el) => {
-        $(el).find(".author-social-buttons").remove();
-      })
+      .find("span[data-v-03318cb8].pb-0")
       .first()
       .text()
       .trim();
     const dateText = element
-      .find("time[itemprop='datePublished']")
+      .find("span[data-v-03318cb8].mb-font-article-date")
       .first()
       .text()
       .trim();
+
+    const dateObj = new Date(dateText);
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    const formattedDate = dateObj.toLocaleDateString("en-US", options);
+
     const content = element
-      .find(".story_main p")
+      .find("div[data-v-03318cb8].pt-8.custom-article-body.mb-font-article-body p")
       .each((i, el) => {
-        $(el).find(".ad.offset-computed").remove();
-        $(el).find(".mrect_related_content_holder").remove();
-        $(el).find("#outstream-ad").remove();
-        $(el).find("a").each((j, anchor) => {
-          $(anchor).replaceWith($(anchor).text());
-        });
+        $(el).find("div[data-v-03318cb8].pt-3.pb-3").remove();
+        $(el).find("img").remove();
+        $(el).find("figure").remove();
       })
       .map((i, el) => $(el).text())
       .get()
-      .join("/n")
-      
-    const date = dateText.replace(/Published\s+/, "").replace(/\d{1,2}:\d{2}(am|pm)/i, "").trim();
-
-    const cleanedAuthor = author.startsWith("By") ? author.slice(3).trim() : author;
+      .join("\n")
+      .replace(/ADVERTISEMENT/g, "");
 
     const article = {
       title,
-      // author: cleanedAuthor,
-      // date,
-      // content
+      author,
+      date: formattedDate,
+      content
     };
 
     addToCache(article, cacheFilePath);
     res.json(article);
-
   } catch (error) {
     console.error("Error during scraping:", error);
     res.status(500).json({ error: "Failed to scrape the page" });
@@ -272,5 +262,5 @@ module.exports = {
   ScrapeWhole,
   ScrapePage,
   GetCacheData,
-  GetCacheFile
+  GetCacheFile,
 };
