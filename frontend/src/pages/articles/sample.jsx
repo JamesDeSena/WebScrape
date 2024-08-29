@@ -1,5 +1,6 @@
-import React from "react";
+import{React, useEffect, useState} from "react";
 import { FaCopy } from "react-icons/fa6";
+
 
 const Article = () => {
     // Function to copy content to clipboard

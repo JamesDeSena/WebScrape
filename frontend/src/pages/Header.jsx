@@ -58,12 +58,12 @@ const Header = () => {
                     >
                         RAPPLER
                     </button>
-                    {/* <button 
+                    <button 
                         className={activeButton === 'INQUIRER' ? 'active' : ''}
                         onClick={() => handleNavigation("/inquirer", 'INQUIRER')}
                     >
                         INQUIRER
-                    </button> */}
+                    </button>
                     <button 
                         className={activeButton === 'MANILA BULLETIN' ? 'active' : ''}
                         onClick={() => handleNavigation("/manila-bulletin", 'MANILA BULLETIN')}

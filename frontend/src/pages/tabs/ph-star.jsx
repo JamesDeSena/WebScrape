@@ -14,7 +14,7 @@ const PHStar = () => {
     useEffect(() => {
         const fetchArticles = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/ps/get');
+                const response = await axios.get('http://localhost:8080/api/ps/get-data');
                 const sortedArticles = response.data.reverse();
                 setArticles(sortedArticles);
             } catch (error) {
