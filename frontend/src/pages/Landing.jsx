@@ -11,23 +11,29 @@ const LandingPage = () => {
         const fetchArticles = async () => {
             try {
                 const sources = {
-                    abs: 'get-data',
-                    gma: 'get-data',
-                    bw: 'get',
-                    mb: 'get-data',
-                    mt: 'get',
-                    ps: 'get',
-                    rp: 'get-data'
+                    abs: 'ABS-CBN',
+                    gma: 'GMA',
+                    bw: 'Business World',
+                    mb: 'Manila Bulletin',
+                    mt: 'Manila Times',
+                    ps: 'Philstar',
+                    rp: 'Rappler',
+                    inq: 'Inquirer'
                 };
 
-                const requests = Object.entries(sources).map(([source, endpoint]) =>
-                    axios.get(`http://localhost:8080/api/${source}/${endpoint}`)
+                const requests = Object.entries(sources).map(([source, name]) =>
+                    axios.get(`http://localhost:8080/api/${source}/get-data`).then(response => ({
+                        articles: response.data,
+                        source: name
+                    }))
                 );
 
                 const responses = await Promise.all(requests);
 
-                // Combine all articles into a single array
-                const allArticles = responses.flatMap(response => response.data);
+                // Combine all articles into a single array with their sources
+                const allArticles = responses.flatMap(({ articles, source }) =>
+                    articles.map(article => ({ ...article, source }))
+                );
 
                 // Sort articles by date (newest first)
                 const sortedArticles = allArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -57,6 +63,7 @@ const LandingPage = () => {
                                 <div className="content">
                                     <a href={article.articleUrl} className="title">
                                         <h2>{article.title}</h2>
+                                        <span className="news">{article.source}</span> {/* Display the news source */}
                                     </a>
                                     <p>{article.articleUrl}</p>
                                     <div className="contents">
