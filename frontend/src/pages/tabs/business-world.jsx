@@ -12,7 +12,7 @@ const BWorld = () => {
     useEffect(() => {
         const fetchArticles = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/bw/get');
+                const response = await axios.get('http://localhost:8080/api/bw/get-data');
                 const sortedArticles = response.data.reverse();
                 setArticles(sortedArticles);
             } catch (error) {

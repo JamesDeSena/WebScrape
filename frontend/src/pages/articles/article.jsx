@@ -1,5 +1,6 @@
-import React from "react";
+import{React, useEffect, useState} from "react";
 import { FaCopy } from "react-icons/fa6";
+
 
 const Article = () => {
     // Function to copy content to clipboard
@@ -33,8 +34,10 @@ const Article = () => {
                         <h2 className="title">
                             PNP eyes Quiboloy arrest inside Davao compound without violence
                         </h2>
-
                         <hr />
+                        <p className="dandr">
+                            Date: August 29, 2024 | Retrieved: 5 secs. ago
+                        </p>
                         <p className="content" dangerouslySetInnerHTML={{
                             __html: formatTextWithLineBreaks(
                                 `A Philippine National Police spokesperson admitted Friday arresting controversial televangelist Apollo Quiboloy inside his Kingdom of Jesus Christ compound in Davao City is not a simple matter.

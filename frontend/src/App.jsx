@@ -14,7 +14,7 @@ import PHStar from './pages/tabs/ph-star.jsx'
 import Rappler from './pages/tabs/rappler.jsx'
 import TV5 from './pages/tabs/tv-5.jsx'
 
-import Article from './pages/articles/sample.jsx'
+import Article from './pages/articles/article.jsx'
 
 function App() {
   return (

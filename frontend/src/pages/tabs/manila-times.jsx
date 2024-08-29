@@ -14,7 +14,7 @@ const MTimes = () => {
     useEffect(() => {
         const fetchArticles = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/mt/get');
+                const response = await axios.get('http://localhost:8080/api/mt/get-data');
                 const sortedArticles = response.data.reverse();
                 setArticles(sortedArticles);
             } catch (error) {
