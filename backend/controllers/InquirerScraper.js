@@ -161,51 +161,33 @@ const ScrapePage = async (req, res) => {
     const dateMatch = dateParts.match(/([A-Za-z]+ \d{2}, \d{4})/);
     const formattedDate = dateMatch ? dateMatch[0] : "";
 
-    // const content = element
-    //   .find("#article_content.article_align p")
-    //   .each((i, el) => {
-    //     $(el).find(".wp-caption.aligncenter").remove();
-    //     $(el).find(".wp-caption-text").remove();
-    //     $(el).find("#billboard_article").remove();
-    //     $(el).find("#teads_divtag2").remove();
-    //     $(el).find(".modal-body.nofbia").remove();
-    //     $(el).find("#nl_article_content.sib-form").remove();
-    //     $(el).find("#rn-2023").remove();
-    //     $(el).find("#lsmr-latest").remove();
-    //     $(el).find("#lsmr-mostread").remove();
-    //     $(el).find(".view-comments").remove();
-    //     // $(el).filter((i, el) => {
-    //     //   const html = $(el).html().trim();
-    //     //   return html.startsWith('<strong>READ:') && html.endsWith('</strong></p>');
-    //     // }).remove();
-    //   })
-    //   .map((i, el) => $(el).text())
-    //   .get()
-    //   .join("/n");
-
-    element
-    .find("#article_content.article_align p")
-    .filter((i, el) => {
-      const html = $(el).html().trim();
-      return html.startsWith('<strong>READ:') && html.endsWith('</strong></p>');
-    })
-    .remove();
-
     const content = element
       .find("#article_content.article_align p")
-      .filter((i, el) => !$(el).hasClass("wp-caption aligncenter"))
-      .filter((i, el) => !$(el).hasClass("wp-caption-text"))
-      .filter((i, el) => $(el).attr("id") !== "billboard_article")
-      .filter((i, el) => $(el).attr("id") !== "teads_divtag2")
-      .filter((i, el) => !$(el).hasClass("modal-body nofbia"))
-      .filter((i, el) => $(el).attr("id") !== "nl_article_content")
-      .filter((i, el) => $(el).attr("id") !== "rn-2023")
-      .filter((i, el) => $(el).attr("id") !== "lsmr-latest")
-      .filter((i, el) => $(el).attr("id") !== "lsmr-mostread")
-      .filter((i, el) => !$(el).hasClass("view-comments"))
+      .filter((i, el) => {
+        const $el = $(el);
+        const html = $el.text().trim();
+
+        const startsWithRead  = html.startsWith('READ:');
+
+        const hasExcludedClass = 
+          $el.hasClass("wp-caption aligncenter") ||
+          $el.hasClass("wp-caption-text") ||
+          $el.hasClass("modal-body nofbia") ||
+          $el.hasClass("view-comments");
+
+        const hasExcludedId = 
+          $el.attr("id") === "billboard_article" ||
+          $el.attr("id") === "teads_divtag2" ||
+          $el.attr("id") === "nl_article_content" ||
+          $el.attr("id") === "rn-2023" ||
+          $el.attr("id") === "lsmr-latest" ||
+          $el.attr("id") === "lsmr-mostread";
+
+        return !(startsWithRead || hasExcludedClass || hasExcludedId);
+      })
       .map((i, el) => $(el).text())
       .get()
-      .join("");
+      .join("\n");
 
     const article = {
       title,
