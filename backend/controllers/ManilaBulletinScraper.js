@@ -199,7 +199,7 @@ const ScrapePage = async (req, res) => {
         $(el).find("img").remove();
         $(el).find("figure").remove();
       })
-      .map((i, el) => $(el).text())
+      .map((i, el) => $(el).text().trim() + ' ')
       .get()
       .join("\n")
       .replace(/ADVERTISEMENT/g, "");

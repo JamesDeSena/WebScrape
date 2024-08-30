@@ -177,7 +177,7 @@ const ScrapePage = async (req, res) => {
         $(el).find(".article-ad-one.article-ad").remove();
         $(el).find(".fixed-gray-color").remove();
       })
-      .map((i, el) => $(el).text())
+      .map((i, el) => $(el).text().trim() + " ")
       .get()
       .join("\n");
 

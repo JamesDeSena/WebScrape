@@ -16,7 +16,7 @@ const ABSCBN = () => {
     const fetchArticles = async () => {
       try {
         const response = await axios.get('http://localhost:8080/api/abs/get-data');
-        const sortedArticles = response.data.reverse();
+        const sortedArticles = response.data;
         setArticles(sortedArticles);
       } catch (error) {
         console.error("Error fetching articles:", error);

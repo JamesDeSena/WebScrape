@@ -198,33 +198,44 @@ const ScrapePage = async (req, res) => {
       timeZone: "Asia/Manila",
     });
 
-    const content = element
-      .find(".post-single__content.entry-content")
-      .each((i, el) => {
-        $(el).find(".rappler-ad-container").remove();
-        $(el).find(".related-article ").remove();
-        $(el).find("#cx_inline").remove();
-        $(el).find("em").last().remove();
-        $(el)
-          .find(".has-drop-cap")
-          .each((j, p) => {
-            $(p).replaceWith($(p).text());
-          });
-        $(el)
-          .find(".wp-block-heading")
-          .each((j, p) => {
-            $(p).replaceWith($(p).text());
-          });
-        $(el)
-          .find("a")
-          .each((j, anchor) => {
-            $(anchor).replaceWith($(anchor).text());
-          });
-      })
-      .map((i, el) => $(el).text())
-      .get()
-      .map((text) => text.trim())
-      .join("");
+  const content = element
+    .find(".post-single__content.entry-content")
+    .each((i, el) => {
+      $(el).find(".rappler-ad-container").remove();
+      $(el).find(".related-article ").remove();
+      $(el).find("#cx_inline").remove();
+      $(el).find("em").last().remove();
+      $(el).find("strong").filter(function() {
+        return $(this).text().startsWith('-');
+      }).last().remove();
+
+      $(el).find("h5").each((j, h5) => {
+        let text = $(h5).text().trim();
+        if (text && !text.endsWith('.')) {
+          text += '. ';
+        }
+        $(h5).replaceWith(text);
+      });
+
+      $(el).find(".has-drop-cap, .wp-block-heading").each((j, el) => {
+        $(el).replaceWith($(el).text());
+      });
+
+      $(el).find("a").each((j, anchor) => {
+        $(anchor).replaceWith($(anchor).text());
+      });
+
+      $(el).find("p").each((j, p) => {
+        $(p).find("a").each((k, anchor) => {
+          $(anchor).replaceWith($(anchor).text());
+        });
+        $(p).replaceWith($(p).text().trim() + ' ');
+      });
+    })
+    .map((i, el) => $(el).text())
+    .get()
+    .map((text) => text.trim())
+    .join("");
 
     const article = {
       title,

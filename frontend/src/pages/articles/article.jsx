@@ -3,12 +3,12 @@ import { FaCopy } from "react-icons/fa";
 import { AiOutlineTranslation } from "react-icons/ai";
 import { useLocation } from "react-router-dom";
 
-
 const Article = () => {
   const { state } = useLocation();
   const article = state?.articleData;
 
-  // State to manage modal visibility
+  const name = localStorage.getItem('activeButton');
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const copyToClipboard = () => {
@@ -20,17 +20,15 @@ const Article = () => {
     });
   };
 
-  // Convert content with line breaks to HTML with <br />
-  const formatTextWithLineBreaks = (text) => {
-    return text.split('\n').join('<br />');
+  const formatText = (text) => {
+    const withoutStrongTags = text.replace(/<\/?strong>/g, '');
+    return withoutStrongTags.split('\n').join('');
   };
 
-  // Function to open the modal
   const openModal = () => {
     setIsModalOpen(true);
   };
 
-  // Function to close the modal
   const closeModal = () => {
     setIsModalOpen(false);
   };
@@ -41,7 +39,7 @@ const Article = () => {
         <div className="contentsecond">
           <div className="contentsecos">
             <div className="breadcrumb">
-              CATEGORY: ABS-CBN
+              CATEGORY: {name}
             </div>
             <div className="groupbutton">
               <button className="copy" onClick={copyToClipboard}>
@@ -57,9 +55,10 @@ const Article = () => {
             {article ? (
               <>
                 <h2 className="title">{article.title}</h2>
-                <p className="dandr">Date: {article.date} | Retrieved: 5 secs. ago</p>
+                <p className="dandr">Author: {article.author}</p>
+                <p className="dandr">Date: {article.date}</p>
                 <hr />
-                <p className="content" dangerouslySetInnerHTML={{ __html: formatTextWithLineBreaks(article.content) }} />
+                <p className="content" dangerouslySetInnerHTML={{ __html: formatText(article.content) }} />
               </>
             ) : (
               <p>No article data available.</p>

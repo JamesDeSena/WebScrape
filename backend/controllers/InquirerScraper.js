@@ -156,27 +156,37 @@ const ScrapePage = async (req, res) => {
       .find("#article_content.article_align p")
       .filter((i, el) => {
         const $el = $(el);
-        const html = $el.text().trim();
+        const text = $el.text().trim();
 
-        const startsWithRead = html.startsWith("READ:");
+        const isExcludedText =
+          text === "Subscribe to our daily newsletter" ||
+          text ===
+            "By providing an email address. I agree to the Terms of Use and acknowledge that I have read the Privacy Policy.";
 
+        const startsWithRead = text.startsWith("READ:") || text.startsWith("RELATED");
         const hasExcludedClass =
           $el.hasClass("wp-caption aligncenter") ||
           $el.hasClass("wp-caption-text") ||
           $el.hasClass("modal-body nofbia") ||
+          $el.hasClass("sib-form") ||
           $el.hasClass("view-comments");
-
         const hasExcludedId =
           $el.attr("id") === "billboard_article" ||
           $el.attr("id") === "teads_divtag2" ||
           $el.attr("id") === "nl_article_content" ||
+          $el.attr("id") === "sib-form-container-bc" ||
           $el.attr("id") === "rn-2023" ||
           $el.attr("id") === "lsmr-latest" ||
           $el.attr("id") === "lsmr-mostread";
 
-        return !(startsWithRead || hasExcludedClass || hasExcludedId);
+        return !(
+          startsWithRead ||
+          hasExcludedClass ||
+          hasExcludedId ||
+          isExcludedText
+        );
       })
-      .map((i, el) => $(el).text())
+      .map((i, el) => $(el).text().trim() + " ")
       .get()
       .join("\n");
 

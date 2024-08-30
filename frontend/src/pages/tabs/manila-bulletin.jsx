@@ -3,7 +3,6 @@ import axios from "axios";
 import "../main.css";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
 const MBulletin = () => {
   const [articles, setArticles] = useState([]);
@@ -17,7 +16,7 @@ const MBulletin = () => {
     const fetchArticles = async () => {
       try {
         const response = await axios.get('http://localhost:8080/api/mb/get-data');
-        const sortedArticles = response.data.reverse();
+        const sortedArticles = response.data;
         setArticles(sortedArticles);
       } catch (error) {
         console.error("Error fetching articles:", error);
@@ -80,7 +79,7 @@ const MBulletin = () => {
                   </div>
                   <p>{article.articleUrl}</p>
                   <div className="contents">
-                    <p>Date: {article.time}</p>
+                    <p>Date: {article.date}</p>
                   </div>
                 </div>
               </div>
@@ -92,4 +91,4 @@ const MBulletin = () => {
   );
 };
 
-export default ABSCBN;
+export default MBulletin;

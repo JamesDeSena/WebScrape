@@ -3,7 +3,6 @@ import axios from "axios";
 import "../main.css";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 
 const BWorld = () => {
   const [articles, setArticles] = useState([]);
@@ -17,7 +16,7 @@ const BWorld = () => {
     const fetchArticles = async () => {
       try {
         const response = await axios.get('http://localhost:8080/api/bw/get-data');
-        const sortedArticles = response.data.reverse();
+        const sortedArticles = response.data;
         setArticles(sortedArticles);
       } catch (error) {
         console.error("Error fetching articles:", error);
@@ -92,4 +91,4 @@ const BWorld = () => {
   );
 };
 
-export default ABSCBN;
+export default BWorld;

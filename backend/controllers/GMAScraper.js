@@ -167,21 +167,47 @@ const ScrapePage = async (req, res) => {
       .text()
       .trim();
     const content = element
-      .find(".story_main p")
+      .find(".story_main")
       .each((i, el) => {
         $(el).find(".ad.offset-computed").remove();
-        $(el).find(".mrect_related_content_holder").remove();
+        $(el).find("#mrect_related_content_holder").remove();
         $(el).find("#outstream-ad").remove();
-        $(el)
-          .find("a")
-          .each((j, anchor) => {
+    
+        $(el).find("p").each((j, p) => {
+          $(p).find("a").each((k, anchor) => {
             $(anchor).replaceWith($(anchor).text());
           });
+          $(p).replaceWith($(p).text().trim() + ' ');
+        });
+    
+        $(el).find("ul").each((j, ul) => {
+          $(ul).find("a").each((k, anchor) => {
+            $(anchor).replaceWith($(anchor).text());
+          });
+    
+          const items = $(ul).find("li");
+          let lastItemIndex = items.length - 1;
+    
+          items.each((k, li) => {
+            $(li).find("a").each((l, anchor) => {
+              $(anchor).replaceWith($(anchor).text());
+            });
+    
+            let text = $(li).text().trim();
+            if (k === lastItemIndex) {
+              text += '.';
+            } else {
+              text += ',';
+            }
+            $(li).replaceWith(text + ' ');
+          });
+        });
       })
-      .map((i, el) => $(el).text())
+      .map((i, el) => $(el).text().trim())
       .get()
       .join("\n");
-
+    
+ 
     const date = dateText
       .replace(/Published\s+/, "")
       .replace(/\d{1,2}:\d{2}(am|pm)/i, "")

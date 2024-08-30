@@ -162,8 +162,11 @@ const ScrapePage = async (req, res) => {
         $(el)
           .find(".td-a-rec.td-a-rec-id-content_bottom.tdi_3 td_block_template_1")
           .remove();
+        $(el)
+        .find("em")
+        .remove();
       })
-      .map((i, el) => $(el).text())
+      .map((i, el) => $(el).text().trim() + " ")
       .get()
       .join("\n")
       .replace(/ADVERTISEMENT/g, "");

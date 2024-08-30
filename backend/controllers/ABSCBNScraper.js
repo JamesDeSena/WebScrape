@@ -238,85 +238,113 @@ const ScrapePage = async (req, res) => {
       .find('span[itemprop="datePublished"]')
       .attr("content");
 
-    const bodyTopPartHtml = element
-      .find(
-        '.imp-article-0 #bodyTopPart span[style*="color:#000000;background-color:transparent;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;"]'
-      )
-      .each((i, el) => {
-        $(el).find("#isPasted").remove();
-        $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
-        $(el).find("a").remove();
-      })
-      .map((i, el) => $(el).text()) // Get HTML content
-      .get()
-      .join("\n");
+    const replaceBrWithSpace = (text) => {
+      return text.replace(/(\s*<br\s*\/?>\s*)+/gi, " ");
+    };
 
-    const bodyMiddlePartHtml = element
-      .find(
-        '.imp-article-0 #bodyMiddlePart span[style*="color:#000000;background-color:transparent;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;"]'
-      )
-      .each((i, el) => {
-        $(el).find("#isPasted").remove();
-        $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
-        $(el).find("a").remove();
-      })
-      .map((i, el) => $(el).text()) // Get HTML content
-      .get()
-      .join("\n");
+    const bodyTopPartHtml = replaceBrWithSpace(
+      element
+        .find(
+          '.imp-article-0 #bodyTopPart span[style*="color:#000000;background-color:transparent;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;"]'
+        )
+        .each((i, el) => {
+          $(el).find("#isPasted").remove();
+          $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
+          $(el).find("a").remove();
+        })
+        .map((i, el) => $(el).html())
+        .get()
+        .join("\n")
+    );
 
-    const bodyBottomPartHtml = element
-      .find(
-        '.imp-article-0 #bodyBottomPart span[style*="color:#000000;background-color:transparent;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;"]'
-      )
-      .each((i, el) => {
-        $(el).find("#isPasted").remove();
-        $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
-        $(el).find("a").remove();
-        $(el).find("strong").last().remove();
-        $(el)
-          .find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable")
-          .remove();
-      })
-      .map((i, el) => $(el).text()) // Get HTML content
-      .get()
-      .join("\n");
+    const bodyMiddlePartHtml = replaceBrWithSpace(
+      element
+        .find(
+          '.imp-article-0 #bodyMiddlePart span[style*="color:#000000;background-color:transparent;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;"]'
+        )
+        .each((i, el) => {
+          $(el).find("#isPasted").remove();
+          $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
+          $(el).find("a").remove();
+        })
+        .map((i, el) => $(el).html())
+        .get()
+        .join("\n")
+    );
 
-    const bodyTopPartFallbackHtml = element
-      .find(".imp-article-0 #bodyTopPart p")
-      .each((i, el) => {
-        $(el).find("#isPasted").remove();
-        $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
-        $(el).find("a").remove();
-      })
-      .map((i, el) => $(el).text()) // Get HTML content
-      .get()
-      .join("\n");
+    const bodyBottomPartHtml = replaceBrWithSpace(
+      element
+        .find(
+          '.imp-article-0 #bodyBottomPart span[style*="color:#000000;background-color:transparent;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;"]'
+        )
+        .each((i, el) => {
+          $(el).find("#isPasted").remove();
+          $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
+          $(el).find("a").remove();
+          $(el)
+            .find("strong")
+            .filter(function () {
+              return $(this).text().startsWith("-");
+            })
+            .last()
+            .remove();
+          $(el)
+            .find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable")
+            .remove();
+        })
+        .map((i, el) => $(el).html())
+        .get()
+        .join("\n")
+    );
 
-    const bodyMiddlePartFallbackHtml = element
-      .find(".imp-article-0 #bodyMiddlePart p")
-      .each((i, el) => {
-        $(el).find("#isPasted").remove();
-        $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
-        $(el).find("a").remove();
-      })
-      .map((i, el) => $(el).text()) // Get HTML content
-      .get()
-      .join("\n");
+    const bodyTopPartFallbackHtml = replaceBrWithSpace(
+      element
+        .find(".imp-article-0 #bodyTopPart p")
+        .each((i, el) => {
+          $(el).find("#isPasted").remove();
+          $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
+          $(el).find("a").remove();
+        })
+        .map((i, el) => $(el).html())
+        .get()
+        .join("\n")
+    );
 
-    const bodyBottomPartFallbackHtml = element
-      .find(".imp-article-0 #bodyBottomPart p")
-      .each((i, el) => {
-        $(el).find("#isPasted").remove();
-        $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
-        $(el).find("a").remove();
-        $(el).find("strong").last().remove();
-        $(el)
-          .find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable")
-          .remove();
-      })
-      .map((i, el) => $(el).text()) // Get HTML content
-      .get()
-      .join("\n");
+    const bodyMiddlePartFallbackHtml = replaceBrWithSpace(
+      element
+        .find(".imp-article-0 #bodyMiddlePart p")
+        .each((i, el) => {
+          $(el).find("#isPasted").remove();
+          $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
+          $(el).find("a").remove();
+        })
+        .map((i, el) => $(el).html())
+        .get()
+        .join("\n")
+    );
+
+    const bodyBottomPartFallbackHtml = replaceBrWithSpace(
+      element
+        .find(".imp-article-0 #bodyBottomPart p")
+        .each((i, el) => {
+          $(el).find("#isPasted").remove();
+          $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
+          $(el).find("a").remove();
+          $(el)
+            .find("strong")
+            .filter(function () {
+              return $(this).text().startsWith("-");
+            })
+            .last()
+            .remove();
+          $(el)
+            .find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable")
+            .remove();
+        })
+        .map((i, el) => $(el).html())
+        .get()
+        .join("\n")
+    );
 
     const bodyTopPart = bodyTopPartHtml || bodyTopPartFallbackHtml;
     const bodyMiddlePart = bodyMiddlePartHtml || bodyMiddlePartFallbackHtml;
