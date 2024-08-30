@@ -1,8 +1,11 @@
-import{React, useEffect, useState} from "react";
+import React from "react";
 import { FaCopy } from "react-icons/fa6";
-
+import { useLocation } from "react-router-dom";
 
 const Article = () => {
+    const { state } = useLocation();
+    const article = state?.articleData;
+
     // Function to copy content to clipboard
     const copyToClipboard = () => {
         const content = document.getElementById('contentToCopy').innerText;
@@ -13,22 +16,10 @@ const Article = () => {
         });
     };
 
-    // Convert content with line breaks to HTML with <br /> IMPORTATNT
+    // Convert content with line breaks to HTML with <br />
     const formatTextWithLineBreaks = (text) => {
         return text.split('\n').join('<br />');
     };
-    // useEffect(() => {
-    //     const fetchArticles = async () => {
-    //         try {
-    //             const response = await axios.get('http://localhost:8080/api/abs/get-page');
-    //         } catch (error) {
-    //             console.error("Error fetching articles:", error);
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //     fetchArticles();
-    // }, []);
 
     return (
         <div>
@@ -43,38 +34,17 @@ const Article = () => {
                         </button>
                     </div>
                     <div className="contentsec" id="contentToCopy">
-                        <h2 className="title">
-                           {/* { article.title} */} LOREM IPSUM DOLOR SIT AMET
-                        </h2>
-                        <p className="dandr">
-                            Date: August 29, 2024 | Retrieved: 5 secs. ago
-                        </p>
-                        <hr />
-                        {/* IMPORTANT FUNCTION */}
-                        <p className="content" dangerouslySetInnerHTML={{
-                            __html: formatTextWithLineBreaks(
-                                `A Philippine National Police spokesperson admitted Friday arresting controversial televangelist Apollo Quiboloy inside his Kingdom of Jesus Christ compound in Davao City is not a simple matter.
-
-                                Police Brig. Gen. Nicolas Torre III, Police Regional Office (PRO)-Davao region chief, earlier said Quiboloy is still hiding inside the 30-hectare KOJC compound in Barangay Buhangin where he is shielded by KOJC members.
-                                
-                                Quiboloy is accused of sexual abuse and human trafficking and has a P10 million bounty for his arrest.
-                                
-                                Speaking to TeleRadyo Serbisyo, PNP spokesperson Col. Jean Fajardo said the police force is weighing its options on how to arrest Quiboloy after a previous attempt last June 10 led to a scuffle between law enforcers and KOJC members.
-                                
-                                PNP enters Quiboloy compound in Davao City
-                                
-                                “Hindi ganun ka-simple. Kung matatandaan mo, unang pinasok ‘yung KOJC compound sa Davao noong June 10 ay nagkaroon ng tensyon,” she explained.
-                                
-                                She said searching for Quiboloy inside the KOJC compound “could take hours if not days” because of the size of the estate.
-                                
-                                Police have also observed mass movement inside the compound, showing possible movement of KOJC supporters to protect the pastor.
-                                
-                                “It will take hours if not days to really search ‘yung napakalaking compound na ‘yun, kailangang pag-isipan ng maigi. This time around, gusto nating makasiguro na hindi mauulit ‘yung nangyari nung June 10,” she said.
-                                She reiterated the PNP’s appeal to Quiboloy to just surrender peacefully and avoid violence.
-                                The Court of Appeals has also issued a freeze order on Quiboloy’s 10 bank accounts, 7 real properties, 5 motor vehicles and an aircraft.
-                                CA freezes Quiboloy and KOJC bank accounts, properties`
-                            )
-                        }} />
+                        {/* Display article data */}
+                        {article ? (
+                            <>
+                                <h2 className="title">{article.title}</h2>
+                                <p className="dandr">Date: {article.date} | Retrieved: 5 secs. ago</p>
+                                <hr />
+                                <p className="content" dangerouslySetInnerHTML={{ __html: formatTextWithLineBreaks(article.content) }} />
+                            </>
+                        ) : (
+                            <p>No article data available.</p>
+                        )}
                     </div>
                     {/* <div className="contentseco">
                         <button className="prev">&#171; PREVIOUS PAGE</button>
@@ -83,7 +53,7 @@ const Article = () => {
                 </div>
             </div>
         </div>
-    )
+    );
 };
 
 export default Article;
