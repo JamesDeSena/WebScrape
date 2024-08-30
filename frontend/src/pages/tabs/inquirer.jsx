@@ -3,6 +3,7 @@ import axios from "axios";
 import "../main.css";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const MTimes = () => {
   const [articles, setArticles] = useState([]);
@@ -92,4 +93,4 @@ const MTimes = () => {
   );
 };
 
-export default MTimes;
+export default ABSCBN;

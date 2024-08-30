@@ -92,4 +92,4 @@ const PHStar = () => {
   );
 };
 
-export default PHStar;
+export default ABSCBN;

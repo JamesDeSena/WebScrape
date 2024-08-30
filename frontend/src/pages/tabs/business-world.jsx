@@ -3,6 +3,7 @@ import axios from "axios";
 import "../main.css";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const BWorld = () => {
   const [articles, setArticles] = useState([]);
@@ -91,4 +92,4 @@ const BWorld = () => {
   );
 };
 
-export default BWorld;
+export default ABSCBN;

@@ -3,6 +3,7 @@ import axios from "axios";
 import "../main.css";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const RAPPLER = () => {
   const [articles, setArticles] = useState([]);
@@ -92,4 +93,4 @@ const RAPPLER = () => {
   );
 };
 
-export default RAPPLER;
+export default ABSCBN;
