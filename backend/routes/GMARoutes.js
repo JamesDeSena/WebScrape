@@ -11,6 +11,6 @@ const {
 router.post('/', ScrapeWhole);
 router.post('/page', ScrapePage);
 router.get('/get-data', GetCacheData);
-router.get('/get-page', GetCacheFile);
+router.post('/get-page', GetCacheFile);
 
 module.exports = router;

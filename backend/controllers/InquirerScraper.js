@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const fs = require("fs");
 const path = require("path");
+const cron = require("node-cron");
 
 const maxCacheSize = 50;
 
@@ -65,11 +66,7 @@ function extractFileNameFromUrl(url) {
 }
 
 const ScrapeWhole = async (req, res) => {
-  const { url } = req.body;
-
-  if (!url) {
-    return res.status(400).json({ error: "URL is required" });
-  }
+  const url = "https://newsinfo.inquirer.net/category/latest-stories";
 
   const cacheFilePath = path.join(__dirname, "../cache/data", "inq.json");
 
@@ -102,8 +99,6 @@ const ScrapeWhole = async (req, res) => {
         addToCache(article, cacheFilePath);
       }
     });
-
-    res.json(articles);
   } catch (error) {
     console.error("Error scraping the website:", error);
     res.status(500).json({ error: "Failed to scrape the website" });
@@ -149,15 +144,11 @@ const ScrapePage = async (req, res) => {
       .trim()
       .replace(/@\s*$/, "");
 
-    const dateText = element
-      .find("#art_plat")
-      .first()
-      .text()
-      .trim();
+    const dateText = element.find("#art_plat").first().text().trim();
 
     const clean = author.replace(/\s*@.*$/, "");
 
-    const dateParts = dateText.split(' / ').pop();
+    const dateParts = dateText.split(" / ").pop();
     const dateMatch = dateParts.match(/([A-Za-z]+ \d{2}, \d{4})/);
     const formattedDate = dateMatch ? dateMatch[0] : "";
 
@@ -167,15 +158,15 @@ const ScrapePage = async (req, res) => {
         const $el = $(el);
         const html = $el.text().trim();
 
-        const startsWithRead  = html.startsWith('READ:');
+        const startsWithRead = html.startsWith("READ:");
 
-        const hasExcludedClass = 
+        const hasExcludedClass =
           $el.hasClass("wp-caption aligncenter") ||
           $el.hasClass("wp-caption-text") ||
           $el.hasClass("modal-body nofbia") ||
           $el.hasClass("view-comments");
 
-        const hasExcludedId = 
+        const hasExcludedId =
           $el.attr("id") === "billboard_article" ||
           $el.attr("id") === "teads_divtag2" ||
           $el.attr("id") === "nl_article_content" ||
@@ -239,6 +230,8 @@ const GetCacheFile = (req, res) => {
     res.status(404).json({ error: "Cached file not found" });
   }
 };
+
+cron.schedule("0 */8 * * * *", ScrapeWhole);
 
 module.exports = {
   ScrapeWhole,

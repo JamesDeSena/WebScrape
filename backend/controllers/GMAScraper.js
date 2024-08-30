@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const fs = require("fs");
 const path = require("path");
+const cron = require("node-cron");
 
 const maxCacheSize = 50;
 
@@ -43,9 +44,9 @@ function addToCache(newData, cacheFilePath) {
   );
 
   if (!isDuplicate) {
-    cache.unshift(newData); 
+    cache.unshift(newData);
     if (cache.length > maxCacheSize) {
-      cache.pop(); 
+      cache.pop();
     }
     saveCache(cache, cacheFilePath);
   }
@@ -84,11 +85,7 @@ function convertTimeToDate(timeString) {
 }
 
 const ScrapeWhole = async (req, res) => {
-  const { url } = req.body;
-
-  if (!url) {
-    return res.status(400).json({ error: "URL is required" });
-  }
+  const url = "https://www.gmanetwork.com/news/";
 
   const cacheFilePath = path.join(__dirname, "../cache/data", "gma.json");
 
@@ -123,8 +120,6 @@ const ScrapeWhole = async (req, res) => {
         addToCache(article, cacheFilePath);
       }
     });
-
-    res.json(articles);
   } catch (error) {
     console.error("Error scraping the website:", error);
     res.status(500).json({ error: "Failed to scrape the website" });
@@ -145,7 +140,6 @@ const ScrapePage = async (req, res) => {
   );
 
   try {
-
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
@@ -158,11 +152,7 @@ const ScrapePage = async (req, res) => {
 
     const element = $(".upper_article").first();
 
-    const title = element
-      .find("h1.story_links")
-      .first()
-      .text()
-      .trim();
+    const title = element.find("h1.story_links").first().text().trim();
     const author = element
       .find(".main-byline")
       .each((i, el) => {
@@ -182,27 +172,33 @@ const ScrapePage = async (req, res) => {
         $(el).find(".ad.offset-computed").remove();
         $(el).find(".mrect_related_content_holder").remove();
         $(el).find("#outstream-ad").remove();
-        $(el).find("a").each((j, anchor) => {
-          $(anchor).replaceWith($(anchor).text());
-        });
+        $(el)
+          .find("a")
+          .each((j, anchor) => {
+            $(anchor).replaceWith($(anchor).text());
+          });
       })
       .map((i, el) => $(el).text())
       .get()
-      .join("\n")
-      
-    const date = dateText.replace(/Published\s+/, "").replace(/\d{1,2}:\d{2}(am|pm)/i, "").trim();
-    const cleanedAuthor = author.startsWith("By") ? author.slice(3).trim() : author;
+      .join("\n");
+
+    const date = dateText
+      .replace(/Published\s+/, "")
+      .replace(/\d{1,2}:\d{2}(am|pm)/i, "")
+      .trim();
+    const cleanedAuthor = author.startsWith("By")
+      ? author.slice(3).trim()
+      : author;
 
     const article = {
       title,
       author: cleanedAuthor,
       date,
-      content
+      content,
     };
 
     addToCache(article, cacheFilePath);
     res.json(article);
-
   } catch (error) {
     console.error("Error during scraping:", error);
     res.status(500).json({ error: "Failed to scrape the page" });
@@ -245,9 +241,11 @@ const GetCacheFile = (req, res) => {
   }
 };
 
+cron.schedule("0 */7 * * * *", ScrapeWhole);
+
 module.exports = {
   ScrapeWhole,
   ScrapePage,
   GetCacheData,
-  GetCacheFile
+  GetCacheFile,
 };

@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const fs = require("fs");
 const path = require("path");
+const cron = require("node-cron");
 
 const maxCacheSize = 50;
 
@@ -43,9 +44,9 @@ function addToCache(newData, cacheFilePath) {
   );
 
   if (!isDuplicate) {
-    cache.unshift(newData); 
+    cache.unshift(newData);
     if (cache.length > maxCacheSize) {
-      cache.pop(); 
+      cache.pop();
     }
     saveCache(cache, cacheFilePath);
   }
@@ -95,11 +96,7 @@ function formatDate(relativeTimeString) {
 }
 
 const ScrapeWhole = async (req, res) => {
-  const { url } = req.body;
-
-  if (!url) {
-    return res.status(400).json({ error: "URL is required" });
-  }
+  const url = "https://www.rappler.com/latest/";
 
   const cacheFilePath = path.join(__dirname, "../cache/data", "rp.json");
 
@@ -119,7 +116,10 @@ const ScrapeWhole = async (req, res) => {
     $(".archive-article__content").each((i, element) => {
       const title = $(element).find("h2 a").text().trim();
       const articleUrl = $(element).find("h2 a").attr("href");
-      const relativeDate = $(element).find(".archive-article__timeago").text().trim();
+      const relativeDate = $(element)
+        .find(".archive-article__timeago")
+        .text()
+        .trim();
       const date = formatDate(relativeDate);
 
       if (title && articleUrl && !articleUrl.includes("undefined")) {
@@ -133,8 +133,6 @@ const ScrapeWhole = async (req, res) => {
         addToCache(article, cacheFilePath);
       }
     });
-
-    res.json(articles);
   } catch (error) {
     console.error("Error scraping the website:", error);
     res.status(500).json({ error: "Failed to scrape the website" });
@@ -176,26 +174,28 @@ const ScrapePage = async (req, res) => {
     const author = element
       .find(".post-single__header .post-single__authors")
       .each((i, el) => {
-        $(el).find("a").each((j, anchor) => {
-          $(anchor).replaceWith($(anchor).text());
-        });
+        $(el)
+          .find("a")
+          .each((j, anchor) => {
+            $(anchor).replaceWith($(anchor).text());
+          });
       })
       .map((i, el) => $(el).text())
       .get()
-      .join(', ')
+      .join(", ")
       .trim();
 
     const dateText = element
       .find("time.entry-date.published.post__timeago")
       .first()
       .attr("datetime");
-    
+
     const dateObject = new Date(dateText);
-    const date = dateObject.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',  // Full month name
-      day: 'numeric',
-      timeZone: 'Asia/Manila'
+    const date = dateObject.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long", // Full month name
+      day: "numeric",
+      timeZone: "Asia/Manila",
     });
 
     const content = element
@@ -205,20 +205,26 @@ const ScrapePage = async (req, res) => {
         $(el).find(".related-article ").remove();
         $(el).find("#cx_inline").remove();
         $(el).find("em").last().remove();
-        $(el).find(".has-drop-cap").each((j, p) => {    
-          $(p).replaceWith($(p).text());
-        });
-        $(el).find(".wp-block-heading").each((j, p) => {    
-          $(p).replaceWith($(p).text());
-        });
-        $(el).find("a").each((j, anchor) => {    
-          $(anchor).replaceWith($(anchor).text());
-        });
+        $(el)
+          .find(".has-drop-cap")
+          .each((j, p) => {
+            $(p).replaceWith($(p).text());
+          });
+        $(el)
+          .find(".wp-block-heading")
+          .each((j, p) => {
+            $(p).replaceWith($(p).text());
+          });
+        $(el)
+          .find("a")
+          .each((j, anchor) => {
+            $(anchor).replaceWith($(anchor).text());
+          });
       })
       .map((i, el) => $(el).text())
       .get()
-      .map(text => text.trim())
-      .join("")  
+      .map((text) => text.trim())
+      .join("");
 
     const article = {
       title,
@@ -229,7 +235,6 @@ const ScrapePage = async (req, res) => {
 
     addToCache(article, cacheFilePath);
     res.json(article);
-
   } catch (error) {
     console.error("Error during scraping:", error);
     res.status(500).json({ error: "Failed to scrape the page" });
@@ -272,10 +277,11 @@ const GetCacheFile = (req, res) => {
   }
 };
 
+cron.schedule("0 */11 * * * *", ScrapeWhole);
 
 module.exports = {
   ScrapeWhole,
   ScrapePage,
   GetCacheData,
-  GetCacheFile
+  GetCacheFile,
 };

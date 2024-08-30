@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const fs = require("fs");
 const path = require("path");
+const cron = require("node-cron");
 
 const maxCacheSize = 50;
 
@@ -65,11 +66,7 @@ function extractFileNameFromUrl(url) {
 }
 
 const ScrapeWhole = async (req, res) => {
-  const { url } = req.body;
-
-  if (!url) {
-    return res.status(400).json({ error: "URL is required" });
-  }
+  const url = "https://www.bworldonline.com/top-stories/";
 
   const cacheFilePath = path.join(__dirname, "../cache/data", "bw.json");
 
@@ -106,8 +103,6 @@ const ScrapeWhole = async (req, res) => {
         }
       }
     );
-
-    res.json(articles);
   } catch (error) {
     console.error("Error scraping the website:", error);
     res.status(500).json({ error: "Failed to scrape the website" });
@@ -140,11 +135,7 @@ const ScrapePage = async (req, res) => {
 
     const element = $("article").first();
 
-    const title = element
-      .find(".entry-title")
-      .first()
-      .text()
-      .trim();
+    const title = element.find(".entry-title").first().text().trim();
     const author = element
       .find(".td-post-content.td-pb-padding-side b")
       .last()
@@ -157,12 +148,20 @@ const ScrapePage = async (req, res) => {
     const content = element
       .find(".td-post-content.td-pb-padding-side p")
       .each((i, el) => {
-        $(el).find(".addtoany_share_save_container.addtoany_content.addtoany_content_top").remove();
+        $(el)
+          .find(".addtoany_share_save_container.addtoany_content.addtoany_content_top")
+          .remove();
         $(el).find(".td-post-featured-image").remove();
-        $(el).find(".td-a-rec.td-a-rec-id-content_inline.tdi_2.td_block_template_1").remove();
+        $(el)
+          .find( ".td-a-rec.td-a-rec-id-content_inline.tdi_2.td_block_template_1")
+          .remove();
         $(el).find("#div-gpt-ad-AD2").remove();
-        $(el).find(".addtoany_share_save_container.addtoany_content.addtoany_content_bottom").remove();
-        $(el).find(".td-a-rec.td-a-rec-id-content_bottom.tdi_3 td_block_template_1").remove();
+        $(el)
+          .find(".addtoany_share_save_container.addtoany_content.addtoany_content_bottom")
+          .remove();
+        $(el)
+          .find(".td-a-rec.td-a-rec-id-content_bottom.tdi_3 td_block_template_1")
+          .remove();
       })
       .map((i, el) => $(el).text())
       .get()
@@ -170,18 +169,18 @@ const ScrapePage = async (req, res) => {
       .replace(/ADVERTISEMENT/g, "");
 
     const dateObject = new Date(dateText);
-    const date = dateObject.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',  // Full month name
-      day: 'numeric',
-      timeZone: 'Asia/Manila'
+    const date = dateObject.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long", // Full month name
+      day: "numeric",
+      timeZone: "Asia/Manila",
     });
 
     const article = {
       title,
       author,
       date,
-      content
+      content,
     };
 
     addToCache(article, cacheFilePath);
@@ -227,6 +226,8 @@ const GetCacheFile = (req, res) => {
     res.status(404).json({ error: "Cached file not found" });
   }
 };
+
+cron.schedule("0 */6 * * * *", ScrapeWhole);
 
 module.exports = {
   ScrapeWhole,

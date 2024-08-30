@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const fs = require("fs");
 const path = require("path");
+const cron = require("node-cron");
 
 const maxCacheSize = 50;
 
@@ -43,9 +44,9 @@ function addToCache(newData, cacheFilePath) {
   );
 
   if (!isDuplicate) {
-    cache.unshift(newData); 
+    cache.unshift(newData);
     if (cache.length > maxCacheSize) {
-      cache.pop(); 
+      cache.pop();
     }
     saveCache(cache, cacheFilePath);
   }
@@ -96,11 +97,7 @@ function extractFileNameFromUrl(url) {
 const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const ScrapeWhole = async (req, res) => {
-  const { url } = req.body;
-
-  if (!url) {
-    return res.status(400).json({ error: "URL is required" });
-  }
+  const url = "https://news.abs-cbn.com/news";
 
   const cacheFilePath = path.join(__dirname, "../cache/data", "abscbn.json");
 
@@ -165,7 +162,6 @@ const ScrapeWhole = async (req, res) => {
       }
     });
 
-    res.json(articles);
     await browser.close();
   } catch (error) {
     res.status(500).json({ error: "Failed to scrape the website" });
@@ -222,7 +218,9 @@ const ScrapePage = async (req, res) => {
     const html = await page.content();
     const $ = cheerio.load(html);
 
-    const element = $(".MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-12.MuiGrid-grid-md-9.css-1xd5sck #row0-col0").first();
+    const element = $(
+      ".MuiGrid-root.MuiGrid-item.MuiGrid-grid-xs-12.MuiGrid-grid-md-9.css-1xd5sck #row0-col0"
+    ).first();
 
     const title = element
       .find("h2.MuiTypography-root.MuiTypography-h2.css-15rcv26")
@@ -230,7 +228,9 @@ const ScrapePage = async (req, res) => {
       .text()
       .trim();
     const author = element
-      .find(".MuiTypography-root.MuiTypography-h5.MuiTypography-gutterBottom.css-vldcmf")
+      .find(
+        ".MuiTypography-root.MuiTypography-h5.MuiTypography-gutterBottom.css-vldcmf"
+      )
       .first()
       .text()
       .trim();
@@ -249,7 +249,7 @@ const ScrapePage = async (req, res) => {
       })
       .map((i, el) => $(el).text()) // Get HTML content
       .get()
-      .join("/n")
+      .join("\n");
 
     const bodyMiddlePartHtml = element
       .find(
@@ -262,7 +262,7 @@ const ScrapePage = async (req, res) => {
       })
       .map((i, el) => $(el).text()) // Get HTML content
       .get()
-      .join("/n")
+      .join("\n");
 
     const bodyBottomPartHtml = element
       .find(
@@ -279,7 +279,7 @@ const ScrapePage = async (req, res) => {
       })
       .map((i, el) => $(el).text()) // Get HTML content
       .get()
-      .join("/n")
+      .join("\n");
 
     const bodyTopPartFallbackHtml = element
       .find(".imp-article-0 #bodyTopPart p")
@@ -290,7 +290,7 @@ const ScrapePage = async (req, res) => {
       })
       .map((i, el) => $(el).text()) // Get HTML content
       .get()
-      .join("/n")
+      .join("\n");
 
     const bodyMiddlePartFallbackHtml = element
       .find(".imp-article-0 #bodyMiddlePart p")
@@ -301,7 +301,7 @@ const ScrapePage = async (req, res) => {
       })
       .map((i, el) => $(el).text()) // Get HTML content
       .get()
-      .join("/n")
+      .join("\n");
 
     const bodyBottomPartFallbackHtml = element
       .find(".imp-article-0 #bodyBottomPart p")
@@ -316,7 +316,7 @@ const ScrapePage = async (req, res) => {
       })
       .map((i, el) => $(el).text()) // Get HTML content
       .get()
-      .join("\n")
+      .join("\n");
 
     const bodyTopPart = bodyTopPartHtml || bodyTopPartFallbackHtml;
     const bodyMiddlePart = bodyMiddlePartHtml || bodyMiddlePartFallbackHtml;
@@ -393,6 +393,8 @@ const GetCacheFile = (req, res) => {
     res.status(404).json({ error: "Cached file not found" });
   }
 };
+
+cron.schedule("0 */5 * * * *", ScrapeWhole);
 
 module.exports = {
   ScrapeWhole,

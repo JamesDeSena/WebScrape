@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const fs = require("fs");
 const path = require("path");
+const cron = require("node-cron");
 
 const maxCacheSize = 50;
 
@@ -64,57 +65,6 @@ function extractFileNameFromUrl(url) {
   }
 }
 
-const ScrapeWhole = async (req, res) => {
-  const { url } = req.body;
-
-  if (!url) {
-    return res.status(400).json({ error: "URL is required" });
-  }
-
-  const cacheFilePath = path.join(__dirname, "../cache/data", "ps.json");
-
-  try {
-    const browser = await puppeteer.launch();
-    const page = await browser.newPage();
-
-    await page.goto(url, { waitUntil: "networkidle2" });
-
-    const html = await page.content();
-    await browser.close();
-
-    const $ = cheerio.load(html);
-
-    const articles = [];
-
-    $(".news_column.latest .TilesText.spec").each((i, element) => {
-      const title = $(element).find(".news_title h2 a").text().trim();
-      const articleUrl = $(element).find(".news_title h2 a").attr("href");
-      // const author = $(element).find(".dateOfFeature a").text().trim();
-      const rawDate = $(element).find(".dateOfFeature").text().trim().split("|")[1]?.trim();
-      const formattedDate = convertRelativeDate(rawDate);
-      // const summary = $(element).find(".news_summary a").text().trim();
-
-      if (title && articleUrl && !articleUrl.includes("undefined")) {
-        const article = {
-          title,
-          articleUrl,
-          // author,
-          date: formattedDate,
-          // summary,
-        };
-
-        articles.push(article);
-        addToCache(article, cacheFilePath);
-      }
-    });
-
-    res.json(articles);
-  } catch (error) {
-    console.error("Error scraping the website:", error);
-    res.status(500).json({ error: "Failed to scrape the website" });
-  }
-};
-
 const convertRelativeDate = (rawDate) => {
   if (!rawDate) return rawDate;
 
@@ -146,6 +96,56 @@ const formatDate = (date) => {
   });
 };
 
+const ScrapeWhole = async (req, res) => {
+  const url = "https://www.philstar.com/headlines";
+
+  const cacheFilePath = path.join(__dirname, "../cache/data", "ps.json");
+
+  try {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+
+    await page.goto(url, { waitUntil: "networkidle2" });
+
+    const html = await page.content();
+    await browser.close();
+
+    const $ = cheerio.load(html);
+
+    const articles = [];
+
+    $(".news_column.latest .TilesText.spec").each((i, element) => {
+      const title = $(element).find(".news_title h2 a").text().trim();
+      const articleUrl = $(element).find(".news_title h2 a").attr("href");
+      // const author = $(element).find(".dateOfFeature a").text().trim();
+      const rawDate = $(element)
+        .find(".dateOfFeature")
+        .text()
+        .trim()
+        .split("|")[1]
+        ?.trim();
+      const formattedDate = convertRelativeDate(rawDate);
+      // const summary = $(element).find(".news_summary a").text().trim();
+
+      if (title && articleUrl && !articleUrl.includes("undefined")) {
+        const article = {
+          title,
+          articleUrl,
+          // author,
+          date: formattedDate,
+          // summary,
+        };
+
+        articles.push(article);
+        addToCache(article, cacheFilePath);
+      }
+    });
+  } catch (error) {
+    console.error("Error scraping the website:", error);
+    res.status(500).json({ error: "Failed to scrape the website" });
+  }
+};
+
 const ScrapePage = async (req, res) => {
   const { url } = req.body;
 
@@ -172,18 +172,16 @@ const ScrapePage = async (req, res) => {
 
     const element = $("#sports_article_content .padding").first();
 
-    const title = element
-      .find(".article__title h1")
-      .first()
-      .text()
-      .trim();
+    const title = element.find(".article__title h1").first().text().trim();
     const author = element
       .find(".article__credits-author-pub")
       .each((i, el) => {
         $(el).find("#pub-dis").remove();
-        $(el).find("a").each((j, anchor) => {
-          $(anchor).replaceWith($(anchor).text());
-        });
+        $(el)
+          .find("a")
+          .each((j, anchor) => {
+            $(anchor).replaceWith($(anchor).text());
+          });
       })
       .map((i, el) => $(el).text())
       .get()
@@ -213,7 +211,7 @@ const ScrapePage = async (req, res) => {
       title,
       author,
       date: formattedDate,
-      content
+      content,
     };
 
     addToCache(article, cacheFilePath);
@@ -259,6 +257,8 @@ const GetCacheFile = (req, res) => {
     res.status(404).json({ error: "Cached file not found" });
   }
 };
+
+cron.schedule("0 */10 * * * *", ScrapeWhole);
 
 module.exports = {
   ScrapeWhole,

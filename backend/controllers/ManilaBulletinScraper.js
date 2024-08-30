@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const fs = require("fs");
 const path = require("path");
+const cron = require("node-cron");
 
 const maxCacheSize = 50;
 
@@ -91,11 +92,7 @@ function parseRelativeTime(relativeTime) {
 }
 
 const ScrapeWhole = async (req, res) => {
-  const { url } = req.body;
-
-  if (!url) {
-    return res.status(400).json({ error: "URL is required" });
-  }
+  const url = "https://mb.com.ph/category/news";
 
   const cacheFilePath = path.join(__dirname, "../cache/data", "mb.json");
 
@@ -141,8 +138,6 @@ const ScrapeWhole = async (req, res) => {
         }
       }
     );
-
-    res.json(articles);
   } catch (error) {
     console.error("Error scraping the website:", error);
     res.status(500).json({ error: "Failed to scrape the website" });
@@ -196,7 +191,9 @@ const ScrapePage = async (req, res) => {
     const formattedDate = dateObj.toLocaleDateString("en-US", options);
 
     const content = element
-      .find("div[data-v-03318cb8].pt-8.custom-article-body.mb-font-article-body p")
+      .find(
+        "div[data-v-03318cb8].pt-8.custom-article-body.mb-font-article-body p"
+      )
       .each((i, el) => {
         $(el).find("div[data-v-03318cb8].pt-3.pb-3").remove();
         $(el).find("img").remove();
@@ -211,7 +208,7 @@ const ScrapePage = async (req, res) => {
       title,
       author,
       date: formattedDate,
-      content
+      content,
     };
 
     addToCache(article, cacheFilePath);
@@ -257,6 +254,8 @@ const GetCacheFile = (req, res) => {
     res.status(404).json({ error: "Cached file not found" });
   }
 };
+
+cron.schedule("0 */9 * * * *", ScrapeWhole);
 
 module.exports = {
   ScrapeWhole,

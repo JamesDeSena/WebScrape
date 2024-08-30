@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const fs = require("fs");
 const path = require("path");
+const cron = require("node-cron");
 
 const maxCacheSize = 50;
 
@@ -75,11 +76,7 @@ function formatDate(dateString) {
 }
 
 const ScrapeWhole = async (req, res) => {
-  const { url } = req.body;
-
-  if (!url) {
-    return res.status(400).json({ error: "URL is required" });
-  }
+  const url = "https://www.manilatimes.net/news";
 
   const cacheFilePath = path.join(__dirname, "../cache/data", "mt.json");
 
@@ -96,7 +93,7 @@ const ScrapeWhole = async (req, res) => {
 
     const articles = [];
 
-    $(".item-row").each((i, element) => {
+    $(".item-row.item-row-2.flex-row").each((i, element) => {
       const title = $(element).find(".article-title-h4 a").text().trim();
       const articleUrl = $(element).find(".article-title-h4 a").attr("href");
       // const author = $(element).find(".author-name-a a").text().trim();
@@ -114,8 +111,6 @@ const ScrapeWhole = async (req, res) => {
         addToCache(article, cacheFilePath);
       }
     });
-
-    res.json(articles);
   } catch (error) {
     console.error("Error scraping the website:", error);
     res.status(500).json({ error: "Failed to scrape the website" });
@@ -156,9 +151,11 @@ const ScrapePage = async (req, res) => {
     const author = element
       .find(".author-info")
       .each((i, el) => {
-        $(el).find("a").each((j, anchor) => {
-          $(anchor).replaceWith($(anchor).text());
-        });
+        $(el)
+          .find("a")
+          .each((j, anchor) => {
+            $(anchor).replaceWith($(anchor).text());
+          });
       })
       .map((i, el) => $(el).text().trim())
       .get()
@@ -174,7 +171,9 @@ const ScrapePage = async (req, res) => {
         $(el).find(".article-body-ad").remove();
         $(el).find(".article_top_image_widget").remove();
         $(el).find(".article-image-caption.roboto-a").remove();
-        $(el).find(".widget-container.article-embedded-newsletter-form.manila-newsletter-theme.flex-row pos-relative").remove();
+        $(el)
+          .find(".widget-container.article-embedded-newsletter-form.manila-newsletter-theme.flex-row pos-relative")
+          .remove();
         $(el).find(".article-ad-one.article-ad").remove();
         $(el).find(".fixed-gray-color").remove();
       })
@@ -182,13 +181,15 @@ const ScrapePage = async (req, res) => {
       .get()
       .join("\n");
 
-    const cleanedAuthor = author.startsWith("By") ? author.slice(3).trim() : author;
+    const cleanedAuthor = author.startsWith("By")
+      ? author.slice(3).trim()
+      : author;
 
     const article = {
       title,
       author: cleanedAuthor,
       date: dateText,
-      content
+      content,
     };
 
     addToCache(article, cacheFilePath);
@@ -234,6 +235,8 @@ const GetCacheFile = (req, res) => {
     res.status(404).json({ error: "Cached file not found" });
   }
 };
+
+cron.schedule("0 */12 * * * *", ScrapeWhole);
 
 module.exports = {
   ScrapeWhole,
