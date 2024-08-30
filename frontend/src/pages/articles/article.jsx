@@ -1,10 +1,15 @@
-import React from "react";
-import { FaCopy } from "react-icons/fa6";
+import React, { useState } from "react";
+import { FaCopy } from "react-icons/fa";
+import { AiOutlineTranslation } from "react-icons/ai";
 import { useLocation } from "react-router-dom";
+
 
 const Article = () => {
     const { state } = useLocation();
     const article = state?.articleData;
+
+    // State to manage modal visibility
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     // Function to copy content to clipboard
     const copyToClipboard = () => {
@@ -21,6 +26,16 @@ const Article = () => {
         return text.split('\n').join('<br />');
     };
 
+    // Function to open the modal
+    const openModal = () => {
+        setIsModalOpen(true);
+    };
+
+    // Function to close the modal
+    const closeModal = () => {
+        setIsModalOpen(false);
+    };
+
     return (
         <div>
             <div className="contentsbig">
@@ -29,9 +44,14 @@ const Article = () => {
                         <div className="breadcrumb">
                             CATEGORY: ABS-CBN
                         </div>
-                        <button className="copy" onClick={copyToClipboard}>
-                            <FaCopy /> COPY
-                        </button>
+                        <div className="groupbutton">
+                            <button className="copy" onClick={copyToClipboard}>
+                                <FaCopy /> COPY
+                            </button>
+                            <button className="paraphrase" onClick={openModal}>
+                                <AiOutlineTranslation /> PARAPHRASE
+                            </button>
+                        </div>
                     </div>
                     <div className="contentsec" id="contentToCopy">
                         {/* Display article data */}
@@ -46,12 +66,20 @@ const Article = () => {
                             <p>No article data available.</p>
                         )}
                     </div>
-                    {/* <div className="contentseco">
-                        <button className="prev">&#171; PREVIOUS PAGE</button>
-                        <button className="next">NEXT PAGE  &#187;</button>
-                    </div> */}
                 </div>
             </div>
+
+            {/* Modal Component */}
+            {isModalOpen && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <button className="close" onClick={closeModal}>&times;</button>
+                        <h2>You're about to paraphrase the content. </h2>
+                        <p>Click 'Proceed' to continue.</p>
+                        <button className="proceed">PROCEED</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
