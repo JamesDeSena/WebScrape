@@ -18,8 +18,7 @@ const TranslateComponent = () => {
     };
 
     useEffect(() => {
-        // Example input to be translated
-        const inputText = {"inputs": "Меня зовут Вольфганг и я живу в Берлине"};
+        const inputText = {"inputs": "I am amazing"};
         
         query(inputText).then((response) => {
             console.log(JSON.stringify(response));
@@ -28,7 +27,6 @@ const TranslateComponent = () => {
 
     return (
         <div>
-            {/* Render your component's UI here */}
             <p>Translation in progress...</p>
         </div>
     );
