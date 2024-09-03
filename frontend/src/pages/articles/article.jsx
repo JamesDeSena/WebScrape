@@ -11,6 +11,7 @@ const Article = () => {
   const navigate = useNavigate();
   const name = localStorage.getItem('activeButton');
 
+  const [phrase, setPhrase] = useState();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const copyToClipboard = () => {
@@ -40,7 +41,7 @@ const Article = () => {
   const paraphrase = async (e) => {
     try {
       const response = await axios.post('http://localhost:8080/api/paraphrase', { text: content.__html });
-      console.log("paraphrase: ", response.data.paraphrasedText);
+      setPhrase(response.data.paraphrasedText)
     } catch (error) {
       console.error("Error fetching articles:", error);
     }
