@@ -93,7 +93,8 @@ const ParaphraseText = async (req, res) => {
 
   try {
     const paraphrasedText = await paraphraseText(text);
-    res.json({ original: text, paraphrased: paraphrasedText });
+    res.json({ paraphrasedText });
+    // res.json({ original: text, paraphrased: paraphrasedText });
   } catch (error) {
     console.error('Error paraphrasing the text:', error);
     res.status(500).json({ error: 'Failed to paraphrase the text' });
