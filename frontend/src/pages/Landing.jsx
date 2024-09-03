@@ -2,14 +2,19 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./main.css";
 import { ToastContainer } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import loadingGif from "/public/8.gif"
 
 const LandingPage = () => {
     const [articles, setArticles] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [articleLoading, setArticleLoading] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchArticles = async () => {
             try {
+                setLoading(true);
                 const sources = {
                     abs: 'ABS-CBN',
                     gma: 'GMA',
@@ -29,13 +34,10 @@ const LandingPage = () => {
                 );
 
                 const responses = await Promise.all(requests);
-
-                // Combine all articles into a single array with their sources
                 const allArticles = responses.flatMap(({ articles, source }) =>
                     articles.map(article => ({ ...article, source }))
                 );
 
-                // Sort articles by date (newest first)
                 const sortedArticles = allArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
 
                 setArticles(sortedArticles);
@@ -49,6 +51,29 @@ const LandingPage = () => {
         fetchArticles();
     }, []);
 
+    const navigateArticle = async (url) => {
+        setArticleLoading(true); // Start loading for individual article
+        try {
+            const response = await axios.post('http://localhost:8080/api/abs/get-page', { url });
+
+            if (response.status === 200) {
+                const articleData = response.data[0];
+                navigate("/article", { state: { articleData } });
+            }
+        } catch {
+            try {
+                const response = await axios.post('http://localhost:8080/api/abs/page', { url });
+
+                if (response.status === 200) {
+                    const articleData = response.data;
+                    navigate("/article", { state: { articleData } });
+                }
+            } catch (error) {
+                console.error("Error fetching article content:", error.response ? error.response.data : error.message);
+            }
+        }
+    };
+
     return (
         <div className="land">
             <ToastContainer />
@@ -57,14 +82,19 @@ const LandingPage = () => {
                 <div className="articlecont">
                     {loading ? (
                         <p>Loading...</p>
+                    ) : articleLoading ? (
+                        <div className="loader">
+                            <p className="loading-text">Please wait while we fetch the contents...</p>
+                            <img src={loadingGif} alt="Loading..." />
+                        </div>
                     ) : (
                         articles.map((article, index) => (
                             <div className="articles" key={index}>
                                 <div className="content">
-                                    <a href={article.articleUrl} className="title">
+                                    <div onClick={() => navigateArticle(article.articleUrl)} className="title" style={{ cursor: 'pointer' }}>
                                         <h2>{article.title}</h2>
-                                        <span className="news">{article.source}</span> {/* Display the news source */}
-                                    </a>
+                                        <span className="news">{article.source}</span>
+                                    </div>
                                     <p>{article.articleUrl}</p>
                                     <div className="contents">
                                         <p>Date: {article.date}</p>
