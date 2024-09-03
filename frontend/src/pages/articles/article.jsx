@@ -56,9 +56,6 @@ const Article = () => {
             <button className="return" onClick={() => navigate(-1)}>
               <IoReturnUpBackOutline /> RETURN
             </button>
-            <div className="breadcrumb">
-              CATEGORY: {name}
-            </div>
             <div className="groupbutton">
               <button className="copy" onClick={copyToClipboard}>
                 <FaCopy /> COPY
