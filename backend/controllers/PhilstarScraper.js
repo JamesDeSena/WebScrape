@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const cron = require("node-cron");
 
-const maxCacheSize = 50;
+const maxCacheSize = 100;
 
 function ensureDirectoryExists(filePath) {
   const dir = path.dirname(filePath);
@@ -202,6 +202,28 @@ const ScrapePage = async (req, res) => {
         $(el).find("#article_leaderboard").remove();
         $(el).find(".clear").remove();
         $(el).find(".facebook-philstar-embed").remove();
+        $(el).find("ul").each((j, ul) => {
+          $(ul).find("a").each((k, anchor) => {
+            $(anchor).replaceWith($(anchor).text());
+          });
+    
+          const items = $(ul).find("li");
+          let lastItemIndex = items.length - 1;
+    
+          items.each((k, li) => {
+            $(li).find("a").each((l, anchor) => {
+              $(anchor).replaceWith($(anchor).text());
+            });
+    
+            let text = $(li).text().trim();
+            if (k === lastItemIndex) {
+              text += '.';
+            } else {
+              text += ',';
+            }
+            $(li).replaceWith(text + ' ');
+          });
+        });
       })
       .map((i, el) => $(el).text().trim() + " ")
       .get()

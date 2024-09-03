@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const cron = require("node-cron");
 
-const maxCacheSize = 50;
+const maxCacheSize = 100;
 
 function ensureDirectoryExists(filePath) {
   const dir = path.dirname(filePath);
@@ -242,13 +242,46 @@ const ScrapePage = async (req, res) => {
       return text.replace(/(\s*<br\s*\/?>\s*)+/gi, " ");
     };
 
+    const processUlElements = (el) => {
+      $(el)
+        .find("ul")
+        .each((j, ul) => {
+          $(ul)
+            .find("a")
+            .each((k, anchor) => {
+              $(anchor).replaceWith($(anchor).text());
+            });
+
+          const items = $(ul).find("li");
+          let lastItemIndex = items.length - 1;
+
+          items.each((k, li) => {
+            $(li)
+              .find("a")
+              .each((l, anchor) => {
+                $(anchor).replaceWith($(anchor).text());
+              });
+
+            let text = $(li).text().trim();
+            if (k === lastItemIndex) {
+              text += ".";
+            } else {
+              text += ",";
+            }
+            $(li).replaceWith(text + " ");
+          });
+        });
+    };
+
     const bodyTopPartHtml = replaceBrWithSpace(
       element
         .find(
           '.imp-article-0 #bodyTopPart span[style*="color:#000000;background-color:transparent;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;"]'
         )
         .each((i, el) => {
+          processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
         })
@@ -263,7 +296,9 @@ const ScrapePage = async (req, res) => {
           '.imp-article-0 #bodyMiddlePart span[style*="color:#000000;background-color:transparent;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;"]'
         )
         .each((i, el) => {
+          processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
         })
@@ -278,13 +313,15 @@ const ScrapePage = async (req, res) => {
           '.imp-article-0 #bodyBottomPart span[style*="color:#000000;background-color:transparent;text-decoration:none;vertical-align:baseline;white-space:pre;white-space:pre-wrap;"]'
         )
         .each((i, el) => {
+          processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
           $(el)
             .find("strong")
             .filter(function () {
-              return $(this).text().startsWith("-");
+              return $(this).text().startsWith("RELATED");
             })
             .last()
             .remove();
@@ -301,7 +338,9 @@ const ScrapePage = async (req, res) => {
       element
         .find(".imp-article-0 #bodyTopPart p")
         .each((i, el) => {
+          processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
         })
@@ -314,7 +353,9 @@ const ScrapePage = async (req, res) => {
       element
         .find(".imp-article-0 #bodyMiddlePart p")
         .each((i, el) => {
+          processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
         })
@@ -327,13 +368,15 @@ const ScrapePage = async (req, res) => {
       element
         .find(".imp-article-0 #bodyBottomPart p")
         .each((i, el) => {
+          processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
           $(el)
             .find("strong")
             .filter(function () {
-              return $(this).text().startsWith("-");
+              return $(this).text().startsWith("RELATED");
             })
             .last()
             .remove();

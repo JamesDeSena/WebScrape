@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const cron = require("node-cron");
 
-const maxCacheSize = 50;
+const maxCacheSize = 100;
 
 function ensureDirectoryExists(filePath) {
   const dir = path.dirname(filePath);
@@ -149,11 +149,11 @@ const ScrapePage = async (req, res) => {
       .find(".td-post-content.td-pb-padding-side p")
       .each((i, el) => {
         $(el)
-          .find(".addtoany_share_save_container.addtoany_content.addtoany_content_top")
-          .remove();
+          .find(
+            ".addtoany_share_save_container.addtoany_content.addtoany_content_top").remove();
         $(el).find(".td-post-featured-image").remove();
         $(el)
-          .find( ".td-a-rec.td-a-rec-id-content_inline.tdi_2.td_block_template_1")
+          .find(".td-a-rec.td-a-rec-id-content_inline.tdi_2.td_block_template_1")
           .remove();
         $(el).find("#div-gpt-ad-AD2").remove();
         $(el)
@@ -162,9 +162,29 @@ const ScrapePage = async (req, res) => {
         $(el)
           .find(".td-a-rec.td-a-rec-id-content_bottom.tdi_3 td_block_template_1")
           .remove();
-        $(el)
-        .find("em")
-        .remove();
+        $(el).find("em").remove();
+        $(el).find("ul").each((j, ul) => {
+          $(ul).find("a").each((k, anchor) => {
+            $(anchor).replaceWith($(anchor).text());
+          });
+    
+          const items = $(ul).find("li");
+          let lastItemIndex = items.length - 1;
+    
+          items.each((k, li) => {
+            $(li).find("a").each((l, anchor) => {
+              $(anchor).replaceWith($(anchor).text());
+            });
+    
+            let text = $(li).text().trim();
+            if (k === lastItemIndex) {
+              text += '.';
+            } else {
+              text += ',';
+            }
+            $(li).replaceWith(text + ' ');
+          });
+        });
       })
       .map((i, el) => $(el).text().trim() + " ")
       .get()

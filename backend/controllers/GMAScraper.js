@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const cron = require("node-cron");
 
-const maxCacheSize = 50;
+const maxCacheSize = 100;
 
 function ensureDirectoryExists(filePath) {
   const dir = path.dirname(filePath);

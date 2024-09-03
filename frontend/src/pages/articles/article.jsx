@@ -25,8 +25,9 @@ const Article = () => {
 
   const formatText = (text) => {
     const withoutStrongTags = text.replace(/<\/?strong>/g, '');
-    return withoutStrongTags.split('\n').join('');
-  };
+    const withoutUnderlineTags = withoutStrongTags.replace(/<\/?u>/g, '');
+    return withoutUnderlineTags.split('\n').join(' ');
+  };  
 
   const content = { __html: formatText(article.content) };
 
