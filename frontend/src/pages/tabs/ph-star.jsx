@@ -3,7 +3,7 @@ import axios from "axios";
 import "../main.css";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import loadingGif from "/8.gif"; // Ensure the correct path to your gif file
+import loadingGif from "../../assets/8.gif";
 
 const PHStar = () => {
   const [articles, setArticles] = useState([]);
@@ -17,14 +17,14 @@ const PHStar = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        setLoading(true);  // Set loading to true before starting fetch
+        setLoading(true);
         const response = await axios.get('http://localhost:8080/api/ps/get-data');
         const sortedArticles = response.data;
         setArticles(sortedArticles);
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
-        setLoading(false);  // Set loading to false once fetch is complete
+        setLoading(false);
       }
     };
 

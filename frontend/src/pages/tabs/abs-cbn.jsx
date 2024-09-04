@@ -3,7 +3,7 @@ import axios from "axios";
 import "../main.css";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import loadingGif from "/8.gif";
+import loadingGif from "../../assets/8.gif";
 
 const ABSCBN = () => {
   const [articles, setArticles] = useState([]);

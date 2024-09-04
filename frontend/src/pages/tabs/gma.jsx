@@ -3,7 +3,7 @@ import axios from "axios";
 import "../main.css";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import loadingGif from "/8.gif"; // Make sure this path is correct
+import loadingGif from "../../assets/8.gif";
 
 const GMA = () => {
   const [articles, setArticles] = useState([]);
@@ -17,15 +17,14 @@ const GMA = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        setLoading(true); // Start loading
+        setLoading(true);
         const response = await axios.get('http://localhost:8080/api/gma/get-data');
         const sortedArticles = response.data;
         setArticles(sortedArticles);
-        setLastRetrieved(new Date()); // Update last retrieved time
       } catch (error) {
         console.error("Error fetching articles:", error);
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
       }
     };
 
