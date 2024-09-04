@@ -139,7 +139,7 @@ const Article = () => {
                 <p className="content" dangerouslySetInnerHTML={{ __html: formatText(article.content) }} />
                 {(article.paraphrase || phrase) && (
                   <>
-                    <p><strong>Paraphrase</strong></p>
+                    <h3><strong>PARAPHRASED CONTENT:</strong></h3>
                     <p className="content"> {article.paraphrase || phrase} </p>
                   </>
                 )}
