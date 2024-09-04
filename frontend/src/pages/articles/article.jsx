@@ -11,7 +11,7 @@ const Article = () => {
   const article = state?.articleData;
   const navigate = useNavigate();
 
-  const [phrase, setPhrase] = useState('');
+  const [phrase, setPhrase] = useState();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -29,8 +29,9 @@ const Article = () => {
   const formatText = (text) => {
     const withoutStrongTags = text.replace(/<\/?strong>/g, '');
     const withoutUnderlineTags = withoutStrongTags.replace(/<\/?u>/g, '');
-    return withoutUnderlineTags.split('\n').join(' ');
-  };
+    const withoutNbsp = withoutUnderlineTags.replace(/&nbsp;/g, ' ');
+    return withoutNbsp.split('\n').join(' ');
+  };  
 
   const content = { __html: formatText(article.content) };
 
@@ -60,7 +61,7 @@ const Article = () => {
 
   const paraphrase = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/paraphrase', { 
+      const response = await axios.post('http://localhost:8080/api/paraphrase', {
         text: content.__html,
         filePath: article.url
       });
@@ -105,7 +106,13 @@ const Article = () => {
                 <p className="dandr">Author: {article.author}</p>
                 <p className="dandr">Date: {article.date}</p>
                 <hr />
-                <p className="content" dangerouslySetInnerHTML={{ __html: phrase || formatText(article.content) }} />
+                <p className="content" dangerouslySetInnerHTML={{ __html: formatText(article.content) }} />
+                {(article.paraphrase || phrase) && (
+                  <>
+                    <p><strong>Paraphrase</strong></p>
+                    <p className="content"> {article.paraphrase || phrase} </p>
+                  </>
+                )}
               </>
             ) : (
               <p>No article data available.</p>

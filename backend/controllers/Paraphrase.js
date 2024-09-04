@@ -114,7 +114,7 @@ const ParaphraseText = async (req, res) => {
 
     fs.writeFileSync(absolutePath, JSON.stringify(fileContent, null, 2), 'utf-8');
 
-    res.json({ message: 'Text paraphrased and saved to file', filePath: absolutePath });
+    res.json({ paraphrasedText });
   } catch (error) {
     console.error('Error paraphrasing the text:', error);
     res.status(500).json({ error: 'Failed to paraphrase and save the text' });

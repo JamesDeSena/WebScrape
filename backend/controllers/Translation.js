@@ -30,7 +30,7 @@ const TranslateText = async (req, res) => {
 
     fs.writeFileSync(absolutePath, JSON.stringify(fileContent, null, 2), 'utf-8');
 
-    res.json({ message: 'Text translated and saved to file', filePath: absolutePath });
+    res.json({ translatedText });
   } catch (error) {
     console.error('Error translating text:', error);
     res.status(500).json({ error: 'Translation failed.' });
