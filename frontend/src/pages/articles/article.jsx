@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaCopy } from "react-icons/fa";
 import { AiOutlineTranslation } from "react-icons/ai";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -31,7 +31,7 @@ const Article = () => {
     const withoutUnderlineTags = withoutStrongTags.replace(/<\/?u>/g, '');
     const withoutNbsp = withoutUnderlineTags.replace(/&nbsp;/g, ' ');
     return withoutNbsp.split('\n').join(' ');
-  };  
+  };
 
   const content = { __html: formatText(article.content) };
 
@@ -59,6 +59,20 @@ const Article = () => {
     setLoading(false);
   };
 
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const response = await axios.post('http://localhost:8080/api/paraphrase/get', {
+          filePath: article.url
+        });
+        setPhrase(response.data[0].paraphrase);
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      }
+    };
+    fetchArticles();
+  }, []);
+
   const paraphrase = async () => {
     try {
       const response = await axios.post('http://localhost:8080/api/paraphrase', {
@@ -71,7 +85,7 @@ const Article = () => {
     } finally {
       closeModal();
     }
-  };
+  };  
 
   return (
     <div>

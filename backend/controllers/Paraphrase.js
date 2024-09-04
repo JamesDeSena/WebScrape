@@ -121,6 +121,30 @@ const ParaphraseText = async (req, res) => {
   }
 };
 
+const GetFile = (req, res) => {
+  const { filePath } = req.body;
+
+  if (!filePath) {
+    return res.status(400).json({ error: 'File path is required' });
+  }
+
+  const absolutePath = path.resolve(filePath);
+
+  fs.readFile(absolutePath, 'utf-8', (err, data) => {
+    if (err) {
+      return res.status(500).json({ error: 'Failed to read the file' });
+    }
+
+    try {
+      const jsonContent = JSON.parse(data);
+      res.json(jsonContent);
+    } catch (parseError) {
+      res.status(500).json({ error: 'Failed to parse JSON' });
+    }
+  });
+};
+
 module.exports = {
-  ParaphraseText
+  ParaphraseText,
+  GetFile
 };
