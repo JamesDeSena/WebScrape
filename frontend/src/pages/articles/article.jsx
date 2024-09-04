@@ -12,6 +12,7 @@ const Article = () => {
   const navigate = useNavigate();
 
   const [phrase, setPhrase] = useState();
+  const [translated, setTranslated] = useState();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -68,7 +69,8 @@ const Article = () => {
         const response = await axios.post('http://localhost:8080/api/paraphrase/get', {
           filePath: article.url
         });
-        setPhrase(response.data[0].paraphrase);
+        setPhrase(response.data[0].paraphrased);
+        setTranslated(response.data[0].translated);
       } catch (error) {
         console.error("Error fetching articles:", error);
       }
@@ -92,11 +94,13 @@ const Article = () => {
 
   const translate = async () => {
     try {
+      const textToTranslate = article.paraphrased ? article.paraphrased : content.__html;
+
       const response = await axios.post('http://localhost:8080/api/translate', {
-        text: content.__html,
+        text: textToTranslate,
         filePath: article.url
       });
-      setPhrase(response.data.translatedText);
+      setTranslated(response.data.translatedText);
     } catch (error) {
       console.error("Error translating content:", error);
     } finally {
@@ -136,11 +140,18 @@ const Article = () => {
                 <p className="dandr">Author: {article.author}</p>
                 <p className="dandr">Date: {article.date}</p>
                 <hr />
+                <h3><strong>ORIGINAL CONTENT:</strong></h3>
                 <p className="content" dangerouslySetInnerHTML={{ __html: formatText(article.content) }} />
-                {(article.paraphrase || phrase) && (
+                {(article.paraphrased || phrase) && (
                   <>
                     <h3><strong>PARAPHRASED CONTENT:</strong></h3>
                     <p className="content"> {article.paraphrase || phrase} </p>
+                  </>
+                )}
+                {(article.translated || translated) && (
+                  <>
+                    <h3><strong>TRANSLATED CONTENT:</strong></h3>
+                    <p className="content"> {article.translated || translated} </p>
                   </>
                 )}
               </>

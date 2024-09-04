@@ -109,7 +109,7 @@ const ParaphraseText = async (req, res) => {
     }
 
     fileContent.forEach(item => {
-      item.paraphrase = paraphrasedText;
+      item.paraphrased = paraphrasedText;
     });
 
     fs.writeFileSync(absolutePath, JSON.stringify(fileContent, null, 2), 'utf-8');
