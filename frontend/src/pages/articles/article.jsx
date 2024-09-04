@@ -43,9 +43,12 @@ const Article = () => {
     setAction(selectedAction);
     setIsDropdownOpen(false);
 
+    openModal();
+
     if (selectedAction === 'paraphrase') {
-      openModal();
       await paraphrase();
+    } else if (selectedAction === 'translate') {
+      await translate();
     }
   };
 
@@ -71,7 +74,7 @@ const Article = () => {
       }
     };
     fetchArticles();
-  }, []);
+  }, [article.url]);
 
   const paraphrase = async () => {
     try {
@@ -79,13 +82,27 @@ const Article = () => {
         text: content.__html,
         filePath: article.url
       });
-      setPhrase(response.data.paraphrasedText)
+      setPhrase(response.data.paraphrasedText);
     } catch (error) {
       console.error("Error fetching articles:", error);
     } finally {
       closeModal();
     }
-  };  
+  };
+
+  const translate = async () => {
+    try {
+      const response = await axios.post('http://localhost:8080/api/translate', {
+        text: content.__html,
+        filePath: article.url
+      });
+      setPhrase(response.data.translatedText);
+    } catch (error) {
+      console.error("Error translating content:", error);
+    } finally {
+      closeModal();
+    }
+  };
 
   return (
     <div>
@@ -107,7 +124,6 @@ const Article = () => {
                   <div className="dropdown-content">
                     <button onClick={() => handleAction('paraphrase')}>Paraphrase</button>
                     <button onClick={() => handleAction('translate')}>Translate</button>
-                    <button onClick={() => handleAction('paraphraseAndTranslate')}>Paraphrase & Translate</button>
                   </div>
                 )}
               </div>
@@ -140,8 +156,7 @@ const Article = () => {
           <div className="modal-content">
             {loading ? (
               <div className="loading-indicator">
-                <p>Loading... Please wait while we paraphrase the content.</p>
-                {/* You can replace this with a spinner or any loading animation */}
+                <p>Loading... Please wait while we {action === 'paraphrase' ? 'paraphrase' : 'translate'} the content.</p>
               </div>
             ) : null}
           </div>
@@ -152,5 +167,3 @@ const Article = () => {
 };
 
 export default Article;
-
-
