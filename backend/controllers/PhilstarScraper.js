@@ -234,6 +234,7 @@ const ScrapePage = async (req, res) => {
       author,
       date: formattedDate,
       content,
+      url: cacheFilePath
     };
 
     addToCache(article, cacheFilePath);

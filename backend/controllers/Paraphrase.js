@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const fetch = require('node-fetch');
 
 const accessToken = 'rr2mlAjTfyYx10CSu0ctJYZFiQmCXrZ8';
@@ -85,19 +87,30 @@ async function paraphraseText(text) {
 }
 
 const ParaphraseText = async (req, res) => {
-  const { text } = req.body;
+  const { text, filePath } = req.body;
 
   if (!text) {
     return res.status(400).json({ error: 'Text is required' });
   }
 
+  if (!filePath) {
+    return res.status(400).json({ error: 'File path is required' });
+  }
+
   try {
     const paraphrasedText = await paraphraseText(text);
-    res.json({ paraphrasedText });
-    // res.json({ original: text, paraphrased: paraphrasedText });
+    const absolutePath = path.resolve(filePath);
+
+    const fileData = {
+      paraphrase: paraphrasedText
+    };
+
+    fs.writeFileSync(absolutePath, JSON.stringify(fileData, null, 2), 'utf-8');
+    
+    res.json({ message: 'Text paraphrased and saved to file', filePath: absolutePath });
   } catch (error) {
     console.error('Error paraphrasing the text:', error);
-    res.status(500).json({ error: 'Failed to paraphrase the text' });
+    res.status(500).json({ error: 'Failed to paraphrase and save the text' });
   }
 };
 

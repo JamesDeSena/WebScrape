@@ -44,8 +44,11 @@ const Article = () => {
   const paraphrase = async () => {
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8080/api/paraphrase', { text: content.__html });
-      setPhrase(response.data.paraphrasedText);
+      const response = await axios.post('http://localhost:8080/api/paraphrase', { 
+        text: content.__html,
+        filePath: article.url
+      });
+      setPhrase(response.data.paraphrasedText)
     } catch (error) {
       console.error("Error paraphrasing content:", error);
     } finally {

@@ -3,7 +3,7 @@ import axios from "axios";
 import "../main.css";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import loadingGif from "/public/8.gif"; // Ensure the correct path to your gif file
+import loadingGif from "/8.gif"; // Ensure the correct path to your gif file
 
 const BWorld = () => {
   const [articles, setArticles] = useState([]);

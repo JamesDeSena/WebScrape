@@ -3,7 +3,7 @@ import axios from "axios";
 import "../main.css";
 import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import loadingGif from "/public/8.gif"; // Make sure this path is correct
+import loadingGif from "/8.gif"; // Make sure this path is correct
 
 const GMA = () => {
   const [articles, setArticles] = useState([]);
