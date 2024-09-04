@@ -4,7 +4,7 @@ const fs = require("fs");
 const path = require("path");
 const cron = require("node-cron");
 
-const maxCacheSize = 50;
+const maxCacheSize = 100;
 
 function ensureDirectoryExists(filePath) {
   const dir = path.dirname(filePath);
@@ -65,6 +65,10 @@ function extractFileNameFromUrl(url) {
   }
 }
 
+function formatDateString(dateString) {
+  return dateString.replace(/\b0(\d{1}),/, '$1,');
+}
+
 const ScrapeWhole = async (req, res) => {
   const url = "https://newsinfo.inquirer.net/category/latest-stories";
 
@@ -86,7 +90,7 @@ const ScrapeWhole = async (req, res) => {
     $("#inq-channel-left #ch-ls-box").each((i, element) => {
       const title = $(element).find("#ch-ls-head h2 a").first().text().trim();
       const articleUrl = $(element).find("a").first().attr("href");
-      const date = $(element).find("#ch-postdate span").first().text().trim();
+      const date = formatDateString($(element).find("#ch-postdate span").first().text().trim());
 
       if (title && articleUrl && !articleUrl.includes("undefined")) {
         const article = {
@@ -145,12 +149,11 @@ const ScrapePage = async (req, res) => {
       .replace(/@\s*$/, "");
 
     const dateText = element.find("#art_plat").first().text().trim();
-
-    const clean = author.replace(/\s*@.*$/, "");
-
     const dateParts = dateText.split(" / ").pop();
     const dateMatch = dateParts.match(/([A-Za-z]+ \d{2}, \d{4})/);
-    const formattedDate = dateMatch ? dateMatch[0] : "";
+    const formattedDate = dateMatch ? formatDateString(dateMatch[0]) : "";
+
+    const clean = author.replace(/\s*@.*$/, "");
 
     const content = element
       .find("#article_content.article_align p")
@@ -185,6 +188,30 @@ const ScrapePage = async (req, res) => {
           hasExcludedId ||
           isExcludedText
         );
+      })
+      .each((i, el) => {
+        $(el).find("ul").each((j, ul) => {
+          $(ul).find("a").each((k, anchor) => {
+            $(anchor).replaceWith($(anchor).text());
+          });
+
+          const items = $(ul).find("li");
+          let lastItemIndex = items.length - 1;
+
+          items.each((k, li) => {
+            $(li).find("a").each((l, anchor) => {
+              $(anchor).replaceWith($(anchor).text());
+            });
+
+            let text = $(li).text().trim();
+            if (k === lastItemIndex) {
+              text += '.';
+            } else {
+              text += ',';
+            }
+            $(li).replaceWith(text + ' ');
+          });
+        });
       })
       .map((i, el) => $(el).text().trim() + " ")
       .get()
