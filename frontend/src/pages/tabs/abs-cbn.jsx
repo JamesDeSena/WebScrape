@@ -22,7 +22,7 @@ const ABSCBN = () => {
                 const response = await axios.get('http://localhost:8080/api/abs/get-data');
                 const sortedArticles = response.data.reverse();
                 setArticles(sortedArticles);
-                setLastRetrieved(new Date()); // Update last retrieved time
+               // setLastRetrieved(new Date());  Update last retrieved time
             } catch (error) {
                 console.error("Error fetching articles:", error);
             } finally {
