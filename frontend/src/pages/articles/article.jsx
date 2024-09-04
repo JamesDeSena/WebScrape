@@ -145,7 +145,7 @@ const Article = () => {
                 )}
               </>
             ) : (
-              <p>No article data available.</p>
+              <p>Failed to fetch the content.</p>
             )}
           </div>
         </div>
