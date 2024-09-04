@@ -99,14 +99,21 @@ const ParaphraseText = async (req, res) => {
 
   try {
     const paraphrasedText = await paraphraseText(text);
+
     const absolutePath = path.resolve(filePath);
 
-    const fileData = {
-      paraphrase: paraphrasedText
-    };
+    let fileContent = [];
+    if (fs.existsSync(absolutePath)) {
+      const rawData = fs.readFileSync(absolutePath, 'utf-8');
+      fileContent = JSON.parse(rawData);
+    }
 
-    fs.writeFileSync(absolutePath, JSON.stringify(fileData, null, 2), 'utf-8');
-    
+    fileContent.forEach(item => {
+      item.paraphrase = paraphrasedText;
+    });
+
+    fs.writeFileSync(absolutePath, JSON.stringify(fileContent, null, 2), 'utf-8');
+
     res.json({ message: 'Text paraphrased and saved to file', filePath: absolutePath });
   } catch (error) {
     console.error('Error paraphrasing the text:', error);

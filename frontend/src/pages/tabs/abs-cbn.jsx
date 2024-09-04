@@ -19,7 +19,7 @@ const ABSCBN = () => {
             try {
                 setLoading(true); // Start loading for articles
                 const response = await axios.get('http://localhost:8080/api/abs/get-data');
-                const sortedArticles = response.data.reverse();
+                const sortedArticles = response.data;
                 setArticles(sortedArticles);
                // setLastRetrieved(new Date());  Update last retrieved time
             } catch (error) {

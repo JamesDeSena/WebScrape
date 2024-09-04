@@ -53,7 +53,7 @@ const Article = () => {
       console.error("Error paraphrasing content:", error);
     } finally {
       setLoading(false);
-      setIsModalOpen(false);  // Close the modal after paraphrasing
+      setIsModalOpen(false);
     }
   };
 
