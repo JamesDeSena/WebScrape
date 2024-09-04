@@ -190,6 +190,7 @@ const ScrapePage = async (req, res) => {
         );
       })
       .each((i, el) => {
+        $(el).find("img").remove();
         $(el).find("ul").each((j, ul) => {
           $(ul).find("a").each((k, anchor) => {
             $(anchor).replaceWith($(anchor).text());

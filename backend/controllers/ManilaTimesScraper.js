@@ -169,6 +169,7 @@ const ScrapePage = async (req, res) => {
       .find(".article-body-content p")
       .each((i, el) => {
         $(el).find(".article-body-ad").remove();
+        $(el).find("img").remove();
         $(el).find(".article_top_image_widget").remove();
         $(el).find(".article-image-caption.roboto-a").remove();
         $(el)

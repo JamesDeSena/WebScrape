@@ -163,6 +163,7 @@ const ScrapePage = async (req, res) => {
           .find(".td-a-rec.td-a-rec-id-content_bottom.tdi_3 td_block_template_1")
           .remove();
         $(el).find("em").remove();
+        $(el).find("img").remove();
         $(el).find("ul").each((j, ul) => {
           $(ul).find("a").each((k, anchor) => {
             $(anchor).replaceWith($(anchor).text());

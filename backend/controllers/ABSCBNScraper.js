@@ -281,6 +281,7 @@ const ScrapePage = async (req, res) => {
         .each((i, el) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("img").remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -298,6 +299,7 @@ const ScrapePage = async (req, res) => {
         .each((i, el) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("img").remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -315,6 +317,7 @@ const ScrapePage = async (req, res) => {
         .each((i, el) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("img").remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -340,6 +343,7 @@ const ScrapePage = async (req, res) => {
         .each((i, el) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("img").remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -355,6 +359,7 @@ const ScrapePage = async (req, res) => {
         .each((i, el) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("img").remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -370,6 +375,7 @@ const ScrapePage = async (req, res) => {
         .each((i, el) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("img").remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();

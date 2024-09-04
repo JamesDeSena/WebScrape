@@ -172,19 +172,17 @@ const ScrapePage = async (req, res) => {
         $(el).find(".ad.offset-computed").remove();
         $(el).find("#mrect_related_content_holder").remove();
         $(el).find("#outstream-ad").remove();
-    
+        $(el).find("img").remove();
         $(el).find("p").each((j, p) => {
           $(p).find("a").each((k, anchor) => {
             $(anchor).replaceWith($(anchor).text());
           });
           $(p).replaceWith($(p).text().trim() + ' ');
         });
-    
         $(el).find("ul").each((j, ul) => {
           $(ul).find("a").each((k, anchor) => {
             $(anchor).replaceWith($(anchor).text());
           });
-    
           const items = $(ul).find("li");
           let lastItemIndex = items.length - 1;
     

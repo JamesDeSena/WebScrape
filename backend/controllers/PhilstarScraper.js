@@ -199,6 +199,7 @@ const ScrapePage = async (req, res) => {
       .each((i, el) => {
         $(el).find("#inserted_instream").remove();
         $(el).find("#inserted_mrec").remove();
+        $(el).find("img").remove();
         $(el).find("#article_leaderboard").remove();
         $(el).find(".clear").remove();
         $(el).find(".facebook-philstar-embed").remove();
