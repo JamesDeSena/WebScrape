@@ -12,7 +12,7 @@ const Article = () => {
   const navigate = useNavigate();
 
   const [phrase, setPhrase] = useState();
-  const [translated, setTranslated] = useState();
+  const [translatedText, setTranslatedText] = useState(); // New state for translated content
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -100,7 +100,7 @@ const Article = () => {
         text: textToTranslate,
         filePath: article.url
       });
-      setTranslated(response.data.translatedText);
+      setTranslatedText(response.data.translatedText); // Set the translated content
     } catch (error) {
       console.error("Error translating content:", error);
     } finally {
@@ -148,10 +148,10 @@ const Article = () => {
                     <p className="content"> {article.paraphrase || phrase} </p>
                   </>
                 )}
-                {(article.translated || translated) && (
+                {(translatedText) && (  // New section for translated content
                   <>
                     <h3><strong>TRANSLATED CONTENT:</strong></h3>
-                    <p className="content"> {article.translated || translated} </p>
+                    <p className="content"> {translatedText} </p>
                   </>
                 )}
               </>
