@@ -11,8 +11,10 @@ const Article = () => {
   const navigate = useNavigate();
 
   const [phrase, setPhrase] = useState('');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [action, setAction] = useState('');
 
   const copyToClipboard = () => {
     const content = document.getElementById('contentToCopy').innerText;
@@ -31,18 +33,31 @@ const Article = () => {
 
   const content = { __html: formatText(article.content) };
 
-  const openModal = () => {
-    setIsModalOpen(true);
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const closeModal = () => {
-    if (!loading) {
-      setIsModalOpen(false);
+  const handleAction = async (selectedAction) => {
+    setAction(selectedAction);
+    setIsDropdownOpen(false);
+
+    if (selectedAction === 'paraphrase') {
+      openModal();
+      await paraphrase();
     }
   };
 
-  const paraphrase = async () => {
+  const openModal = () => {
+    setIsModalOpen(true);
     setLoading(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setLoading(false);
+  };
+
+  const paraphrase = async () => {
     try {
       const response = await axios.post('http://localhost:8080/api/paraphrase', { 
         text: content.__html,
@@ -50,10 +65,9 @@ const Article = () => {
       });
       setPhrase(response.data.paraphrasedText)
     } catch (error) {
-      console.error("Error paraphrasing content:", error);
+      console.error("Error fetching articles:", error);
     } finally {
-      setLoading(false);
-      setIsModalOpen(false);
+      closeModal();
     }
   };
 
@@ -69,13 +83,21 @@ const Article = () => {
               <button className="copy" onClick={copyToClipboard}>
                 <FaCopy /> COPY
               </button>
-              <button className="paraphrase" onClick={openModal}>
-                <AiOutlineTranslation /> PARAPHRASE
-              </button>
+              <div className="dropdown">
+                <button className="paraphrase" onClick={toggleDropdown}>
+                  <AiOutlineTranslation /> CONTENT OPTIONS
+                </button>
+                {isDropdownOpen && (
+                  <div className="dropdown-content">
+                    <button onClick={() => handleAction('paraphrase')}>Paraphrase</button>
+                    <button onClick={() => handleAction('translate')}>Translate</button>
+                    <button onClick={() => handleAction('paraphraseAndTranslate')}>Paraphrase & Translate</button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
           <div className="contentsec" id="contentToCopy">
-            {/* Display article data */}
             {article ? (
               <>
                 <h2 className="title">{article.title}</h2>
@@ -94,19 +116,12 @@ const Article = () => {
       {isModalOpen && (
         <div className="modal">
           <div className="modal-content">
-            <button className="close" onClick={closeModal}>&times;</button>
             {loading ? (
               <div className="loading-indicator">
-                <p>Paraphrasing in progress, please wait...</p>
+                <p>Loading... Please wait while we paraphrase the content.</p>
                 {/* You can replace this with a spinner or any loading animation */}
               </div>
-            ) : (
-              <>
-                <h2>You're about to paraphrase the content.</h2>
-                <p>Click 'Proceed' to continue.</p>
-                <button className="proceed" onClick={paraphrase}>PROCEED</button>
-              </>
-            )}
+            ) : null}
           </div>
         </div>
       )}
@@ -115,3 +130,5 @@ const Article = () => {
 };
 
 export default Article;
+
+
