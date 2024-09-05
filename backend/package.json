@@ -23,6 +23,6 @@
     "node-cron": "^3.0.3",
     "nodemon": "^3.1.4",
     "open-google-translator": "^1.0.5",
-    "puppeteer": "^23.0.2"
+    "puppeteer": "^23.3.0"
   }
 }
