@@ -18,7 +18,7 @@ const Inquirer = () => {
     const fetchArticles = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:8080/api/inq/get-data');
+        const response = await axios.get('https://webscrape-5iyk.onrender.com/api/inq/get-data');
         const sortedArticles = response.data;
         setArticles(sortedArticles);
       } catch (error) {
@@ -45,7 +45,7 @@ const Inquirer = () => {
   const navigateArticle = async (url) => {
     setArticleLoading(true);
     try {
-      let response = await axios.post('http://localhost:8080/api/inq/get-page', { url });
+      let response = await axios.post('https://webscrape-5iyk.onrender.com/api/inq/get-page', { url });
 
       if (response.status === 200) {
         const articleData = response.data[0];
@@ -54,7 +54,7 @@ const Inquirer = () => {
       }
     } catch {
       try {
-        const response = await axios.post('http://localhost:8080/api/inq/page', { url });
+        const response = await axios.post('https://webscrape-5iyk.onrender.com/api/inq/page', { url });
 
         if (response.status === 200) {
           const articleData = response.data;

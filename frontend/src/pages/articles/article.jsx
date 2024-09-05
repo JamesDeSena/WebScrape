@@ -66,7 +66,7 @@ const Article = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await axios.post('http://localhost:8080/api/paraphrase/get', {
+        const response = await axios.post('https://webscrape-5iyk.onrender.com/api/paraphrase/get', {
           filePath: article.url
         });
         setPhrase(response.data[0].paraphrased);
@@ -80,7 +80,7 @@ const Article = () => {
 
   const paraphrase = async () => {
     try {
-      const response = await axios.post('http://localhost:8080/api/paraphrase', {
+      const response = await axios.post('https://webscrape-5iyk.onrender.com/api/paraphrase', {
         text: content.__html,
         filePath: article.url
       });
@@ -94,12 +94,13 @@ const Article = () => {
 
   const translate = async () => {
     try {
-      const textToTranslate = article.paraphrased ? article.paraphrased : content.__html;
+      const textToTranslate = phrase ? phrase : content.__html;
 
-      const response = await axios.post('http://localhost:8080/api/translate', {
+      const response = await axios.post('https://webscrape-5iyk.onrender.com/api/translate', {
         text: textToTranslate,
         filePath: article.url
       });
+  
       setTranslated(response.data.translatedText);
     } catch (error) {
       console.error("Error translating content:", error);
