@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "postinstall": "npx puppeteer browsers install chrome@128.0.6613.119"
+    "postinstall": "node backend/node_modules/puppeteer/install.mjs"
   },
   "keywords": [],
   "author": "",
