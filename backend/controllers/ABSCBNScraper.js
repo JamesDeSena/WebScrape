@@ -282,6 +282,7 @@ const ScrapePage = async (req, res) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
           $(el).find("img").remove();
+          $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -300,6 +301,7 @@ const ScrapePage = async (req, res) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
           $(el).find("img").remove();
+          $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -318,6 +320,7 @@ const ScrapePage = async (req, res) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
           $(el).find("img").remove();
+          $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -344,6 +347,7 @@ const ScrapePage = async (req, res) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
           $(el).find("img").remove();
+          $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -360,6 +364,7 @@ const ScrapePage = async (req, res) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
           $(el).find("img").remove();
+          $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -376,6 +381,7 @@ const ScrapePage = async (req, res) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
           $(el).find("img").remove();
+          $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
