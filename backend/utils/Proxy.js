@@ -2,13 +2,13 @@ const { translate } = require('@vitalets/google-translate-api');
 const { HttpProxyAgent } = require('http-proxy-agent');
 
 const proxies = [
-  "http://143.42.191.48:80",
-  "http://167.99.124.118:80",
-  "http://203.115.101.55:80",
-  "http://103.125.19.30:8080",
+  "http://207.154.219.88:80",
+  "http://208.104.211.63:80",
   "http://72.10.160.93:13931",
-  "http://118.27.106.41:80"
-
+  "http://67.43.236.19:17293",
+  "http://200.174.198.86:8888",
+  "http://72.10.160.171:10095",
+  "http://198.74.51.79:8888"
 ];
 
 const failedProxies = [];

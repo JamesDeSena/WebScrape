@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 const { 
-  TranslateText,
+  Translate,
   GetFile
-} = require('../controllers/Translation.js');
+} = require('../controllers/GeminiController');
 
-router.post('/', TranslateText);
+router.post('/translate', Translate);
 router.post('/get', GetFile);
 
 module.exports = router;

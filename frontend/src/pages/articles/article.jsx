@@ -11,7 +11,7 @@ const Article = () => {
   const article = state?.articleData;
   const navigate = useNavigate();
 
-  const [phrase, setPhrase] = useState();
+  // const [phrase, setPhrase] = useState();
   const [translated, setTranslated] = useState();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -46,10 +46,10 @@ const Article = () => {
 
     openModal();
 
-    if (selectedAction === 'paraphrase') {
-      await paraphrase();
-    } else if (selectedAction === 'translate') {
+    if (selectedAction === 'translate') {
       await translate();
+    } else if (selectedAction === 'translate') {
+      await paraphrase();
     }
   };
 
@@ -66,10 +66,9 @@ const Article = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await axios.post('https://webscrape-5iyk.onrender.com/api/paraphrase/get', {
+        const response = await axios.post('http://192.168.13.206:8008/api/gemini/get', {
           filePath: article.url
         });
-        setPhrase(response.data[0].paraphrased);
         setTranslated(response.data[0].translated);
       } catch (error) {
         console.error("Error fetching articles:", error);
@@ -78,25 +77,25 @@ const Article = () => {
     fetchArticles();
   }, [article.url]);
 
-  const paraphrase = async () => {
-    try {
-      const response = await axios.post('https://webscrape-5iyk.onrender.com/api/paraphrase', {
-        text: content.__html,
-        filePath: article.url
-      });
-      setPhrase(response.data.paraphrasedText);
-    } catch (error) {
-      console.error("Error fetching articles:", error);
-    } finally {
-      closeModal();
-    }
-  };
+  // const paraphrase = async () => {
+  //   try {
+  //     const response = await axios.post('http://localhost:8080/api/paraphrase', {
+  //       text: content.__html,
+  //       filePath: article.url
+  //     });
+  //     setPhrase(response.data.paraphrasedText);
+  //   } catch (error) {
+  //     console.error("Error fetching articles:", error);
+  //   } finally {
+  //     closeModal();
+  //   }
+  // };
 
   const translate = async () => {
     try {
-      const textToTranslate = phrase ? phrase : content.__html;
+      const textToTranslate = content.__html;
 
-      const response = await axios.post('https://webscrape-5iyk.onrender.com/api/translate', {
+      const response = await axios.post('http://192.168.13.206:8008/api/gemini/translate', {
         text: textToTranslate,
         filePath: article.url
       });
@@ -127,8 +126,8 @@ const Article = () => {
                 </button>
                 {isDropdownOpen && (
                   <div className="dropdown-content">
-                    <button onClick={() => handleAction('paraphrase')}>Paraphrase</button>
                     <button onClick={() => handleAction('translate')}>Translate</button>
+                    {/* <button onClick={() => handleAction('paraphrase')}>Paraphrase</button> */}
                   </div>
                 )}
               </div>
@@ -143,12 +142,12 @@ const Article = () => {
                 <hr />
                 <h3><strong>ORIGINAL CONTENT:</strong></h3>
                 <p className="content" dangerouslySetInnerHTML={{ __html: formatText(article.content) }} />
-                {(article.paraphrased || phrase) && (
+                {/* {(article.paraphrased || phrase) && (
                   <>
                     <h3><strong>PARAPHRASED CONTENT:</strong></h3>
                     <p className="content"> {article.paraphrase || phrase} </p>
                   </>
-                )}
+                )} */}
                 {(article.translated || translated) && (
                   <>
                     <h3><strong>TRANSLATED CONTENT:</strong></h3>

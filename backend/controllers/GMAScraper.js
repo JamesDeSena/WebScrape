@@ -120,6 +120,7 @@ const ScrapeWhole = async (req, res) => {
         addToCache(article, cacheFilePath);
       }
     });
+    console.log("gma")
   } catch (error) {
     console.error("Error scraping the website:", error);
     res.status(500).json({ error: "Failed to scrape the website" });
@@ -205,7 +206,6 @@ const ScrapePage = async (req, res) => {
       .get()
       .join("\n");
     
- 
     const date = dateText
       .replace(/Published\s+/, "")
       .replace(/\d{1,2}:\d{2}(am|pm)/i, "")

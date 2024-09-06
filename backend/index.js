@@ -14,6 +14,7 @@ const GMARoutes = require("./routes/GMARoutes");
 const InqRoutes = require("./routes/InqRoutes");
 const TranslationRoutes = require("./routes/TranslationRoutes");
 const ParaphraseRoutes = require("./routes/ParaphraseRoutes");
+const GeminiRoutes = require("./routes/GeminiRoutes");
 
 const app = express();
 dotenv.config();
@@ -51,7 +52,9 @@ app.use("/api/gma", GMARoutes);
 app.use("/api/inq", InqRoutes);
 app.use("/api/translate", TranslationRoutes);
 app.use("/api/paraphrase", ParaphraseRoutes);
+app.use("/api/gemini", GeminiRoutes);
 
 server.listen(process.env.PORT, () =>
-  console.log(`Server started on port ${process.env.PORT}`)
+  console.log(`Server started on port ${process.env.PORT || 8800}`)
 );
+

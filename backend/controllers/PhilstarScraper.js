@@ -140,6 +140,7 @@ const ScrapeWhole = async (req, res) => {
         addToCache(article, cacheFilePath);
       }
     });
+    console.log("ps")
   } catch (error) {
     console.error("Error scraping the website:", error);
     res.status(500).json({ error: "Failed to scrape the website" });
@@ -237,7 +238,7 @@ const ScrapePage = async (req, res) => {
       content,
       url: cacheFilePath
     };
-
+    
     addToCache(article, cacheFilePath);
     res.json(article);
   } catch (error) {

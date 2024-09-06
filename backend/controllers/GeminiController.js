@@ -1,12 +1,15 @@
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 const fs = require('fs');
 const path = require('path');
-const { translateWithProxy } = require('../utils/Proxy');
 
-const TranslateText = async (req, res) => {
+const genAI = new GoogleGenerativeAI('AIzaSyB4JsEIVeYkMvE0IeuQC9Y3lCCysXbaqTk');
+const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+const Translate = async (req, res) => {
   const { text, filePath } = req.body;
 
-  if (!text) {
-    return res.status(400).json({ error: 'Text to translate is required.' });
+  if (!text || text.trim() === '') {
+    return res.status(400).json({ message: "Text is required" });
   }
 
   if (!filePath) {
@@ -14,7 +17,11 @@ const TranslateText = async (req, res) => {
   }
 
   try {
-    const translatedText = await translateWithProxy(text);
+    const prompt = 
+      `Translate this English/Tagalog or combined text to Simplified Chinese. Retain all proper nouns and common nouns without translation, and make the sentence readable. Text: "${text}"`;
+
+    const response1 = await model.generateContent(prompt);
+    const translatedText = response1.response.text();
 
     const absolutePath = path.resolve(filePath);
 
@@ -30,10 +37,12 @@ const TranslateText = async (req, res) => {
 
     fs.writeFileSync(absolutePath, JSON.stringify(fileContent, null, 2), 'utf-8');
 
-    res.json({ translatedText });
+    return res.status(200).json({
+      result: response1.response.text()
+    });
   } catch (error) {
-    console.error('Error translating text:', error);
-    res.status(500).json({ error: 'Translation failed.' });
+    console.error("Error:", error.message);
+    return res.status(500).json({ message: "Error:", error: error.message });
   }
 };
 
@@ -60,7 +69,7 @@ const GetFile = (req, res) => {
   });
 };
 
-module.exports = {
-  TranslateText,
+module.exports = { 
+  Translate,
   GetFile
 };
