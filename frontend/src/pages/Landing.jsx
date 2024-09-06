@@ -27,7 +27,7 @@ const LandingPage = () => {
                 };
 
                 const requests = Object.entries(sources).map(([source, name]) =>
-                    axios.get(`http://192.168.13.206:8008/api/${source}/get-data`).then(response => ({
+                    axios.get(`http://localhost:8080/api/${source}/get-data`).then(response => ({
                         articles: response.data,
                         source: name
                     }))
@@ -54,7 +54,7 @@ const LandingPage = () => {
     const navigateArticle = async (url) => {
         setArticleLoading(true); // Start loading for individual article
         try {
-            const response = await axios.post('http://192.168.13.206:8008/api/abs/get-page', { url });
+            const response = await axios.post('http://localhost:8080/api/abs/get-page', { url });
 
             if (response.status === 200) {
                 const articleData = response.data[0];
@@ -62,7 +62,7 @@ const LandingPage = () => {
             }
         } catch {
             try {
-                const response = await axios.post('http://192.168.13.206:8008/api/abs/page', { url });
+                const response = await axios.post('http://localhost:8080/api/abs/page', { url });
 
                 if (response.status === 200) {
                     const articleData = response.data;

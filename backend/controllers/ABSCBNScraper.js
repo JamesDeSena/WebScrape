@@ -161,7 +161,7 @@ const ScrapeWhole = async (req, res) => {
         addToCache(article, cacheFilePath);
       }
     });
-    console.log("gma")
+    
     await browser.close();
   } catch (error) {
     res.status(500).json({ error: "Failed to scrape the website" });
