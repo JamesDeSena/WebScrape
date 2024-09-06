@@ -71,13 +71,13 @@ const ScrapeWhole = async (req, res) => {
   const cacheFilePath = path.join(__dirname, "../cache/data", "bw.json");
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 180000 });
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 300000 });
 
     try {
-      await page.waitForSelector(".td_block_template_1.widget.widget_recent_entries ul li", { timeout: 180000 });
+      await page.waitForSelector(".td_block_template_1.widget.widget_recent_entries ul li", { timeout: 300000 });
     } catch (error) {
       await browser.close();
       return res.status(500).json({ error: "Failed to find the selector" });
@@ -131,13 +131,13 @@ const ScrapePage = async (req, res) => {
   );
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 180000 });
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 300000 });
 
     try {
-      await page.waitForSelector("article", { timeout: 180000 });
+      await page.waitForSelector("article", { timeout: 300000 });
     } catch (error) {
       await browser.close();
       return res.status(500).json({ error: "Failed to find the selector" });
@@ -267,7 +267,7 @@ const GetCacheFile = (req, res) => {
   }
 };
 
-cron.schedule("0 */6 * * * *", ScrapeWhole);
+cron.schedule("0 */8 * * * *", ScrapeWhole);
 
 module.exports = {
   ScrapeWhole,

@@ -75,7 +75,7 @@ const ScrapeWhole = async (req, res) => {
   const cacheFilePath = path.join(__dirname, "../cache/data", "inq.json");
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: "networkidle2", timeout: 180000 });
@@ -131,7 +131,7 @@ const ScrapePage = async (req, res) => {
   );
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: "networkidle2", timeout: 180000 });
@@ -285,7 +285,7 @@ const GetCacheFile = (req, res) => {
   }
 };
 
-cron.schedule("0 */8 * * * *", ScrapeWhole);
+cron.schedule("0 */9 * * * *", ScrapeWhole);
 
 module.exports = {
   ScrapeWhole,
