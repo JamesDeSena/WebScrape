@@ -100,7 +100,14 @@ const ScrapeWhole = async (req, res) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2" });
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 180000 });
+
+    try {
+      await page.waitForSelector(".article-list.mx-auto .row.mb-5 div[data-v-498e1d89].col", { timeout: 180000 });
+    } catch (error) {
+      await browser.close();
+      return res.status(500).json({ error: "Failed to find the selector" });
+    }
 
     const html = await page.content();
     await browser.close();
@@ -162,7 +169,14 @@ const ScrapePage = async (req, res) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2" });
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 180000 });
+
+    try {
+      await page.waitForSelector("div[data-v-03318cb8]", { timeout: 180000 });
+    } catch (error) {
+      await browser.close();
+      return res.status(500).json({ error: "Failed to find the selector" });
+    }
 
     const html = await page.content();
     await browser.close();
