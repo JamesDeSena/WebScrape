@@ -75,7 +75,16 @@ const ScrapeWhole = async (req, res) => {
   const cacheFilePath = path.join(__dirname, "../cache/data", "inq.json");
 
   try {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--window-size=1280,800",
+        "--disable-software-rasterizer",
+      ],
+    });
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: "networkidle2", timeout: 180000 });
@@ -131,7 +140,16 @@ const ScrapePage = async (req, res) => {
   );
 
   try {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--window-size=1280,800",
+        "--disable-software-rasterizer",
+      ],
+    });
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: "networkidle2", timeout: 180000 });
