@@ -18,7 +18,7 @@ const GMA = () => {
     const fetchArticles = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:8080/api/gma/get-data');
+        const response = await axios.get('https://webscrape-5iyk.onrender.com/api/gma/get-data');
         const sortedArticles = response.data;
         setArticles(sortedArticles);
       } catch (error) {
@@ -45,7 +45,7 @@ const GMA = () => {
   const navigateArticle = async (url) => {
     setArticleLoading(true);
     try {
-      const response = await axios.post('http://localhost:8080/api/gma/get-page', { url });
+      const response = await axios.post('https://webscrape-5iyk.onrender.com/api/gma/get-page', { url });
 
       if (response.status === 200) {
         const articleData = response.data[0];
@@ -54,7 +54,7 @@ const GMA = () => {
       }
     } catch {
       try {
-        const response = await axios.post('http://localhost:8080/api/gma/page', { url });
+        const response = await axios.post('https://webscrape-5iyk.onrender.com/api/gma/page', { url });
 
         if (response.status === 200) {
           const articleData = response.data;

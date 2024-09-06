@@ -18,7 +18,7 @@ const MTimes = () => {
     const fetchArticles = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://192.168.13.206:8008/api/mt/get-data');
+        const response = await axios.get('https://webscrape-5iyk.onrender.com/api/mt/get-data');
         const sortedArticles = response.data;
         setArticles(sortedArticles);
       } catch (error) {
@@ -45,7 +45,7 @@ const MTimes = () => {
   const navigateArticle = async (url) => {
     setArticleLoading(true);
     try {
-      let response = await axios.post('http://192.168.13.206:8008/api/mt/get-page', { url });
+      let response = await axios.post('https://webscrape-5iyk.onrender.com/api/mt/get-page', { url });
 
       if (response.status === 200) {
         const articleData = response.data[0];
@@ -54,7 +54,7 @@ const MTimes = () => {
       }
     } catch {
       try {
-        const response = await axios.post('http://192.168.13.206:8008/api/mt/page', { url });
+        const response = await axios.post('https://webscrape-5iyk.onrender.com/api/mt/page', { url });
 
         if (response.status === 200) {
           const articleData = response.data;
