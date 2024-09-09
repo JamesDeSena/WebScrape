@@ -18,7 +18,7 @@ const MBulletin = () => {
     const fetchArticles = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:8008/api/mb/get-data');
+        const response = await axios.get('http://192.168.13.206:8008/api/mb/get-data');
         const sortedArticles = response.data;
         setArticles(sortedArticles);
       } catch (error) {
@@ -45,7 +45,7 @@ const MBulletin = () => {
   const navigateArticle = async (url) => {
     setArticleLoading(true);
     try {
-      let response = await axios.post('http://localhost:8008/api/mb/get-page', { url });
+      let response = await axios.post('http://192.168.13.206:8008/api/mb/get-page', { url });
 
       if (response.status === 200) {
         const articleData = response.data[0];
@@ -54,7 +54,7 @@ const MBulletin = () => {
       }
     } catch {
       try {
-        const response = await axios.post('http://localhost:8008/api/mb/page', { url });
+        const response = await axios.post('http://192.168.13.206:8008/api/mb/page', { url });
 
         if (response.status === 200) {
           const articleData = response.data;

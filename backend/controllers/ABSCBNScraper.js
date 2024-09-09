@@ -107,8 +107,6 @@ const ScrapeWhole = async (req, res) => {
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
-        "--single-process",
-        "--no-zygote",
         "--disable-gpu",
         "--window-size=1280,800",
         "--disable-software-rasterizer",
@@ -125,11 +123,11 @@ const ScrapeWhole = async (req, res) => {
       "Accept-Encoding": "gzip, deflate, br",
     });
 
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 300000 });
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
     await wait(3000);
 
     try {
-      await page.waitForSelector(".MuiBox-root.css-0", { timeout: 300000 });
+      await page.waitForSelector(".MuiBox-root.css-0", { timeout: 30000 });
     } catch (error) {
       await browser.close();
       return res.status(500).json({ error: "Failed to find the selector" });
@@ -189,8 +187,6 @@ const ScrapePage = async (req, res) => {
       args: [
         "--no-sandbox",
         "--disable-setuid-sandbox",
-        "--single-process",
-        "--no-zygote",
         "--disable-gpu",
         "--window-size=1280,800",
         "--disable-software-rasterizer",
@@ -207,10 +203,12 @@ const ScrapePage = async (req, res) => {
       "Accept-Encoding": "gzip, deflate, br",
     });
 
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 300000 });
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
 
     try {
-      await page.waitForSelector("#bodyTopPart, #bodyMiddlePart, #bodyBottomPart",{ timeout: 300000 }
+      await page.waitForSelector(
+        "#bodyTopPart, #bodyMiddlePart, #bodyBottomPart",
+        { timeout: 30000 }
       );
     } catch (error) {
       await browser.close();
@@ -480,7 +478,7 @@ const GetCacheFile = (req, res) => {
   }
 };
 
-cron.schedule("0 */8 * * * *", ScrapeWhole);
+cron.schedule("0 */5 * * * *", ScrapeWhole);
 
 module.exports = {
   ScrapeWhole,

@@ -66,7 +66,7 @@ const Article = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await axios.post('http://localhost:8008/api/gemini/get', {
+        const response = await axios.post('http://192.168.13.206:8008/api/gemini/get', {
           filePath: article.url
         });
         setTranslated(response.data[0].translated);
@@ -79,7 +79,7 @@ const Article = () => {
 
   // const paraphrase = async () => {
   //   try {
-  //     const response = await axios.post('http://localhost:8008/api/paraphrase', {
+  //     const response = await axios.post('http://192.168.13.206:8008/api/paraphrase', {
   //       text: content.__html,
   //       filePath: article.url
   //     });
@@ -95,12 +95,12 @@ const Article = () => {
     try {
       const textToTranslate = content.__html;
 
-      const response = await axios.post('http://localhost:8008/api/gemini/translate', {
+      const response = await axios.post('http://192.168.13.206:8008/api/gemini/translate', {
         text: textToTranslate,
         filePath: article.url
       });
-  
-      setTranslated(response.data.translatedText);
+      
+      setTranslated(response.data.result);
     } catch (error) {
       console.error("Error translating content:", error);
     } finally {

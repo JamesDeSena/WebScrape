@@ -101,28 +101,10 @@ const ScrapeWhole = async (req, res) => {
   const cacheFilePath = path.join(__dirname, "../cache/data", "rp.json");
 
   try {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--single-process",
-        "--no-zygote",
-        "--disable-gpu",
-        "--window-size=1280,800",
-        "--disable-software-rasterizer",
-      ],
-    });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 300000 });
-
-    try {
-      await page.waitForSelector(".archive-article__content", { timeout: 300000 });
-    } catch (error) {
-      await browser.close();
-      return res.status(500).json({ error: "Failed to find the selector" });
-    }
+    await page.goto(url, { waitUntil: "networkidle2" });
 
     const html = await page.content();
     await browser.close();
@@ -172,28 +154,10 @@ const ScrapePage = async (req, res) => {
   );
 
   try {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--single-process",
-        "--no-zygote",
-        "--disable-gpu",
-        "--window-size=1280,800",
-        "--disable-software-rasterizer",
-      ],
-    });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 300000 });
-
-    try {
-      await page.waitForSelector("#primary.site-main", { timeout: 300000 });
-    } catch (error) {
-      await browser.close();
-      return res.status(500).json({ error: "Failed to find the selector" });
-    }
+    await page.goto(url, { waitUntil: "networkidle2" });
 
     const html = await page.content();
     await browser.close();
@@ -325,7 +289,7 @@ const GetCacheFile = (req, res) => {
   }
 };
 
-cron.schedule("0 */12 * * * *", ScrapeWhole);
+cron.schedule("0 */11 * * * *", ScrapeWhole);
 
 module.exports = {
   ScrapeWhole,

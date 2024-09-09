@@ -75,28 +75,10 @@ const ScrapeWhole = async (req, res) => {
   const cacheFilePath = path.join(__dirname, "../cache/data", "inq.json");
 
   try {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--single-process",
-        "--no-zygote",
-        "--disable-gpu",
-        "--window-size=1280,800",
-        "--disable-software-rasterizer",
-      ],
-    });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 180000 });
-
-    try {
-      await page.waitForSelector("#inq-channel-left #ch-ls-box", { timeout: 180000 });
-    } catch (error) {
-      await browser.close();
-      return res.status(500).json({ error: "Failed to find the selector" });
-    }
+    await page.goto(url, { waitUntil: "networkidle2" });
 
     const html = await page.content();
     await browser.close();
@@ -142,28 +124,10 @@ const ScrapePage = async (req, res) => {
   );
 
   try {
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        "--no-sandbox",
-        "--disable-setuid-sandbox",
-        "--single-process",
-        "--no-zygote",
-        "--disable-gpu",
-        "--window-size=1280,800",
-        "--disable-software-rasterizer",
-      ],
-    });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 180000 });
-
-    try {
-      await page.waitForSelector("article#article_level_wrap", { timeout: 180000 });
-    } catch (error) {
-      await browser.close();
-      return res.status(500).json({ error: "Failed to find the selector" });
-    }
+    await page.goto(url, { waitUntil: "networkidle2" });
 
     const html = await page.content();
     await browser.close();
@@ -307,7 +271,7 @@ const GetCacheFile = (req, res) => {
   }
 };
 
-cron.schedule("0 */9 * * * *", ScrapeWhole);
+cron.schedule("0 */8 * * * *", ScrapeWhole);
 
 module.exports = {
   ScrapeWhole,

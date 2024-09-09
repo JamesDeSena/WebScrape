@@ -18,7 +18,7 @@ const BWorld = () => {
     const fetchArticles = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:8008/api/bw/get-data');
+        const response = await axios.get('http://192.168.13.206:8008/api/bw/get-data');
         const sortedArticles = response.data;
         setArticles(sortedArticles);
       } catch (error) {
@@ -44,7 +44,7 @@ const BWorld = () => {
   const navigateArticle = async (url) => {
     setArticleLoading(true);
     try {
-      let response = await axios.post('http://localhost:8008/api/bw/get-page', { url });
+      let response = await axios.post('http://192.168.13.206:8008/api/bw/get-page', { url });
 
       if (response.status === 200) {
         const articleData = response.data[0];
@@ -53,7 +53,7 @@ const BWorld = () => {
       }
     } catch {
       try {
-        const response = await axios.post('http://localhost:8008/api/bw/page', { url });
+        const response = await axios.post('http://192.168.13.206:8008/api/bw/page', { url });
 
         if (response.status === 200) {
           const articleData = response.data;
