@@ -18,7 +18,7 @@ const PHStar = () => {
     const fetchArticles = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://webscrape-5iyk.onrender.com/api/ps/get-data');
+        const response = await axios.get('https://webscrape-60p1.onrender.com/api/ps/get-data');
         const sortedArticles = response.data;
         setArticles(sortedArticles);
       } catch (error) {
@@ -45,7 +45,7 @@ const PHStar = () => {
   const navigateArticle = async (url) => {
     setArticleLoading(true);
     try {
-      let response = await axios.post('https://webscrape-5iyk.onrender.com/api/ps/get-page', { url });
+      let response = await axios.post('https://webscrape-60p1.onrender.com/api/ps/get-page', { url });
 
       if (response.status === 200) {
         const articleData = response.data[0];
@@ -54,7 +54,7 @@ const PHStar = () => {
       }
     } catch {
       try {
-        const response = await axios.post('https://webscrape-5iyk.onrender.com/api/ps/page', { url });
+        const response = await axios.post('https://webscrape-60p1.onrender.com/api/ps/page', { url });
 
         if (response.status === 200) {
           const articleData = response.data;

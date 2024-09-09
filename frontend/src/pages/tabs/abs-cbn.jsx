@@ -18,7 +18,7 @@ const ABSCBN = () => {
     const fetchArticles = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://webscrape-5iyk.onrender.com/api/abs/get-data');
+        const response = await axios.get('https://webscrape-60p1.onrender.com/api/abs/get-data');
         const sortedArticles = response.data;
         setArticles(sortedArticles);
       } catch (error) {
@@ -44,7 +44,7 @@ const ABSCBN = () => {
   const navigateArticle = async (url) => {
     setArticleLoading(true); // Start loading for individual article
     try {
-      const response = await axios.post('https://webscrape-5iyk.onrender.com/api/abs/get-page', { url });
+      const response = await axios.post('https://webscrape-60p1.onrender.com/api/abs/get-page', { url });
 
       if (response.status === 200) {
         const articleData = response.data[0];
@@ -53,7 +53,7 @@ const ABSCBN = () => {
       }
     } catch {
       try {
-        const response = await axios.post('https://webscrape-5iyk.onrender.com/api/abs/page', { url });
+        const response = await axios.post('https://webscrape-60p1.onrender.com/api/abs/page', { url });
 
         if (response.status === 200) {
           const articleData = response.data;
