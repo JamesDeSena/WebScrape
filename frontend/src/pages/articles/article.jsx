@@ -12,7 +12,8 @@ const Article = () => {
   const navigate = useNavigate();
 
   const [phrase, setPhrase] = useState();
-  const [translated, setTranslated] = useState();
+  const [translatedContent, setTranslatedContent] = useState();
+  const [translatedTitle, setTranslatedTitle] = useState();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -70,18 +71,22 @@ const Article = () => {
           filePath: article.url
         });
   
-        const existingTranslation = response.data[0]?.translated;
+        const existingTranslationContent = response.data[0]?.translatedContent;
+        const existingTranslationTitle = response.data[0]?.translatedTitle;
   
-        if (existingTranslation && existingTranslation.trim()) {
-          setTranslated(existingTranslation);
+        if (existingTranslationContent?.trim() && existingTranslationTitle?.trim()) {
+          setTranslatedContent(existingTranslationContent);
+          setTranslatedTitle(existingTranslationTitle);
         } else {
           const textToTranslate = content.__html;
           const translateResponse = await axios.post('http://192.168.13.206:8008/api/gemini/translate', {
-            text: textToTranslate,
+            content: textToTranslate,
+            title: article.title,
             filePath: article.url
           });
-  
-          setTranslated(translateResponse.data.result);
+          
+          setTranslatedContent(translateResponse.data.translatedContent);
+          setTranslatedTitle(translateResponse.data.translatedTitle);
         }
       } catch (error) {
         console.error("Error fetching or translating articles:", error);
@@ -89,8 +94,7 @@ const Article = () => {
     };
   
     fetchArticles();
-  }, [article.url, content.__html]);
-  
+  }, [article.url, content.__html, article.title]);
 
   // const paraphrase = async () => {
   //   try {
@@ -193,11 +197,11 @@ const Article = () => {
             </div>
             <div className="vl"></div>
             <div className="translated">
-              <h2 className="title">TRANSLATED TITLE</h2>
+              <h2 className="title">{article.translatedTitle || translatedTitle}</h2>
               <p className="dandr">Author: {article.author}</p>
               <p className="dandr">Date: {article.date}</p>
               <hr />
-              <p className="translate"> {article.translated || translated} </p>
+              <p className="translate"> {article.translatedContent || translatedContent} </p>
             </div>
           </div>
         </div>

@@ -6,10 +6,14 @@ const genAI = new GoogleGenerativeAI('AIzaSyB4JsEIVeYkMvE0IeuQC9Y3lCCysXbaqTk');
 const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
 const Translate = async (req, res) => {
-  const { text, filePath } = req.body;
+  const { content, title, filePath } = req.body;
 
-  if (!text || text.trim() === '') {
+  if (!content || content.trim() === '') {
     return res.status(400).json({ message: "Text is required" });
+  }
+
+  if (!title || title.trim() === '') {
+    return res.status(400).json({ message: "Title is required" });
   }
 
   if (!filePath) {
@@ -17,11 +21,17 @@ const Translate = async (req, res) => {
   }
 
   try {
-    const prompt = 
-      `Translate this English/Tagalog or combined text to Simplified Chinese. Retain all proper nouns and common nouns without translation, and make the sentence readable. Text: "${text}"`;
+    const contentPrompt = 
+      `Translate this English/Tagalog or combined text to Simplified Chinese. Retain all proper nouns and common nouns without translation, and make the sentence readable. Text: "${content}"`;
+    
+    const titlePrompt = 
+      `Translate this English/Tagalog or combined title to Simplified Chinese. Retain all proper nouns without translation. Title: "${title}"`;
 
-    const response1 = await model.generateContent(prompt);
-    const translatedText = response1.response.text();
+    const responseContent = await model.generateContent(contentPrompt);
+    const translatedContent = responseContent.response.text();
+
+    const responseTitle = await model.generateContent(titlePrompt);
+    const translatedTitle = responseTitle.response.text();
 
     const absolutePath = path.resolve(filePath);
 
@@ -31,14 +41,19 @@ const Translate = async (req, res) => {
       fileContent = JSON.parse(rawData);
     }
 
+    // Update each item with translated content and title
     fileContent.forEach(item => {
-      item.translated = translatedText;
+      item.translatedContent = translatedContent;
+      item.translatedTitle = translatedTitle;
     });
 
+    // Write the updated content back to the file
     fs.writeFileSync(absolutePath, JSON.stringify(fileContent, null, 2), 'utf-8');
 
+    // Return the results in JSON format
     return res.status(200).json({
-      result: response1.response.text()
+      translatedContent,
+      translatedTitle
     });
   } catch (error) {
     console.error("Error:", error.message);
