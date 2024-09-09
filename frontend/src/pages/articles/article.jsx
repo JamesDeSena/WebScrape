@@ -3,6 +3,7 @@ import { FaCopy } from "react-icons/fa";
 import { AiOutlineTranslation } from "react-icons/ai";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoReturnUpBackOutline } from "react-icons/io5";
+import { FaCaretDown } from "react-icons/fa";
 
 import axios from 'axios';
 
@@ -99,7 +100,7 @@ const Article = () => {
         text: textToTranslate,
         filePath: article.url
       });
-      
+
       setTranslated(response.data.result);
     } catch (error) {
       console.error("Error translating content:", error);
@@ -117,48 +118,78 @@ const Article = () => {
               <IoReturnUpBackOutline /> RETURN
             </button>
             <div className="groupbutton">
-              <button className="copy" onClick={copyToClipboard}>
-                <FaCopy /> COPY
-              </button>
               <div className="dropdown">
                 <button className="paraphrase" onClick={toggleDropdown}>
-                  <AiOutlineTranslation /> CONTENT OPTIONS
+                  COPY OPTIONS <FaCaretDown />
                 </button>
                 {isDropdownOpen && (
                   <div className="dropdown-content">
-                    <button onClick={() => handleAction('translate')}>Translate</button>
-                    {/* <button onClick={() => handleAction('paraphrase')}>Paraphrase</button> */}
+                    <button onClick={() => handleAction('translate')}>Copy Original</button>
+                    <button onClick={() => handleAction('paraphrase')}>Copy Translated</button>
                   </div>
                 )}
               </div>
             </div>
           </div>
-          <div className="contentsec" id="contentToCopy">
-            {article ? (
-              <>
-                <h2 className="title">{article.title}</h2>
-                <p className="dandr">Author: {article.author}</p>
-                <p className="dandr">Date: {article.date}</p>
-                <hr />
-                <h3><strong>ORIGINAL CONTENT:</strong></h3>
-                <p className="content" dangerouslySetInnerHTML={{ __html: formatText(article.content) }} />
-                {/* {(article.paraphrased || phrase) && (
+          <div className="contsecss">
+            <div className="contentsec" id="contentToCopy">
+              <div className="original">
+                              {article ? (
+                <>
+                  <h2 className="title">{article.title}</h2>
+                  <p className="dandr">Author: {article.author}</p>
+                  <p className="dandr">Date: {article.date}</p>
+                  <hr />
+                  <p className="content" dangerouslySetInnerHTML={{ __html: formatText(article.content) }} />
+                  {/* {(article.paraphrased || phrase) && (
                   <>
                     <h3><strong>PARAPHRASED CONTENT:</strong></h3>
                     <p className="content"> {article.paraphrase || phrase} </p>
                   </>
                 )} */}
-                {(article.translated || translated) && (
+                  {(article.translated || translated) && (
+                    <>
+                      <h3><strong>TRANSLATED CONTENT:</strong></h3>
+                      <p className="content"> {article.translated || translated} </p>
+                    </>
+                  )}
+                </>
+              ) : (
+                <p>Failed to fetch the content.</p>
+              )}
+              </div>
+
+            </div>
+            <div className="contentsec">
+              <div className="translated">
+                {article ? (
                   <>
-                    <h3><strong>TRANSLATED CONTENT:</strong></h3>
-                    <p className="content"> {article.translated || translated} </p>
+                    <h2 className="title">UAHFUIAHFR IJAHFVUA HUJAFHUAH HUAHFUAH HUAHUF{article.title}</h2>
+                    <p className="dandr">Author: {article.author}</p>
+                    <p className="dandr">Date: {article.date}</p>
+                    <hr />
+                    <p className="content" dangerouslySetInnerHTML={{ __html: formatText(article.content) }} />
+                    {/* {(article.paraphrased || phrase) && (
+                  <>
+                    <h3><strong>PARAPHRASED CONTENT:</strong></h3>
+                    <p className="content"> {article.paraphrase || phrase} </p>
                   </>
+                )} */}
+                    {(article.translated || translated) && (
+                      <>
+                        <h3><strong>TRANSLATED CONTENT:</strong></h3>
+                        <p className="content"> {article.translated || translated} </p>
+                      </>
+                    )}
+                  </>
+                ) : (
+                  <p>Failed to translate the content.</p>
                 )}
-              </>
-            ) : (
-              <p>Failed to fetch the content.</p>
-            )}
+              </div>
+
+            </div>
           </div>
+
         </div>
       </div>
 

@@ -221,7 +221,12 @@
             justify-content: space-between;
             margin-top: 20px;
         }
-
+        .contsecss{
+            display: flex;
+            flex: 1 1 1;
+            flex-direction: row;
+            gap: 20px;
+        }
         .contentsec {
             padding: 20px 0px 20px 50px;
             color: #333333;
