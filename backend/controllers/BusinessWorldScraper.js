@@ -82,7 +82,6 @@ const ScrapeWhole = async (req, res) => {
         "--window-size=1280,800",
         "--disable-software-rasterizer",
       ],
-      executablePath: process.env.NODE_ENV === "production" ? process.env.PUPPETEER_EXECUTABLE_PATH : puppeteer.executablePath(),
     });
     const page = await browser.newPage();
 
@@ -154,7 +153,6 @@ const ScrapePage = async (req, res) => {
         "--window-size=1280,800",
         "--disable-software-rasterizer",
       ],
-      executablePath: process.env.NODE_ENV === "production" ? process.env.PUPPETEER_EXECUTABLE_PATH : puppeteer.executablePath(),
     });
     const page = await browser.newPage();
 
