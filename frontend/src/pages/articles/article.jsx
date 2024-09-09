@@ -3,7 +3,6 @@ import { FaCopy } from "react-icons/fa";
 import { AiOutlineTranslation } from "react-icons/ai";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoReturnUpBackOutline } from "react-icons/io5";
-import { FaCaretDown } from "react-icons/fa";
 
 import axios from 'axios';
 
@@ -12,7 +11,7 @@ const Article = () => {
   const article = state?.articleData;
   const navigate = useNavigate();
 
-  // const [phrase, setPhrase] = useState();
+  const [phrase, setPhrase] = useState();
   const [translated, setTranslated] = useState();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,10 +46,10 @@ const Article = () => {
 
     openModal();
 
-    if (selectedAction === 'translate') {
-      await translate();
-    } else if (selectedAction === 'translate') {
+    if (selectedAction === 'paraphrase') {
       await paraphrase();
+    } else if (selectedAction === 'translate') {
+      await translate();
     }
   };
 
@@ -67,9 +66,10 @@ const Article = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await axios.post('http://192.168.13.206:8008/api/gemini/get', {
+        const response = await axios.post('http://localhost:8080/api/paraphrase/get', {
           filePath: article.url
         });
+        setPhrase(response.data[0].paraphrased);
         setTranslated(response.data[0].translated);
       } catch (error) {
         console.error("Error fetching articles:", error);
@@ -78,23 +78,23 @@ const Article = () => {
     fetchArticles();
   }, [article.url]);
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const textToTranslate = content.__html;
+  // useEffect(() => {
+  //   const fetchArticles = async () => {
+  //     try {
+  //       const textToTranslate = content.__html;
   
-        const response = await axios.post('http://192.168.13.206:8008/api/gemini/translate', {
-          text: textToTranslate,
-          filePath: article.url
-        });
+  //       const response = await axios.post('http://192.168.13.206:8008/api/gemini/translate', {
+  //         text: textToTranslate,
+  //         filePath: article.url
+  //       });
         
-        setTranslated(response.data.result);
-      } catch (error) {
-        console.error("Error translating content:", error);
-      }
-    };
-    fetchArticles();
-  }, [article.url]);
+  //       setTranslated(response.data.result);
+  //     } catch (error) {
+  //       console.error("Error translating content:", error);
+  //     }
+  //   };
+  //   fetchArticles();
+  // }, [article.url]);
 
   // const paraphrase = async () => {
   //   try {
@@ -136,78 +136,48 @@ const Article = () => {
               <IoReturnUpBackOutline /> RETURN
             </button>
             <div className="groupbutton">
+              <button className="copy" onClick={copyToClipboard}>
+                <FaCopy /> COPY
+              </button>
               <div className="dropdown">
                 <button className="paraphrase" onClick={toggleDropdown}>
-                  COPY OPTIONS <FaCaretDown />
+                  <AiOutlineTranslation /> CONTENT OPTIONS
                 </button>
                 {isDropdownOpen && (
                   <div className="dropdown-content">
-                    <button onClick={() => handleAction('translate')}>Copy Original</button>
-                    <button onClick={() => handleAction('paraphrase')}>Copy Translated</button>
+                    <button onClick={() => handleAction('paraphrase')}>Paraphrase</button>
+                    <button onClick={() => handleAction('translate')}>Translate</button>
                   </div>
                 )}
               </div>
             </div>
           </div>
-          <div className="contsecss">
-            <div className="contentsec" id="contentToCopy">
-              <div className="original">
-                              {article ? (
-                <>
-                  <h2 className="title">{article.title}</h2>
-                  <p className="dandr">Author: {article.author}</p>
-                  <p className="dandr">Date: {article.date}</p>
-                  <hr />
-                  <p className="content" dangerouslySetInnerHTML={{ __html: formatText(article.content) }} />
-                  {/* {(article.paraphrased || phrase) && (
+          <div className="contentsec" id="contentToCopy">
+            {article ? (
+              <>
+                <h2 className="title">{article.title}</h2>
+                <p className="dandr">Author: {article.author}</p>
+                <p className="dandr">Date: {article.date}</p>
+                <hr />
+                <h3><strong>ORIGINAL CONTENT:</strong></h3>
+                <p className="content" dangerouslySetInnerHTML={{ __html: formatText(article.content) }} />
+                {(article.paraphrased || phrase) && (
                   <>
                     <h3><strong>PARAPHRASED CONTENT:</strong></h3>
                     <p className="content"> {article.paraphrase || phrase} </p>
                   </>
-                )} */}
-                  {(article.translated || translated) && (
-                    <>
-                      <h3><strong>TRANSLATED CONTENT:</strong></h3>
-                      <p className="content"> {article.translated || translated} </p>
-                    </>
-                  )}
-                </>
-              ) : (
-                <p>Failed to fetch the content.</p>
-              )}
-              </div>
-
-            </div>
-            <div className="contentsec">
-              <div className="translated">
-                {article ? (
-                  <>
-                    <h2 className="title">UAHFUIAHFR IJAHFVUA HUJAFHUAH HUAHFUAH HUAHUF{article.title}</h2>
-                    <p className="dandr">Author: {article.author}</p>
-                    <p className="dandr">Date: {article.date}</p>
-                    <hr />
-                    <p className="content" dangerouslySetInnerHTML={{ __html: formatText(article.content) }} />
-                    {/* {(article.paraphrased || phrase) && (
-                  <>
-                    <h3><strong>PARAPHRASED CONTENT:</strong></h3>
-                    <p className="content"> {article.paraphrase || phrase} </p>
-                  </>
-                )} */}
-                    {(article.translated || translated) && (
-                      <>
-                        <h3><strong>TRANSLATED CONTENT:</strong></h3>
-                        <p className="content"> {article.translated || translated} </p>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <p>Failed to translate the content.</p>
                 )}
-              </div>
-
-            </div>
+                {(article.translated || translated) && (
+                  <>
+                    <h3><strong>TRANSLATED CONTENT:</strong></h3>
+                    <p className="content"> {article.translated || translated} </p>
+                  </>
+                )}
+              </>
+            ) : (
+              <p>Failed to fetch the content.</p>
+            )}
           </div>
-
         </div>
       </div>
 
