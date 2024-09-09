@@ -97,13 +97,16 @@ const formatDate = (date) => {
 };
 
 const ScrapeWhole = async (req, res) => {
-  const url = "https://www.philstar.com/headlines";
+  // const url = "https://www.philstar.com/headlines";
+  const { url } = req.body
 
   const cacheFilePath = path.join(__dirname, "../cache/data", "ps.json");
 
   try {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
+
+    await page.goto(url, { waitUntil: "networkidle2" });
 
     const html = await page.content();
     await browser.close();
