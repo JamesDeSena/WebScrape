@@ -117,23 +117,20 @@ const Article = () => {
               <IoReturnUpBackOutline /> RETURN
             </button>
             <div className="groupbutton">
-              <button className="copy" onClick={copyToClipboard}>
-                <FaCopy /> COPY
-              </button>
               <div className="dropdown">
                 <button className="paraphrase" onClick={toggleDropdown}>
-                  <AiOutlineTranslation /> CONTENT OPTIONS
+                  <AiOutlineTranslation /> COPY OPTIONS
                 </button>
                 {isDropdownOpen && (
                   <div className="dropdown-content">
-                    <button onClick={() => handleAction('paraphrase')}>Paraphrase</button>
-                    <button onClick={() => handleAction('translate')}>Translate</button>
+                    <button onClick={() => handleAction('paraphrase')}>COPY ORIGINAL</button>
+                    <button onClick={() => handleAction('translate')}>COPY TRANSLATE</button>
                   </div>
                 )}
               </div>
             </div>
           </div>
-          <div className="contentsec" id="contentToCopy">
+          {/* <div className="contentsec" id="contentToCopy">
             {article ? (
               <>
                 <h2 className="title">{article.title}</h2>
@@ -158,6 +155,32 @@ const Article = () => {
             ) : (
               <p>Failed to fetch the content.</p>
             )}
+          </div> */}
+          <div className="newcontent">
+            <div className="original">
+              {article ? (
+                <>
+                  <h2 className="title">{article.title}</h2>
+                  <p className="dandr">Author: {article.author}</p>
+                  <p className="dandr">Date: {article.date}</p>
+                  <hr />
+                  <p className="content" dangerouslySetInnerHTML={{ __html: formatText(article.content) }} />
+                  {(article.paraphrased || phrase) && (
+                    <>
+                      <h3><strong>PARAPHRASED CONTENT:</strong></h3>
+                      <p className="content"> {article.paraphrase || phrase} </p>
+                    </>
+                  )}
+                </>
+              ) : (
+                <p>Failed to fetch the content.</p>
+              )}
+            </div>
+            <div className="vl"></div>
+            <div className="translated">
+              <h3><strong>TRANSLATED CONTENT:</strong></h3>
+              <p className="translate"> {article.translated || translated} </p>
+            </div>
           </div>
         </div>
       </div>
