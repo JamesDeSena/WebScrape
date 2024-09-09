@@ -40,18 +40,18 @@ const Article = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleAction = async (selectedAction) => {
-    setAction(selectedAction);
-    setIsDropdownOpen(false);
+  // const handleAction = async (selectedAction) => {
+  //   setAction(selectedAction);
+  //   setIsDropdownOpen(false);
 
-    openModal();
+  //   openModal();
 
-    if (selectedAction === 'paraphrase') {
-      await paraphrase();
-    } else if (selectedAction === 'translate') {
-      await translate();
-    }
-  };
+  //   if (selectedAction === 'paraphrase') {
+  //     await paraphrase();
+  //   } else if (selectedAction === 'translate') {
+  //     await translate();
+  //   }
+  // };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -66,35 +66,31 @@ const Article = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await axios.post('http://localhost:8080/api/paraphrase/get', {
+        const response = await axios.post('http://192.168.13.206:8008/api/gemini/get', {
           filePath: article.url
         });
-        setPhrase(response.data[0].paraphrased);
-        setTranslated(response.data[0].translated);
+  
+        const existingTranslation = response.data[0]?.translated;
+  
+        if (existingTranslation && existingTranslation.trim()) {
+          setTranslated(existingTranslation);
+        } else {
+          const textToTranslate = content.__html;
+          const translateResponse = await axios.post('http://192.168.13.206:8008/api/gemini/translate', {
+            text: textToTranslate,
+            filePath: article.url
+          });
+  
+          setTranslated(translateResponse.data.result);
+        }
       } catch (error) {
-        console.error("Error fetching articles:", error);
+        console.error("Error fetching or translating articles:", error);
       }
     };
-    fetchArticles();
-  }, [article.url]);
-
-  // useEffect(() => {
-  //   const fetchArticles = async () => {
-  //     try {
-  //       const textToTranslate = content.__html;
   
-  //       const response = await axios.post('http://192.168.13.206:8008/api/gemini/translate', {
-  //         text: textToTranslate,
-  //         filePath: article.url
-  //       });
-        
-  //       setTranslated(response.data.result);
-  //     } catch (error) {
-  //       console.error("Error translating content:", error);
-  //     }
-  //   };
-  //   fetchArticles();
-  // }, [article.url]);
+    fetchArticles();
+  }, [article.url, content.__html]);
+  
 
   // const paraphrase = async () => {
   //   try {
