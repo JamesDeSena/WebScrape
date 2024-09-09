@@ -197,7 +197,11 @@ const Article = () => {
               <p className="dandr">Author: {article.author}</p>
               <p className="dandr">Date: {article.date}</p>
               <hr />
-              <p className="translate"> {article.translated || translated} </p>
+              <p className="translate"> {article.translated || translated} 
+
+              v
+
+              </p>
             </div>
           </div>
         </div>
