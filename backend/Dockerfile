@@ -8,7 +8,7 @@ RUN wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key
     && rm -rf /var/lib/apt/lists/*
 
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/google-chrome-stable
 
 WORKDIR /usr/src/app
 
