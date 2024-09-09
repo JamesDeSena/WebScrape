@@ -178,7 +178,10 @@ const Article = () => {
             </div>
             <div className="vl"></div>
             <div className="translated">
-              <h3><strong>TRANSLATED CONTENT:</strong></h3>
+              <h2 className="title">TRANSLATED TITLE</h2>
+              <p className="dandr">Author: {article.author}</p>
+              <p className="dandr">Date: {article.date}</p>
+              <hr />
               <p className="translate"> {article.translated || translated} </p>
             </div>
           </div>

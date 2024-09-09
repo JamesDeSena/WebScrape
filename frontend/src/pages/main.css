@@ -237,7 +237,9 @@
 
         .newcontent {
             display: flex;
-            gap: 20px;
+            justify-content: center;
+            align-items: flex-start; /* Aligns items at the top */
+            gap: 30px;
             padding: 20px 0px 20px 50px;
             color: #333333;
             border: 2px solid #7C8B9D;
@@ -252,13 +254,9 @@
             height: 700px;
             margin-inline: 10px;
         }
-        p.translate{
-            
-        }
-        .translated{
-            
-            margin-right: 300px;
-
+        .original,
+        .translated {
+          width: 45%; /* Adjust the width as necessary */
         }
         .contentseco {
             display: flex;
@@ -291,9 +289,10 @@
     }
 
     p.content {
-        margin-top: 30px;
-        margin-bottom: 50px;
-    }
+        max-width: 100%; /* Ensures content doesn't overflow */
+        overflow-wrap: break-word; /* Break long words */
+        word-wrap: break-word; 
+      }
 
     button {
         border-radius: 5px;
