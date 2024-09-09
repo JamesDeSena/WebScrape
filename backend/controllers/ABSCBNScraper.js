@@ -281,6 +281,7 @@ const ScrapePage = async (req, res) => {
         .each((i, el) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("iframe").remove();
           $(el).find("img").remove();
           $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
           $(el).find("em").remove();
@@ -300,6 +301,7 @@ const ScrapePage = async (req, res) => {
         .each((i, el) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("iframe").remove();
           $(el).find("img").remove();
           $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
           $(el).find("em").remove();
@@ -319,6 +321,7 @@ const ScrapePage = async (req, res) => {
         .each((i, el) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("iframe").remove();
           $(el).find("img").remove();
           $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
           $(el).find("em").remove();
@@ -346,6 +349,7 @@ const ScrapePage = async (req, res) => {
         .each((i, el) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("iframe").remove();
           $(el).find("img").remove();
           $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
           $(el).find("em").remove();
@@ -363,6 +367,7 @@ const ScrapePage = async (req, res) => {
         .each((i, el) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("iframe").remove();
           $(el).find("img").remove();
           $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
           $(el).find("em").remove();
@@ -380,6 +385,7 @@ const ScrapePage = async (req, res) => {
         .each((i, el) => {
           processUlElements(el);
           $(el).find("#isPasted").remove();
+          $(el).find("iframe").remove();
           $(el).find("img").remove();
           $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
           $(el).find("em").remove();

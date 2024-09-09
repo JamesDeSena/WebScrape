@@ -77,6 +77,24 @@ const Article = () => {
     fetchArticles();
   }, [article.url]);
 
+  // useEffect(() => {
+  //   const fetchArticles = async () => {
+  //     try {
+  //       const textToTranslate = content.__html;
+  
+  //       const response = await axios.post('http://192.168.13.206:8008/api/gemini/translate', {
+  //         text: textToTranslate,
+  //         filePath: article.url
+  //       });
+        
+  //       setTranslated(response.data.result);
+  //     } catch (error) {
+  //       console.error("Error translating content:", error);
+  //     }
+  //   };
+  //   fetchArticles();
+  // }, [article.url]);
+
   // const paraphrase = async () => {
   //   try {
   //     const response = await axios.post('http://192.168.13.206:8008/api/paraphrase', {

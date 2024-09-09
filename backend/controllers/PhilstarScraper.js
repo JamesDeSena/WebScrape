@@ -105,8 +105,6 @@ const ScrapeWhole = async (req, res) => {
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    z
-
     const html = await page.content();
     await browser.close();
 
@@ -127,7 +125,7 @@ const ScrapeWhole = async (req, res) => {
       const formattedDate = convertRelativeDate(rawDate);
       // const summary = $(element).find(".news_summary a").text().trim();
 
-      if (title && articleUrl && !articleUrl.includes("undefined")) {
+      if (title && formattedDate && articleUrl && !articleUrl.includes("undefined")) {
         const article = {
           title,
           articleUrl,
