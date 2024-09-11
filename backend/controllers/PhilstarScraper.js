@@ -97,8 +97,7 @@ const formatDate = (date) => {
 };
 
 const ScrapeWhole = async (req, res) => {
-  // const url = "https://www.philstar.com/headlines";
-  const { url } = req.body
+  const url = "https://www.philstar.com/headlines";
 
   const cacheFilePath = path.join(__dirname, "../cache/data", "ps.json");
 
