@@ -20,14 +20,34 @@ const Article = () => {
   const [action, setAction] = useState('');
 
   const copyToClipboard = () => {
-    const content = document.getElementById('contentToCopy').innerText;
+    const content = document.getElementById('originalContentToCopy').innerText;
     navigator.clipboard.writeText(content).then(() => {
-      alert('Content copied to clipboard!');
+      alert('Original content copied to clipboard!');
     }).catch(err => {
       console.error('Failed to copy content: ', err);
     });
   };
-
+  
+  const copyTranslatedToClipboard = () => {
+    const content = document.getElementById('translatedContentToCopy').innerText;
+    navigator.clipboard.writeText(content).then(() => {
+      alert('Translated content copied to clipboard!');
+    }).catch(err => {
+      console.error('Failed to copy translated content: ', err);
+    });
+  };
+  
+  const handleAction = (selectedAction) => {
+    setAction(selectedAction);
+    setIsDropdownOpen(false);
+  
+    if (selectedAction === 'orig') {
+      copyToClipboard();
+    } else if (selectedAction === 'translate') {
+      copyTranslatedToClipboard();
+    }
+  };
+  
   const formatText = (text) => {
     const withoutStrongTags = text.replace(/<\/?strong>/g, '');
     const withoutUnderlineTags = withoutStrongTags.replace(/<\/?u>/g, '');
@@ -142,7 +162,7 @@ const Article = () => {
                 </button>
                 {isDropdownOpen && (
                   <div className="dropdown-content">
-                    <button onClick={() => handleAction('paraphrase')}>COPY ORIGINAL</button>
+                    <button onClick={() => handleAction('orig')}>COPY ORIGINAL</button>
                     <button onClick={() => handleAction('translate')}>COPY TRANSLATE</button>
                   </div>
                 )}
@@ -176,7 +196,7 @@ const Article = () => {
             )}
           </div> */}
           <div className="newcontent">
-            <div className="original">
+            <div className="original" id="originalContentToCopy">
               {article ? (
                 <>
                   <h2 className="title">{article.title}</h2>
@@ -184,19 +204,13 @@ const Article = () => {
                   <p className="dandr">Date: {article.date}</p>
                   <hr />
                   <p className="content" dangerouslySetInnerHTML={{ __html: formatText(article.content) }} />
-                  {(article.paraphrased || phrase) && (
-                    <>
-                      <h3><strong>PARAPHRASED CONTENT:</strong></h3>
-                      <p className="content"> {article.paraphrase || phrase} </p>
-                    </>
-                  )}
                 </>
               ) : (
                 <p>Failed to fetch the content.</p>
               )}
             </div>
-            <div className="vl"></div>
-            <div className="translated">
+            <div className="vl" ></div>
+            <div className="translated"  id="translatedContentToCopy">
               <h2 className="title">{article.translatedTitle || translatedTitle}</h2>
               <p className="dandr">Author: {article.author}</p>
               <p className="dandr">Date: {article.date}</p>
@@ -206,18 +220,6 @@ const Article = () => {
           </div>
         </div>
       </div>
-
-      {isModalOpen && (
-        <div className="modal">
-          <div className="modal-content">
-            {loading ? (
-              <div className="loading-indicator">
-                <p>Loading... Please wait while we {action === 'paraphrase' ? 'paraphrase' : 'translate'} the content.</p>
-              </div>
-            ) : null}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
