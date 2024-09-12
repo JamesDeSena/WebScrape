@@ -151,16 +151,12 @@ const Article = () => {
                   <p>Loading translation for the content...</p>
                 </div>
               ) : (
-                <>
-                <div className="translateload">
-                  <img src={Translategif} alt='Loading' />
-                  <p style={{marginTop:'30px'}}>Loading translation for the content...</p>
-                </div>                
-                  {/* <h2 className="title">{translatedTitle}</h2>
+                <>              
+                  <h2 className="title">{translatedTitle}</h2>
                   <p className="dandr">Author: {article.author}</p>
                   <p className="dandr">Date: {article.date}</p>
                   <hr />
-                  <p className="translate">{translatedContent}</p> */}
+                  <p className="translate">{translatedContent}</p>
                 </>
               )}
             </div>
