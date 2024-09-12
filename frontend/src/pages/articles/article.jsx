@@ -3,7 +3,7 @@ import { FaCopy } from "react-icons/fa";
 import { AiOutlineTranslation } from "react-icons/ai";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoReturnUpBackOutline } from "react-icons/io5";
-import Translategif from "../../assets/7.gif"
+import Translategif from "../../assets/6.gif"
 
 import axios from 'axios';
 
@@ -152,11 +152,15 @@ const Article = () => {
                 </div>
               ) : (
                 <>
-                  <h2 className="title">{translatedTitle}</h2>
+                <div className="translateload">
+                  <img src={Translategif} alt='Loading' />
+                  <p style={{marginTop:'30px'}}>Loading translation for the content...</p>
+                </div>                
+                  {/* <h2 className="title">{translatedTitle}</h2>
                   <p className="dandr">Author: {article.author}</p>
                   <p className="dandr">Date: {article.date}</p>
                   <hr />
-                  <p className="translate">{translatedContent}</p>
+                  <p className="translate">{translatedContent}</p> */}
                 </>
               )}
             </div>
