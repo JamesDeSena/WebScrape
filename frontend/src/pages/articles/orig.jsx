@@ -3,11 +3,10 @@ import { FaCopy } from "react-icons/fa";
 import { AiOutlineTranslation } from "react-icons/ai";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoReturnUpBackOutline } from "react-icons/io5";
-import Translategif from "../../assets/7.gif"
 
 import axios from 'axios';
 
-const Article = () => {
+const Orig = () => {
   const { state } = useLocation();
   const article = state?.articleData;
   const navigate = useNavigate();
@@ -16,9 +15,6 @@ const Article = () => {
   const [translatedContent, setTranslatedContent] = useState();
   const [translatedTitle, setTranslatedTitle] = useState();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(false); // Loading state
-  const [action, setAction] = useState('');
 
   const copyToClipboard = () => {
     const content = document.getElementById('originalContentToCopy').innerText;
@@ -28,7 +24,7 @@ const Article = () => {
       console.error('Failed to copy content: ', err);
     });
   };
-
+  
   const copyTranslatedToClipboard = () => {
     const content = document.getElementById('translatedContentToCopy').innerText;
     navigator.clipboard.writeText(content).then(() => {
@@ -37,18 +33,18 @@ const Article = () => {
       console.error('Failed to copy translated content: ', err);
     });
   };
-
+  
   const handleAction = (selectedAction) => {
     setAction(selectedAction);
     setIsDropdownOpen(false);
-
+  
     if (selectedAction === 'orig') {
       copyToClipboard();
     } else if (selectedAction === 'translate') {
       copyTranslatedToClipboard();
     }
   };
-
+  
   const formatText = (text) => {
     const withoutStrongTags = text.replace(/<\/?strong>/g, '');
     const withoutUnderlineTags = withoutStrongTags.replace(/<\/?u>/g, '');
@@ -61,6 +57,19 @@ const Article = () => {
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
+
+  // const handleAction = async (selectedAction) => {
+  //   setAction(selectedAction);
+  //   setIsDropdownOpen(false);
+
+  //   openModal();
+
+  //   if (selectedAction === 'paraphrase') {
+  //     await paraphrase();
+  //   } else if (selectedAction === 'translate') {
+  //     await translate();
+  //   }
+  // };
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -75,14 +84,13 @@ const Article = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        setLoading(true); // Start loading
         const response = await axios.post('http://192.168.13.206:8008/api/gemini/get', {
           filePath: article.url
         });
-
+  
         const existingTranslationContent = response.data[0]?.translatedContent;
         const existingTranslationTitle = response.data[0]?.translatedTitle;
-
+  
         if (existingTranslationContent?.trim() && existingTranslationTitle?.trim()) {
           setTranslatedContent(existingTranslationContent);
           setTranslatedTitle(existingTranslationTitle);
@@ -93,19 +101,48 @@ const Article = () => {
             title: article.title,
             filePath: article.url
           });
-
+          
           setTranslatedContent(translateResponse.data.translatedContent);
           setTranslatedTitle(translateResponse.data.translatedTitle);
         }
       } catch (error) {
         console.error("Error fetching or translating articles:", error);
-      } finally {
-        setLoading(false); // Stop loading
       }
     };
-
+  
     fetchArticles();
   }, [article.url, content.__html, article.title]);
+
+  // const paraphrase = async () => {
+  //   try {
+  //     const response = await axios.post('http://192.168.13.206:8008/api/paraphrase', {
+  //       text: content.__html,
+  //       filePath: article.url
+  //     });
+  //     setPhrase(response.data.paraphrasedText);
+  //   } catch (error) {
+  //     console.error("Error fetching articles:", error);
+  //   } finally {
+  //     closeModal();
+  //   }
+  // };
+
+  // const translate = async () => {
+  //   try {
+  //     const textToTranslate = content.__html;
+
+  //     const response = await axios.post('http://192.168.13.206:8008/api/gemini/translate', {
+  //       text: textToTranslate,
+  //       filePath: article.url
+  //     });
+
+  //     setTranslated(response.data.result);
+  //   } catch (error) {
+  //     console.error("Error translating content:", error);
+  //   } finally {
+  //     closeModal();
+  //   }
+  // };
 
   return (
     <div>
@@ -129,6 +166,32 @@ const Article = () => {
               </div>
             </div>
           </div>
+          {/* <div className="contentsec" id="contentToCopy">
+            {article ? (
+              <>
+                <h2 className="title">{article.title}</h2>
+                <p className="dandr">Author: {article.author}</p>
+                <p className="dandr">Date: {article.date}</p>
+                <hr />
+                <h3><strong>ORIGINAL CONTENT:</strong></h3>
+                <p className="content" dangerouslySetInnerHTML={{ __html: formatText(article.content) }} />
+                {(article.paraphrased || phrase) && (
+                  <>
+                    <h3><strong>PARAPHRASED CONTENT:</strong></h3>
+                    <p className="content"> {article.paraphrase || phrase} </p>
+                  </>
+                )}
+                {(article.translated || translated) && (
+                  <>
+                    <h3><strong>TRANSLATED CONTENT:</strong></h3>
+                    <p className="content"> {article.translated || translated} </p>
+                  </>
+                )}
+              </>
+            ) : (
+              <p>Failed to fetch the content.</p>
+            )}
+          </div> */}
           <div className="newcontent">
             <div className="original" id="originalContentToCopy">
               {article ? (
@@ -144,21 +207,12 @@ const Article = () => {
               )}
             </div>
             <div className="vl" ></div>
-            <div className="translated" id="translatedContentToCopy">
-              {loading ? (
-                <div className="translateload">
-                  <img src={Translategif} alt='Loading' />
-                  <p>Loading translation for the content...</p>
-                </div>
-              ) : (
-                <>
-                  <h2 className="title">{translatedTitle}</h2>
-                  <p className="dandr">Author: {article.author}</p>
-                  <p className="dandr">Date: {article.date}</p>
-                  <hr />
-                  <p className="translate">{translatedContent}</p>
-                </>
-              )}
+            <div className="translated"  id="translatedContentToCopy">
+              <h2 className="title">{article.translatedTitle || translatedTitle}</h2>
+              <p className="dandr">Author: {article.author}</p>
+              <p className="dandr">Date: {article.date}</p>
+              <hr />
+              <p className="translate"> {article.translatedContent || translatedContent} </p>
             </div>
           </div>
         </div>
@@ -167,4 +221,4 @@ const Article = () => {
   );
 };
 
-export default Article;
+export default Orig;
