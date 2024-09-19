@@ -63,6 +63,8 @@ const RAPPLER = () => {
       } catch (error) {
         console.error("Error fetching article content:", error.response ? error.response.data : error.message);
       }
+    } finally {
+      setArticleLoading(false); // Stop loading for individual article
     }
   };
 

@@ -18,24 +18,25 @@ const LandingPage = () => {
         const sources = {
           abs: 'ABS-CBN',
           gma: 'GMA',
-          bw: 'Business World',
-          mb: 'Manila Bulletin',
-          mt: 'Manila Times',
-          ps: 'Philstar',
           rp: 'Rappler',
-          inq: 'Inquirer'
+          inq: 'Inquirer',
+          mb: 'Manila Bulletin',
+          ps: 'Philstar',
+          mt: 'Manila Times',
+          bw: 'Business World',
         };
 
         const requests = Object.entries(sources).map(([source, name]) =>
           axios.get(`http://192.168.13.206:8008/api/${source}/get-data`).then(response => ({
             articles: response.data,
-            source: name
+            source, // Store the API source
+            name    // Store the display name
           }))
         );
 
         const responses = await Promise.all(requests);
-        const allArticles = responses.flatMap(({ articles, source }) =>
-          articles.map(article => ({ ...article, source }))
+        const allArticles = responses.flatMap(({ articles, source, name }) =>
+          articles.map(article => ({ ...article, source, name })) // Attach both source and name to each article
         );
 
         const sortedArticles = allArticles.sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -51,18 +52,20 @@ const LandingPage = () => {
     fetchArticles();
   }, []);
 
-  const navigateArticle = async (url) => {
+  const navigateArticle = async (url, source) => {
     setArticleLoading(true); // Start loading for individual article
+    console.log(`Source clicked: ${source}`); // Log the clicked source
+
     try {
-      const response = await axios.post('http://192.168.13.206:8008/api/abs/get-page', { url });
+      const response = await axios.post(`http://192.168.13.206:8008/api/${source}/get-page`, { url });
 
       if (response.status === 200) {
         const articleData = response.data[0];
         navigate("/article", { state: { articleData } });
       }
-    } catch {
+    } catch (error) {
       try {
-        const response = await axios.post('http://192.168.13.206:8008/api/abs/page', { url });
+        const response = await axios.post(`http://192.168.13.206:8008/api/${source}/page`, { url });
 
         if (response.status === 200) {
           const articleData = response.data;
@@ -71,6 +74,8 @@ const LandingPage = () => {
       } catch (error) {
         console.error("Error fetching article content:", error.response ? error.response.data : error.message);
       }
+    } finally {
+      setArticleLoading(false); // Stop loading for individual article
     }
   };
 
@@ -91,9 +96,10 @@ const LandingPage = () => {
             articles.map((article, index) => (
               <div className="articles" key={index}>
                 <div className="content">
-                  <div onClick={() => navigateArticle(article.articleUrl)} className="title" style={{ cursor: 'pointer' }}>
+                  {/* Pass the article source (API source) to navigateArticle but display the name */}
+                  <div onClick={() => navigateArticle(article.articleUrl, article.source)} className="title" style={{ cursor: 'pointer' }}>
                     <h2>{article.title}</h2>
-                    <span className="news">{article.source}</span>
+                    <span className="news">{article.name}</span> {/* Display name */}
                   </div>
                   <p>{article.articleUrl}</p>
                   <div className="contents">

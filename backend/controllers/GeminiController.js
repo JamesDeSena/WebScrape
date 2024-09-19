@@ -25,7 +25,7 @@ const Translate = async (req, res) => {
       `Translate this English/Tagalog or combined text to Simplified Chinese. Retain all proper nouns and common nouns without translation, and make the sentence readable. Text: "${content}"`;
     
     const titlePrompt = 
-      `Translate this English/Tagalog or combined title to Simplified Chinese. Retain all proper nouns without translation. Title: "${title}"`;
+      `Translate this English/Tagalog or combined text to Simplified Chinese. Retain all proper nouns and common nouns without translation, and make the sentence readable. Text: "${title}"`;
 
     const responseContent = await model.generateContent(contentPrompt);
     const translatedContent = responseContent.response.text();
