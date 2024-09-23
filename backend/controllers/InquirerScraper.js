@@ -66,7 +66,7 @@ function extractFileNameFromUrl(url) {
 }
 
 function formatDateString(dateString) {
-  return dateString.replace(/\b0(\d{1}),/, '$1,');
+  return dateString.replace(/\b0(\d{1}),/, "$1,");
 }
 
 const ScrapeWhole = async (req, res) => {
@@ -75,7 +75,17 @@ const ScrapeWhole = async (req, res) => {
   const cacheFilePath = path.join(__dirname, "../cache/data", "inq.json");
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--window-size=1280,800",
+        "--disable-software-rasterizer",
+        "--headless=new",
+      ],
+    });
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: "networkidle2" });
@@ -90,7 +100,9 @@ const ScrapeWhole = async (req, res) => {
     $("#inq-channel-left #ch-ls-box").each((i, element) => {
       const title = $(element).find("#ch-ls-head h2 a").first().text().trim();
       const articleUrl = $(element).find("a").first().attr("href");
-      const date = formatDateString($(element).find("#ch-postdate span").first().text().trim());
+      const date = formatDateString(
+        $(element).find("#ch-postdate span").first().text().trim()
+      );
 
       if (title && articleUrl && !articleUrl.includes("undefined")) {
         const article = {
@@ -103,7 +115,6 @@ const ScrapeWhole = async (req, res) => {
         addToCache(article, cacheFilePath);
       }
     });
-    
   } catch (error) {
     console.error("Error scraping the website:", error);
     res.status(500).json({ error: "Failed to scrape the website" });
@@ -124,7 +135,17 @@ const ScrapePage = async (req, res) => {
   );
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--window-size=1280,800",
+        "--disable-software-rasterizer",
+        "--headless=new",
+      ],
+    });
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: "networkidle2" });
@@ -167,7 +188,8 @@ const ScrapePage = async (req, res) => {
           text ===
             "By providing an email address. I agree to the Terms of Use and acknowledge that I have read the Privacy Policy.";
 
-        const startsWithRead = text.startsWith("READ:") || text.startsWith("RELATED");
+        const startsWithRead =
+          text.startsWith("READ:") || text.startsWith("RELATED");
         const hasExcludedClass =
           $el.hasClass("wp-caption aligncenter") ||
           $el.hasClass("wp-caption-text") ||
@@ -192,28 +214,34 @@ const ScrapePage = async (req, res) => {
       })
       .each((i, el) => {
         $(el).find("img").remove();
-        $(el).find("ul").each((j, ul) => {
-          $(ul).find("a").each((k, anchor) => {
-            $(anchor).replaceWith($(anchor).text());
-          });
+        $(el)
+          .find("ul")
+          .each((j, ul) => {
+            $(ul)
+              .find("a")
+              .each((k, anchor) => {
+                $(anchor).replaceWith($(anchor).text());
+              });
 
-          const items = $(ul).find("li");
-          let lastItemIndex = items.length - 1;
+            const items = $(ul).find("li");
+            let lastItemIndex = items.length - 1;
 
-          items.each((k, li) => {
-            $(li).find("a").each((l, anchor) => {
-              $(anchor).replaceWith($(anchor).text());
+            items.each((k, li) => {
+              $(li)
+                .find("a")
+                .each((l, anchor) => {
+                  $(anchor).replaceWith($(anchor).text());
+                });
+
+              let text = $(li).text().trim();
+              if (k === lastItemIndex) {
+                text += ".";
+              } else {
+                text += ",";
+              }
+              $(li).replaceWith(text + " ");
             });
-
-            let text = $(li).text().trim();
-            if (k === lastItemIndex) {
-              text += '.';
-            } else {
-              text += ',';
-            }
-            $(li).replaceWith(text + ' ');
           });
-        });
       })
       .map((i, el) => $(el).text().trim() + " ")
       .get()
@@ -224,7 +252,7 @@ const ScrapePage = async (req, res) => {
       author: clean,
       date: formattedDate,
       content,
-      url: cacheFilePath
+      url: cacheFilePath,
     };
 
     addToCache(article, cacheFilePath);

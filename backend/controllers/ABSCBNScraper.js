@@ -110,6 +110,7 @@ const ScrapeWhole = async (req, res) => {
         "--disable-gpu",
         "--window-size=1280,800",
         "--disable-software-rasterizer",
+        "--headless=new",
       ],
     });
     const page = await browser.newPage();
@@ -161,7 +162,7 @@ const ScrapeWhole = async (req, res) => {
         addToCache(article, cacheFilePath);
       }
     });
-    
+
     await browser.close();
   } catch (error) {
     res.status(500).json({ error: "Failed to scrape the website" });
@@ -190,6 +191,7 @@ const ScrapePage = async (req, res) => {
         "--disable-gpu",
         "--window-size=1280,800",
         "--disable-software-rasterizer",
+        "--headless=new",
       ],
     });
     const page = await browser.newPage();
@@ -283,7 +285,9 @@ const ScrapePage = async (req, res) => {
           $(el).find("#isPasted").remove();
           $(el).find("iframe").remove();
           $(el).find("img").remove();
-          $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
+          $(el)
+            .find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable")
+            .remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -303,7 +307,9 @@ const ScrapePage = async (req, res) => {
           $(el).find("#isPasted").remove();
           $(el).find("iframe").remove();
           $(el).find("img").remove();
-          $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
+          $(el)
+            .find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable")
+            .remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -323,7 +329,9 @@ const ScrapePage = async (req, res) => {
           $(el).find("#isPasted").remove();
           $(el).find("iframe").remove();
           $(el).find("img").remove();
-          $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
+          $(el)
+            .find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable")
+            .remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -351,7 +359,9 @@ const ScrapePage = async (req, res) => {
           $(el).find("#isPasted").remove();
           $(el).find("iframe").remove();
           $(el).find("img").remove();
-          $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
+          $(el)
+            .find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable")
+            .remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -369,7 +379,9 @@ const ScrapePage = async (req, res) => {
           $(el).find("#isPasted").remove();
           $(el).find("iframe").remove();
           $(el).find("img").remove();
-          $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
+          $(el)
+            .find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable")
+            .remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -387,7 +399,9 @@ const ScrapePage = async (req, res) => {
           $(el).find("#isPasted").remove();
           $(el).find("iframe").remove();
           $(el).find("img").remove();
-          $(el).find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable").remove();
+          $(el)
+            .find(".fr-video.fr-deletable.fr-fvc.fr-dvb.fr-draggable")
+            .remove();
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
@@ -434,7 +448,7 @@ const ScrapePage = async (req, res) => {
       author,
       date: formattedDate,
       content: content,
-      url: cacheFilePath
+      url: cacheFilePath,
     };
 
     addToCache(article, cacheFilePath);

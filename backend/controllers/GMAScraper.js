@@ -90,7 +90,17 @@ const ScrapeWhole = async (req, res) => {
   const cacheFilePath = path.join(__dirname, "../cache/data", "gma.json");
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--window-size=1280,800",
+        "--disable-software-rasterizer",
+        "--headless=new",
+      ],
+    });
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: "networkidle2" });
@@ -120,7 +130,6 @@ const ScrapeWhole = async (req, res) => {
         addToCache(article, cacheFilePath);
       }
     });
-    
   } catch (error) {
     console.error("Error scraping the website:", error);
     res.status(500).json({ error: "Failed to scrape the website" });
@@ -141,7 +150,17 @@ const ScrapePage = async (req, res) => {
   );
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--window-size=1280,800",
+        "--disable-software-rasterizer",
+        "--headless=new",
+      ],
+    });
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: "networkidle2" });
@@ -174,38 +193,48 @@ const ScrapePage = async (req, res) => {
         $(el).find("#mrect_related_content_holder").remove();
         $(el).find("#outstream-ad").remove();
         $(el).find("img").remove();
-        $(el).find("p").each((j, p) => {
-          $(p).find("a").each((k, anchor) => {
-            $(anchor).replaceWith($(anchor).text());
+        $(el)
+          .find("p")
+          .each((j, p) => {
+            $(p)
+              .find("a")
+              .each((k, anchor) => {
+                $(anchor).replaceWith($(anchor).text());
+              });
+            $(p).replaceWith($(p).text().trim() + " ");
           });
-          $(p).replaceWith($(p).text().trim() + ' ');
-        });
-        $(el).find("ul").each((j, ul) => {
-          $(ul).find("a").each((k, anchor) => {
-            $(anchor).replaceWith($(anchor).text());
-          });
-          const items = $(ul).find("li");
-          let lastItemIndex = items.length - 1;
-    
-          items.each((k, li) => {
-            $(li).find("a").each((l, anchor) => {
-              $(anchor).replaceWith($(anchor).text());
+        $(el)
+          .find("ul")
+          .each((j, ul) => {
+            $(ul)
+              .find("a")
+              .each((k, anchor) => {
+                $(anchor).replaceWith($(anchor).text());
+              });
+            const items = $(ul).find("li");
+            let lastItemIndex = items.length - 1;
+
+            items.each((k, li) => {
+              $(li)
+                .find("a")
+                .each((l, anchor) => {
+                  $(anchor).replaceWith($(anchor).text());
+                });
+
+              let text = $(li).text().trim();
+              if (k === lastItemIndex) {
+                text += ".";
+              } else {
+                text += ",";
+              }
+              $(li).replaceWith(text + " ");
             });
-    
-            let text = $(li).text().trim();
-            if (k === lastItemIndex) {
-              text += '.';
-            } else {
-              text += ',';
-            }
-            $(li).replaceWith(text + ' ');
           });
-        });
       })
       .map((i, el) => $(el).text().trim())
       .get()
       .join("\n");
-    
+
     const date = dateText
       .replace(/Published\s+/, "")
       .replace(/\d{1,2}:\d{2}(am|pm)/i, "")
@@ -219,7 +248,7 @@ const ScrapePage = async (req, res) => {
       author: cleanedAuthor,
       date,
       content,
-      url: cacheFilePath
+      url: cacheFilePath,
     };
 
     addToCache(article, cacheFilePath);

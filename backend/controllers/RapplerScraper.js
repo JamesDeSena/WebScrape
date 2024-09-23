@@ -101,7 +101,17 @@ const ScrapeWhole = async (req, res) => {
   const cacheFilePath = path.join(__dirname, "../cache/data", "rp.json");
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--window-size=1280,800",
+        "--disable-software-rasterizer",
+        "--headless=new",
+      ],
+    });
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: "networkidle2" });
@@ -133,7 +143,6 @@ const ScrapeWhole = async (req, res) => {
         addToCache(article, cacheFilePath);
       }
     });
-
   } catch (error) {
     console.error("Error scraping the website:", error);
     res.status(500).json({ error: "Failed to scrape the website" });
@@ -154,7 +163,17 @@ const ScrapePage = async (req, res) => {
   );
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--window-size=1280,800",
+        "--disable-software-rasterizer",
+        "--headless=new",
+      ],
+    });
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: "networkidle2" });
@@ -207,42 +226,56 @@ const ScrapePage = async (req, res) => {
         $(el).find(".related-article ").remove();
         $(el).find("#cx_inline").remove();
         $(el).find("em").last().remove();
-        $(el).find("strong").filter(function () {
-          return $(this).text().startsWith("-");
-        }).last().remove();
-        $(el).find("h5").each((j, h5) => {
-          let text = $(h5).text().trim();
-          if (text && !text.endsWith(".")) {
-            text += ". ";
-          }
-          $(h5).replaceWith(text);
-        });
-        $(el).find(".has-drop-cap, .wp-block-heading").each((j, el) => {
-          $(el).replaceWith($(el).text());
-        });
-        $(el).find("a").each((j, anchor) => {
-          $(anchor).replaceWith($(anchor).text());
-        });
-        $(el).find("p").each((j, p) => {
-          $(p).find("a").each((k, anchor) => {
+        $(el)
+          .find("strong")
+          .filter(function () {
+            return $(this).text().startsWith("-");
+          })
+          .last()
+          .remove();
+        $(el)
+          .find("h5")
+          .each((j, h5) => {
+            let text = $(h5).text().trim();
+            if (text && !text.endsWith(".")) {
+              text += ". ";
+            }
+            $(h5).replaceWith(text);
+          });
+        $(el)
+          .find(".has-drop-cap, .wp-block-heading")
+          .each((j, el) => {
+            $(el).replaceWith($(el).text());
+          });
+        $(el)
+          .find("a")
+          .each((j, anchor) => {
             $(anchor).replaceWith($(anchor).text());
           });
-          $(p).replaceWith($(p).text().trim() + " ");
-        });
+        $(el)
+          .find("p")
+          .each((j, p) => {
+            $(p)
+              .find("a")
+              .each((k, anchor) => {
+                $(anchor).replaceWith($(anchor).text());
+              });
+            $(p).replaceWith($(p).text().trim() + " ");
+          });
         $(el).find("tr").after(" ");
         $(el).find("td").after(" ");
       })
       .map((i, el) => $(el).text())
       .get()
       .map((text) => text.trim())
-      .join("");  
+      .join("");
 
     const article = {
       title,
       author,
       date,
       content,
-      url: cacheFilePath
+      url: cacheFilePath,
     };
 
     addToCache(article, cacheFilePath);

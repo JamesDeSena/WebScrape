@@ -71,7 +71,17 @@ const ScrapeWhole = async (req, res) => {
   const cacheFilePath = path.join(__dirname, "../cache/data", "bw.json");
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--window-size=1280,800",
+        "--disable-software-rasterizer",
+        "--headless=new",
+      ],
+    });
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: "networkidle2" });
@@ -103,7 +113,6 @@ const ScrapeWhole = async (req, res) => {
         }
       }
     );
-    
   } catch (error) {
     console.error("Error scraping the website:", error);
     res.status(500).json({ error: "Failed to scrape the website" });
@@ -124,7 +133,17 @@ const ScrapePage = async (req, res) => {
   );
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--window-size=1280,800",
+        "--disable-software-rasterizer",
+        "--headless=new",
+      ],
+    });
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: "networkidle2" });
@@ -151,42 +170,56 @@ const ScrapePage = async (req, res) => {
       .each((i, el) => {
         $(el)
           .find(
-            ".addtoany_share_save_container.addtoany_content.addtoany_content_top").remove();
+            ".addtoany_share_save_container.addtoany_content.addtoany_content_top"
+          )
+          .remove();
         $(el).find(".td-post-featured-image").remove();
         $(el)
-          .find(".td-a-rec.td-a-rec-id-content_inline.tdi_2.td_block_template_1")
+          .find(
+            ".td-a-rec.td-a-rec-id-content_inline.tdi_2.td_block_template_1"
+          )
           .remove();
         $(el).find("#div-gpt-ad-AD2").remove();
         $(el)
-          .find(".addtoany_share_save_container.addtoany_content.addtoany_content_bottom")
+          .find(
+            ".addtoany_share_save_container.addtoany_content.addtoany_content_bottom"
+          )
           .remove();
         $(el)
-          .find(".td-a-rec.td-a-rec-id-content_bottom.tdi_3 td_block_template_1")
+          .find(
+            ".td-a-rec.td-a-rec-id-content_bottom.tdi_3 td_block_template_1"
+          )
           .remove();
         $(el).find("em").remove();
         $(el).find("img").remove();
-        $(el).find("ul").each((j, ul) => {
-          $(ul).find("a").each((k, anchor) => {
-            $(anchor).replaceWith($(anchor).text());
-          });
-    
-          const items = $(ul).find("li");
-          let lastItemIndex = items.length - 1;
-    
-          items.each((k, li) => {
-            $(li).find("a").each((l, anchor) => {
-              $(anchor).replaceWith($(anchor).text());
+        $(el)
+          .find("ul")
+          .each((j, ul) => {
+            $(ul)
+              .find("a")
+              .each((k, anchor) => {
+                $(anchor).replaceWith($(anchor).text());
+              });
+
+            const items = $(ul).find("li");
+            let lastItemIndex = items.length - 1;
+
+            items.each((k, li) => {
+              $(li)
+                .find("a")
+                .each((l, anchor) => {
+                  $(anchor).replaceWith($(anchor).text());
+                });
+
+              let text = $(li).text().trim();
+              if (k === lastItemIndex) {
+                text += ".";
+              } else {
+                text += ",";
+              }
+              $(li).replaceWith(text + " ");
             });
-    
-            let text = $(li).text().trim();
-            if (k === lastItemIndex) {
-              text += '.';
-            } else {
-              text += ',';
-            }
-            $(li).replaceWith(text + ' ');
           });
-        });
       })
       .map((i, el) => $(el).text().trim() + " ")
       .get()
@@ -206,7 +239,7 @@ const ScrapePage = async (req, res) => {
       author,
       date,
       content,
-      url: cacheFilePath
+      url: cacheFilePath,
     };
 
     addToCache(article, cacheFilePath);

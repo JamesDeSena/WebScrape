@@ -81,7 +81,17 @@ const ScrapeWhole = async (req, res) => {
   const cacheFilePath = path.join(__dirname, "../cache/data", "mt.json");
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--window-size=1280,800",
+        "--disable-software-rasterizer",
+        "--headless=new",
+      ],
+    });
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: "networkidle2" });
@@ -111,7 +121,6 @@ const ScrapeWhole = async (req, res) => {
         addToCache(article, cacheFilePath);
       }
     });
-    
   } catch (error) {
     console.error("Error scraping the website:", error);
     res.status(500).json({ error: "Failed to scrape the website" });
@@ -132,7 +141,17 @@ const ScrapePage = async (req, res) => {
   );
 
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+      headless: true,
+      args: [
+        "--no-sandbox",
+        "--disable-setuid-sandbox",
+        "--disable-gpu",
+        "--window-size=1280,800",
+        "--disable-software-rasterizer",
+        "--headless=new",
+      ],
+    });
     const page = await browser.newPage();
 
     await page.goto(url, { waitUntil: "networkidle2" });
@@ -174,32 +193,40 @@ const ScrapePage = async (req, res) => {
         $(el).find(".article_top_image_widget").remove();
         $(el).find(".article-image-caption.roboto-a").remove();
         $(el)
-          .find(".widget-container.article-embedded-newsletter-form.manila-newsletter-theme.flex-row pos-relative")
+          .find(
+            ".widget-container.article-embedded-newsletter-form.manila-newsletter-theme.flex-row pos-relative"
+          )
           .remove();
         $(el).find(".article-ad-one.article-ad").remove();
         $(el).find(".fixed-gray-color").remove();
-        $(el).find("ul").each((j, ul) => {
-          $(ul).find("a").each((k, anchor) => {
-            $(anchor).replaceWith($(anchor).text());
-          });
-    
-          const items = $(ul).find("li");
-          let lastItemIndex = items.length - 1;
-    
-          items.each((k, li) => {
-            $(li).find("a").each((l, anchor) => {
-              $(anchor).replaceWith($(anchor).text());
+        $(el)
+          .find("ul")
+          .each((j, ul) => {
+            $(ul)
+              .find("a")
+              .each((k, anchor) => {
+                $(anchor).replaceWith($(anchor).text());
+              });
+
+            const items = $(ul).find("li");
+            let lastItemIndex = items.length - 1;
+
+            items.each((k, li) => {
+              $(li)
+                .find("a")
+                .each((l, anchor) => {
+                  $(anchor).replaceWith($(anchor).text());
+                });
+
+              let text = $(li).text().trim();
+              if (k === lastItemIndex) {
+                text += ".";
+              } else {
+                text += ",";
+              }
+              $(li).replaceWith(text + " ");
             });
-    
-            let text = $(li).text().trim();
-            if (k === lastItemIndex) {
-              text += '.';
-            } else {
-              text += ',';
-            }
-            $(li).replaceWith(text + ' ');
           });
-        });
       })
       .map((i, el) => $(el).text().trim() + " ")
       .get()
@@ -214,7 +241,7 @@ const ScrapePage = async (req, res) => {
       author: cleanedAuthor,
       date: dateText,
       content,
-      url: cacheFilePath
+      url: cacheFilePath,
     };
 
     addToCache(article, cacheFilePath);
