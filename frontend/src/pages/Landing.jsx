@@ -53,8 +53,7 @@ const LandingPage = () => {
   }, []);
 
   const navigateArticle = async (url, source) => {
-    setArticleLoading(true); // Start loading for individual article
-    console.log(`Source clicked: ${source}`); // Log the clicked source
+    setArticleLoading(true);
 
     try {
       const response = await axios.post(`https://pdmnnewshub.ddns.net:8080/api/${source}/get-page`, { url });
