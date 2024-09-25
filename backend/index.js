@@ -1,7 +1,9 @@
 const dotenv = require("dotenv");
 const express = require("express");
 const cors = require("cors");
-const http = require("http");
+const https = require("https");
+const fs = require("fs");
+const path = require("path");
 
 const routes = {
   mt: require("./routes/MTRoutes"),
@@ -21,8 +23,16 @@ const routes = {
 const app = express();
 dotenv.config();
 
-const server = http.createServer(app);
+// Update the path to point to the cert directory
+const pfxPath = path.join(__dirname, 'cert', '21tJ9tHUVUCrWVF8lM8ypg-main-11a461e6f3331c293bce4defe5f129cdff58531c-temp.pfx');
+const passphrase = 'QTAyUtiCdLhaaDK9o1VpTNKS8tOlHS1w/FbGpIhP118=';
 
+const options = {
+  pfx: fs.readFileSync(pfxPath),
+  passphrase: passphrase,
+};
+
+// Middlewares
 app.use(express.json());
 app.use(cors({
   origin: "*",
@@ -41,6 +51,7 @@ app.use((req, res, next) => {
   next();
 });
 
+// Routes
 app.use("/api/mt", routes.mt);
 app.use("/api/ps", routes.ps);
 app.use("/api/bw", routes.bw);
@@ -54,7 +65,8 @@ app.use("/api/translate", routes.translate);
 app.use("/api/paraphrase", routes.paraphrase);
 app.use("/api/gemini", routes.gemini);
 
-const PORT = process.env.PORT || 8080;
-server.listen(PORT, () => {
+// Server setup
+const PORT = process.env.PORT || 443;
+https.createServer(options, app).listen(PORT, () => {
   console.log(`Server started on port ${PORT}`);
 });
