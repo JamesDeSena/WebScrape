@@ -76,7 +76,7 @@ const Article = () => {
     const fetchArticles = async () => {
       try {
         setLoading(true); // Start loading
-        const response = await axios.post('http://202.175.224.155:8080/api/gemini/get', {
+        const response = await axios.post('https://pdmnnewshub.ddns.net:8080/api/gemini/get', {
           filePath: article.url
         });
 
@@ -88,7 +88,7 @@ const Article = () => {
           setTranslatedTitle(existingTranslationTitle);
         } else {
           const textToTranslate = content.__html;
-          const translateResponse = await axios.post('http://202.175.224.155:8080/api/gemini/translate', {
+          const translateResponse = await axios.post('https://pdmnnewshub.ddns.net:8080/api/gemini/translate', {
             content: textToTranslate,
             title: article.title,
             filePath: article.url
