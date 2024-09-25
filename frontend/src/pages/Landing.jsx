@@ -27,7 +27,7 @@ const LandingPage = () => {
         };
 
         const requests = Object.entries(sources).map(([source, name]) =>
-          axios.get(`http://202.175.224.155:0923/api/${source}/get-data`).then(response => ({
+          axios.get(`http://202.175.224.155:8080/api/${source}/get-data`).then(response => ({
             articles: response.data,
             source, // Store the API source
             name    // Store the display name
@@ -57,7 +57,7 @@ const LandingPage = () => {
     console.log(`Source clicked: ${source}`); // Log the clicked source
 
     try {
-      const response = await axios.post(`http://202.175.224.155:0923/api/${source}/get-page`, { url });
+      const response = await axios.post(`http://202.175.224.155:8080/api/${source}/get-page`, { url });
 
       if (response.status === 200) {
         const articleData = response.data[0];
@@ -65,7 +65,7 @@ const LandingPage = () => {
       }
     } catch (error) {
       try {
-        const response = await axios.post(`http://202.175.224.155:0923/api/${source}/page`, { url });
+        const response = await axios.post(`http://202.175.224.155:8080/api/${source}/page`, { url });
 
         if (response.status === 200) {
           const articleData = response.data;

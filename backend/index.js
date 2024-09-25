@@ -55,6 +55,6 @@ app.use("/api/paraphrase", ParaphraseRoutes);
 app.use("/api/gemini", GeminiRoutes);
 
 server.listen(process.env.PORT, () =>
-  console.log(`Server started on port ${process.env.PORT || 8008}`)
+  console.log(`Server started on port ${process.env.PORT || 8080}`)
 );
 

@@ -18,7 +18,7 @@ const Inquirer = () => {
     const fetchArticles = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://202.175.224.155:0923/api/inq/get-data');
+        const response = await axios.get('http://202.175.224.155:8080/api/inq/get-data');
         const sortedArticles = response.data;
         setArticles(sortedArticles);
       } catch (error) {
@@ -45,7 +45,7 @@ const Inquirer = () => {
   const navigateArticle = async (url) => {
     setArticleLoading(true);
     try {
-      let response = await axios.post('http://202.175.224.155:0923/api/inq/get-page', { url });
+      let response = await axios.post('http://202.175.224.155:8080/api/inq/get-page', { url });
 
       if (response.status === 200) {
         const articleData = response.data[0];
@@ -54,7 +54,7 @@ const Inquirer = () => {
       }
     } catch {
       try {
-        const response = await axios.post('http://202.175.224.155:0923/api/inq/page', { url });
+        const response = await axios.post('http://202.175.224.155:8080/api/inq/page', { url });
 
         if (response.status === 200) {
           const articleData = response.data;
