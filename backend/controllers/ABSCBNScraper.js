@@ -291,6 +291,9 @@ const ScrapePage = async (req, res) => {
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
+          $(el).find("ivs-player").remove();
+          $(el).find("ivs-overlay").remove();
+          $(el).find(".ivs-sdk-wrapper.ivs-content-mediaready.ivs-content-loaded").remove();
         })
         .map((i, el) => $(el).html())
         .get()
@@ -313,6 +316,9 @@ const ScrapePage = async (req, res) => {
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
+          $(el).find("ivs-player").remove();
+          $(el).find("ivs-overlay").remove();
+          $(el).find(".ivs-sdk-wrapper.ivs-content-mediaready.ivs-content-loaded").remove();
         })
         .map((i, el) => $(el).html())
         .get()
@@ -335,6 +341,9 @@ const ScrapePage = async (req, res) => {
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
+          $(el).find("ivs-player").remove();
+          $(el).find("ivs-overlay").remove();
+          $(el).find(".ivs-sdk-wrapper.ivs-content-mediaready.ivs-content-loaded").remove();
           $(el)
             .find("strong")
             .filter(function () {
@@ -365,6 +374,9 @@ const ScrapePage = async (req, res) => {
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
+          $(el).find("ivs-player").remove();
+          $(el).find("ivs-overlay").remove();
+          $(el).find(".ivs-sdk-wrapper.ivs-content-mediaready.ivs-content-loaded").remove();
         })
         .map((i, el) => $(el).html())
         .get()
@@ -385,6 +397,9 @@ const ScrapePage = async (req, res) => {
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
+          $(el).find("ivs-player").remove();
+          $(el).find("ivs-overlay").remove();
+          $(el).find(".ivs-sdk-wrapper.ivs-content-mediaready.ivs-content-loaded").remove();
         })
         .map((i, el) => $(el).html())
         .get()
@@ -405,6 +420,9 @@ const ScrapePage = async (req, res) => {
           $(el).find("em").remove();
           $(el).find("span.fr-img-caption.fr-fic.fr-dib").remove();
           $(el).find("a").remove();
+          $(el).find("ivs-player").remove();
+          $(el).find("ivs-overlay").remove();
+          $(el).find(".ivs-sdk-wrapper.ivs-content-mediaready.ivs-content-loaded").remove();
           $(el)
             .find("strong")
             .filter(function () {
