@@ -15,7 +15,6 @@ const routes = {
   abs: require("./routes/ABSCBNRoutes"),
   gma: require("./routes/GMARoutes"),
   inq: require("./routes/InqRoutes"),
-  translate: require("./routes/TranslationRoutes"),
   paraphrase: require("./routes/ParaphraseRoutes"),
   gemini: require("./routes/GeminiRoutes"),
 };
@@ -61,7 +60,6 @@ app.use("/api/tv", routes.tv);
 app.use("/api/abs", routes.abs);
 app.use("/api/gma", routes.gma);
 app.use("/api/inq", routes.inq);
-app.use("/api/translate", routes.translate);
 app.use("/api/paraphrase", routes.paraphrase);
 app.use("/api/gemini", routes.gemini);
 
