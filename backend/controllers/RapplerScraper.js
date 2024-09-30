@@ -95,6 +95,8 @@ function formatDate(relativeTimeString) {
   });
 }
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const ScrapeWhole = async (req, res) => {
   const url = "https://www.rappler.com/latest/";
 
@@ -111,16 +113,27 @@ const ScrapeWhole = async (req, res) => {
         "--disable-software-rasterizer",
         "--headless=new",
       ],
+      protocolTimeout: 60000
     });
+
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2" });
+    page.setDefaultTimeout(60000);
+    page.setDefaultNavigationTimeout(60000);
+
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+    await wait(3000);
+
+    try {
+      await page.waitForSelector(".archive-article__content", { timeout: 60000 });
+    } catch (error) {
+      await browser.close();
+      return res.status(500).json({ error: "Failed to find the selector" });
+    }
 
     const html = await page.content();
     await browser.close();
-
     const $ = cheerio.load(html);
-
     const articles = [];
 
     $(".archive-article__content").each((i, element) => {
@@ -173,16 +186,24 @@ const ScrapePage = async (req, res) => {
         "--disable-software-rasterizer",
         "--headless=new",
       ],
+      protocolTimeout: 60000
     });
+
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2" });
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+    await wait(3000);
+
+    try {
+      await page.waitForSelector("#primary.site-main", { timeout: 60000 });
+    } catch (error) {
+      await browser.close();
+      return res.status(500).json({ error: "Failed to find the selector" });
+    }
 
     const html = await page.content();
     await browser.close();
-
     const $ = cheerio.load(html);
-
     const element = $("#primary.site-main").first();
 
     const title = element

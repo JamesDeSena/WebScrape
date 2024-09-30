@@ -75,6 +75,8 @@ function formatDate(dateString) {
   return cleanedDate;
 }
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const ScrapeWhole = async (req, res) => {
   const url = "https://www.manilatimes.net/news";
 
@@ -91,16 +93,27 @@ const ScrapeWhole = async (req, res) => {
         "--disable-software-rasterizer",
         "--headless=new",
       ],
+      protocolTimeout: 60000
     });
+
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2" });
+    page.setDefaultTimeout(60000);
+    page.setDefaultNavigationTimeout(60000);
+
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+    await wait(3000);
+
+    try {
+      await page.waitForSelector(".item-row.item-row-2.flex-row", { timeout: 60000 });
+    } catch (error) {
+      await browser.close();
+      return res.status(500).json({ error: "Failed to find the selector" });
+    }
 
     const html = await page.content();
     await browser.close();
-
     const $ = cheerio.load(html);
-
     const articles = [];
 
     $(".item-row.item-row-2.flex-row").each((i, element) => {
@@ -151,16 +164,27 @@ const ScrapePage = async (req, res) => {
         "--disable-software-rasterizer",
         "--headless=new",
       ],
+      protocolTimeout: 60000
     });
+
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2" });
+    page.setDefaultTimeout(60000);
+    page.setDefaultNavigationTimeout(60000);
+
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+    await wait(3000);
+
+    try {
+      await page.waitForSelector("section.article-page", { timeout: 60000 });
+    } catch (error) {
+      await browser.close();
+      return res.status(500).json({ error: "Failed to find the selector" });
+    }
 
     const html = await page.content();
     await browser.close();
-
     const $ = cheerio.load(html);
-
     const element = $("section.article-page").first();
 
     const title = element

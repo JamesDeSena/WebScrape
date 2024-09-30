@@ -65,6 +65,8 @@ function extractFileNameFromUrl(url) {
   }
 }
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const ScrapeWhole = async (req, res) => {
   const url = "https://www.bworldonline.com/top-stories/";
 
@@ -81,16 +83,27 @@ const ScrapeWhole = async (req, res) => {
         "--disable-software-rasterizer",
         "--headless=new",
       ],
+      protocolTimeout: 60000
     });
+
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2" });
+    page.setDefaultTimeout(60000);
+    page.setDefaultNavigationTimeout(60000);
+
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+    await wait(3000);
+
+    try {
+      await page.waitForSelector(".td_block_template_1.widget.widget_recent_entries ul li", { timeout: 60000 });
+    } catch (error) {
+      await browser.close();
+      return res.status(500).json({ error: "Failed to find the selector" });
+    }
 
     const html = await page.content();
     await browser.close();
-
     const $ = cheerio.load(html);
-
     const articles = [];
 
     $(".td_block_template_1.widget.widget_recent_entries ul li").each(
@@ -143,16 +156,27 @@ const ScrapePage = async (req, res) => {
         "--disable-software-rasterizer",
         "--headless=new",
       ],
+      protocolTimeout: 60000
     });
+    
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2" });
+    page.setDefaultTimeout(60000);
+    page.setDefaultNavigationTimeout(60000);
+
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+    await wait(3000);
+
+    try {
+      await page.waitForSelector("article", { timeout: 60000 });
+    } catch (error) {
+      await browser.close();
+      return res.status(500).json({ error: "Failed to find the selector" });
+    }
 
     const html = await page.content();
     await browser.close();
-
     const $ = cheerio.load(html);
-
     const element = $("article").first();
 
     const title = element.find(".entry-title").first().text().trim();

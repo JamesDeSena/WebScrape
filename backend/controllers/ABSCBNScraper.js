@@ -112,8 +112,13 @@ const ScrapeWhole = async (req, res) => {
         "--disable-software-rasterizer",
         "--headless=new",
       ],
+      protocolTimeout: 60000
     });
+
     const page = await browser.newPage();
+
+    page.setDefaultTimeout(60000);
+    page.setDefaultNavigationTimeout(60000);
 
     await page.setViewport({ width: 1280, height: 800 });
     await page.setUserAgent(
@@ -124,11 +129,11 @@ const ScrapeWhole = async (req, res) => {
       "Accept-Encoding": "gzip, deflate, br",
     });
 
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
     await wait(3000);
 
     try {
-      await page.waitForSelector(".MuiBox-root.css-0", { timeout: 30000 });
+      await page.waitForSelector(".MuiBox-root.css-0", { timeout: 60000 });
     } catch (error) {
       await browser.close();
       return res.status(500).json({ error: "Failed to find the selector" });
@@ -193,8 +198,13 @@ const ScrapePage = async (req, res) => {
         "--disable-software-rasterizer",
         "--headless=new",
       ],
+      protocolTimeout: 60000
     });
+
     const page = await browser.newPage();
+
+    page.setDefaultTimeout(60000);
+    page.setDefaultNavigationTimeout(60000);
 
     await page.setViewport({ width: 1280, height: 800 });
     await page.setUserAgent(
@@ -205,13 +215,10 @@ const ScrapePage = async (req, res) => {
       "Accept-Encoding": "gzip, deflate, br",
     });
 
-    await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
 
     try {
-      await page.waitForSelector(
-        "#bodyTopPart, #bodyMiddlePart, #bodyBottomPart",
-        { timeout: 30000 }
-      );
+      await page.waitForSelector("#bodyTopPart, #bodyMiddlePart, #bodyBottomPart", { timeout: 60000 });
     } catch (error) {
       await browser.close();
       return res.status(500).json({ error: "Failed to find the selectors" });

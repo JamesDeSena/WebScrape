@@ -84,6 +84,8 @@ function convertTimeToDate(timeString) {
   return currentDate.toLocaleDateString(undefined, options);
 }
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const ScrapeWhole = async (req, res) => {
   const url = "https://www.gmanetwork.com/news/";
 
@@ -100,16 +102,27 @@ const ScrapeWhole = async (req, res) => {
         "--disable-software-rasterizer",
         "--headless=new",
       ],
+      protocolTimeout: 60000
     });
+    
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2" });
+    page.setDefaultTimeout(60000);
+    page.setDefaultNavigationTimeout(60000);
+
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+    await wait(3000);
+
+    try {
+      await page.waitForSelector(".just-in-content a", { timeout: 60000 });
+    } catch (error) {
+      await browser.close();
+      return res.status(500).json({ error: "Failed to find the selector" });
+    }
 
     const html = await page.content();
     await browser.close();
-
     const $ = cheerio.load(html);
-
     const articles = [];
 
     $(".just-in-content a").each((i, element) => {
@@ -160,16 +173,27 @@ const ScrapePage = async (req, res) => {
         "--disable-software-rasterizer",
         "--headless=new",
       ],
+      protocolTimeout: 60000
     });
+
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2" });
+    page.setDefaultTimeout(60000);
+    page.setDefaultNavigationTimeout(60000);
+
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+    await wait(3000);
+
+    try {
+      await page.waitForSelector(".upper_article", { timeout: 60000 });
+    } catch (error) {
+      await browser.close();
+      return res.status(500).json({ error: "Failed to find the selector" });
+    }
 
     const html = await page.content();
     await browser.close();
-
     const $ = cheerio.load(html);
-
     const element = $(".upper_article").first();
 
     const title = element.find("h1.story_links").first().text().trim();

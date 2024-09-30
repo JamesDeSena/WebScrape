@@ -91,6 +91,8 @@ function parseRelativeTime(relativeTime) {
   return new Intl.DateTimeFormat("en-US", options).format(articleDate);
 }
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
 const ScrapeWhole = async (req, res) => {
   const url = "https://mb.com.ph/category/news";
 
@@ -107,16 +109,27 @@ const ScrapeWhole = async (req, res) => {
         "--disable-software-rasterizer",
         "--headless=new",
       ],
+      protocolTimeout: 60000
     });
+
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2" });
+    page.setDefaultTimeout(60000);
+    page.setDefaultNavigationTimeout(60000);
+
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+    await wait(3000);
+
+    try {
+      await page.waitForSelector(".article-list.mx-auto .row.mb-5 div[data-v-498e1d89].col", { timeout: 60000 });
+    } catch (error) {
+      await browser.close();
+      return res.status(500).json({ error: "Failed to find the selector" });
+    }
 
     const html = await page.content();
     await browser.close();
-
     const $ = cheerio.load(html);
-
     const articles = [];
 
     $(".article-list.mx-auto .row.mb-5 div[data-v-498e1d89].col").each(
@@ -178,16 +191,27 @@ const ScrapePage = async (req, res) => {
         "--disable-software-rasterizer",
         "--headless=new",
       ],
+      protocolTimeout: 60000
     });
+
     const page = await browser.newPage();
 
-    await page.goto(url, { waitUntil: "networkidle2" });
+    page.setDefaultTimeout(60000);
+    page.setDefaultNavigationTimeout(60000);
+
+    await page.goto(url, { waitUntil: "networkidle2", timeout: 60000 });
+    await wait(3000);
+
+    try {
+      await page.waitForSelector("div[data-v-03318cb8]", { timeout: 60000 });
+    } catch (error) {
+      await browser.close();
+      return res.status(500).json({ error: "Failed to find the selector" });
+    }
 
     const html = await page.content();
     await browser.close();
-
     const $ = cheerio.load(html);
-
     const element = $("div[data-v-03318cb8]").first();
 
     const title = element
