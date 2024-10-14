@@ -5,6 +5,8 @@ import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import loadingGif from "../../assets/8.gif";
 
+const API = import.meta.env.VITE_REACT_APP_API;
+
 const BWorld = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ const BWorld = () => {
     const fetchArticles = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://pdmnnewshub.ddns.net:8080/api/bw/get-data');
+        const response = await axios.get(`${API}/api/bw/get-data`);
         const sortedArticles = response.data;
         setArticles(sortedArticles);
       } catch (error) {
@@ -44,7 +46,7 @@ const BWorld = () => {
   const navigateArticle = async (url) => {
     setArticleLoading(true);
     try {
-      let response = await axios.post('https://pdmnnewshub.ddns.net:8080/api/bw/get-page', { url });
+      let response = await axios.post(`${API}/api/bw/get-page`, { url });
 
       if (response.status === 200) {
         const articleData = response.data[0];
@@ -53,7 +55,7 @@ const BWorld = () => {
       }
     } catch {
       try {
-        const response = await axios.post('https://pdmnnewshub.ddns.net:8080/api/bw/page', { url });
+        const response = await axios.post(`${API}/api/bw/page`, { url });
 
         if (response.status === 200) {
           const articleData = response.data;
@@ -63,7 +65,7 @@ const BWorld = () => {
         console.error("Error fetching article content:", error.response ? error.response.data : error.message);
       } 
     } finally {
-      setArticleLoading(false); // Stop loading for individual article
+      setArticleLoading(false);
     }
   };
 

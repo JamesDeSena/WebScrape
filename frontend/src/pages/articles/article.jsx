@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { FaCopy } from "react-icons/fa";
 import { AiOutlineTranslation } from "react-icons/ai";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoReturnUpBackOutline } from "react-icons/io5";
 import Translategif from "../../assets/6.gif"
-
 import axios from 'axios';
+
+const API = import.meta.env.VITE_REACT_APP_API;
 
 const Article = () => {
   const { state } = useLocation();
   const article = state?.articleData;
   const navigate = useNavigate();
 
-  const [phrase, setPhrase] = useState();
   const [translatedContent, setTranslatedContent] = useState();
   const [translatedTitle, setTranslatedTitle] = useState();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [loading, setLoading] = useState(false); // Loading state
+  const [loading, setLoading] = useState(false);
   const [action, setAction] = useState('');
 
   const copyToClipboard = () => {
@@ -76,7 +75,7 @@ const Article = () => {
     const fetchArticles = async () => {
       try {
         setLoading(true); // Start loading
-        const response = await axios.post('https://pdmnnewshub.ddns.net:8080/api/gemini/get', {
+        const response = await axios.post(`${API}/api/gemini/get`, {
           filePath: article.url
         });
 
@@ -88,7 +87,7 @@ const Article = () => {
           setTranslatedTitle(existingTranslationTitle);
         } else {
           const textToTranslate = content.__html;
-          const translateResponse = await axios.post('https://pdmnnewshub.ddns.net:8080/api/gemini/translate', {
+          const translateResponse = await axios.post(`${API}/api/gemini/translate`, {
             content: textToTranslate,
             title: article.title,
             filePath: article.url

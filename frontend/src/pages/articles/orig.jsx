@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { FaCopy } from "react-icons/fa";
 import { AiOutlineTranslation } from "react-icons/ai";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IoReturnUpBackOutline } from "react-icons/io5";
-
 import axios from 'axios';
+
+const API = import.meta.env.VITE_REACT_APP_API;
 
 const Orig = () => {
   const { state } = useLocation();
   const article = state?.articleData;
   const navigate = useNavigate();
 
-  const [phrase, setPhrase] = useState();
   const [translatedContent, setTranslatedContent] = useState();
   const [translatedTitle, setTranslatedTitle] = useState();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -84,7 +83,7 @@ const Orig = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await axios.post('http://192.168.13.206:8008/api/gemini/get', {
+        const response = await axios.post(`${API}/api/gemini/get`, {
           filePath: article.url
         });
   
@@ -96,7 +95,7 @@ const Orig = () => {
           setTranslatedTitle(existingTranslationTitle);
         } else {
           const textToTranslate = content.__html;
-          const translateResponse = await axios.post('http://192.168.13.206:8008/api/gemini/translate', {
+          const translateResponse = await axios.post(`${API}/api/gemini/translate`, {
             content: textToTranslate,
             title: article.title,
             filePath: article.url

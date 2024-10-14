@@ -5,6 +5,8 @@ import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import loadingGif from "../assets/8.gif"
 
+const API = import.meta.env.VITE_REACT_APP_API;
+
 const LandingPage = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +29,7 @@ const LandingPage = () => {
         };
 
         const requests = Object.entries(sources).map(([source, name]) =>
-          axios.get(`https://pdmnnewshub.ddns.net:8080/api/${source}/get-data`).then(response => ({
+          axios.get(`${API}/api/${source}/get-data`).then(response => ({
             articles: response.data,
             source, // Store the API source
             name    // Store the display name
@@ -56,7 +58,7 @@ const LandingPage = () => {
     setArticleLoading(true);
 
     try {
-      const response = await axios.post(`https://pdmnnewshub.ddns.net:8080/api/${source}/get-page`, { url });
+      const response = await axios.post(`${API}/api/${source}/get-page`, { url });
 
       if (response.status === 200) {
         const articleData = response.data[0];
@@ -64,7 +66,7 @@ const LandingPage = () => {
       }
     } catch (error) {
       try {
-        const response = await axios.post(`https://pdmnnewshub.ddns.net:8080/api/${source}/page`, { url });
+        const response = await axios.post(`${API}/api/${source}/page`, { url });
 
         if (response.status === 200) {
           const articleData = response.data;

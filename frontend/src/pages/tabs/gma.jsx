@@ -5,6 +5,8 @@ import { ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import loadingGif from "../../assets/8.gif";
 
+const API = import.meta.env.VITE_REACT_APP_API;
+
 const GMA = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ const GMA = () => {
     const fetchArticles = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://pdmnnewshub.ddns.net:8080/api/gma/get-data');
+        const response = await axios.get(`${API}/api/gma/get-data`);
         const sortedArticles = response.data;
         setArticles(sortedArticles);
       } catch (error) {
@@ -45,7 +47,7 @@ const GMA = () => {
   const navigateArticle = async (url) => {
     setArticleLoading(true);
     try {
-      const response = await axios.post('https://pdmnnewshub.ddns.net:8080/api/gma/get-page', { url });
+      const response = await axios.post(`${API}/api/gma/get-page`, { url });
 
       if (response.status === 200) {
         const articleData = response.data[0];
@@ -54,7 +56,7 @@ const GMA = () => {
       }
     } catch {
       try {
-        const response = await axios.post('https://pdmnnewshub.ddns.net:8080/api/gma/page', { url });
+        const response = await axios.post(`${API}/api/gma/page`, { url });
 
         if (response.status === 200) {
           const articleData = response.data;
@@ -65,7 +67,7 @@ const GMA = () => {
       }
     }
     finally {
-      setArticleLoading(false); // Stop loading for individual article
+      setArticleLoading(false);
     }
   };
 
